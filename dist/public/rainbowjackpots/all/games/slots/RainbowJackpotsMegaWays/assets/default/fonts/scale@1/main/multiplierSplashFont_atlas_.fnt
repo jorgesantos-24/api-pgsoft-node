@@ -1,0 +1,21 @@
+<font>
+	<info face="multiplierSplashFont" size="146" bold="0" italic="0" chasrset="" unicode="0" stretchH="100" smooth="1" aa="1" padding="0,0,0,0" spacing="1,1"/>
+	<common lineHeight="146" scaleW="100%" scaleH="100%" pages="1" packed="0"/>
+	<pages>
+		<page id="0" file="multiplierSplashFont_atlas_0.png?c=f2ed72dba0"/>
+	</pages>
+	<chars count="11">
+		<char id="32" x="0" y="0" width="51" height="0" xoffset="0" yoffset="0" xadvance="51" page="0" chnl="0" letter=" "/>
+		<char id="51" x="0" y="0" width="90" height="146" xoffset="0" yoffset="0" xadvance="90" page="0" chnl="0" letter="3"/>
+		<char id="52" x="90" y="0" width="108" height="146" xoffset="0" yoffset="0" xadvance="108" page="0" chnl="0" letter="4"/>
+		<char id="53" x="198" y="0" width="90" height="146" xoffset="0" yoffset="0" xadvance="90" page="0" chnl="0" letter="5"/>
+		<char id="55" x="288" y="0" width="97" height="146" xoffset="0" yoffset="0" xadvance="97" page="0" chnl="0" letter="7"/>
+		<char id="48" x="385" y="0" width="105" height="146" xoffset="0" yoffset="0" xadvance="105" page="0" chnl="0" letter="0"/>
+		<char id="50" x="0" y="146" width="103" height="146" xoffset="0" yoffset="0" xadvance="103" page="0" chnl="0" letter="2"/>
+		<char id="49" x="0" y="292" width="63" height="146" xoffset="0" yoffset="0" xadvance="63" page="0" chnl="0" letter="1"/>
+		<char id="57" x="63" y="292" width="102" height="146" xoffset="0" yoffset="0" xadvance="102" page="0" chnl="0" letter="9"/>
+		<char id="120" x="103" y="146" width="100" height="146" xoffset="0" yoffset="0" xadvance="100" page="0" chnl="0" letter="x"/>
+		<char id="56" x="165" y="292" width="100" height="146" xoffset="0" yoffset="0" xadvance="100" page="0" chnl="0" letter="8"/>
+		<char id="54" x="203" y="146" width="102" height="146" xoffset="0" yoffset="0" xadvance="102" page="0" chnl="0" letter="6"/>
+	</chars>
+</font>

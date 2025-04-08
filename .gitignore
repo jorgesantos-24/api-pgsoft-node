@@ -1,0 +1,16 @@
+.env
+.env.local
+*.log
+.user.ini
+node_modules/
+src/public/
+*.sql
+!schema.sql
+!seed*.sql
+.env
+node_modules/
+src/public/
+*.sql
+!schema.sql
+!seed*.sql
+.env

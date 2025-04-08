@@ -1,0 +1,800 @@
+{
+  "en": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "LUCKY LEPRECHAUN",
+        "description": "You are guaranteed to trigger 1 of the Lucky Leprechaun features in the spin. The price for buying this feature is 20x the stake."
+      },
+      "BeerBonus": {
+        "name": "BEER BONUS",
+        "description": "You are guaranteed to land 3 or 4 BEER BONUS scatters in the spin and trigger the BEER BONUS or the MEGA BEER BONUS respectively. The price for buying this feature is 45x the stake."
+      },
+      "FairyBonus": {
+        "name": "FAIRY BONUS",
+        "description": "You are guaranteed to land 3 or more FAIRY BONUS scatters in the spin and trigger the FAIRY BONUS at the level corresponding to the number of scatters that have landed. The price for buying this feature is 35x the stake."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "You are guaranteed to land 3 or 4 FREE SPINS scatters in the spin and trigger FREE SPINS or MEGA FREE SPINS respectively. The price for buying this feature is 80x the stake."
+      }
+    }
+  },
+  "en-US": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "LUCKY LEPRECHAUN",
+        "description": "You are guaranteed to trigger 1 of the Lucky Leprechaun features in the spin. The price for buying this feature is 20x the stake."
+      },
+      "BeerBonus": {
+        "name": "BEER BONUS",
+        "description": "You are guaranteed to land 3 or 4 BEER BONUS scatters in the spin and trigger the BEER BONUS or the MEGA BEER BONUS, respectively. The price for buying this feature is 45x the stake."
+      },
+      "FairyBonus": {
+        "name": "FAIRY BONUS",
+        "description": "You are guaranteed to land 3 or more FAIRY BONUS scatters in the spin and trigger the FAIRY BONUS at the level corresponding to the number of scatters that have landed. The price for buying this feature is 35x the stake."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "You are guaranteed to land 3 or 4 FREE SPINS scatters in the spin and trigger FREE SPINS or MEGA FREE SPINS, respectively. The price for buying this feature is 80x the stake."
+      }
+    }
+  },
+  "zh": {
+    "title": "彩虹的祝福MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "幸运魔法精灵",
+        "description": "保证在旋转中保证触发1个幸运魔法精灵功能。购买此功能将花费投注额的20x。"
+      },
+      "BeerBonus": {
+        "name": "啤酒奖金",
+        "description": "在旋转中，一定会落下3或4个啤酒奖金分散，并分别触发啤酒奖金或超级啤酒奖金。购买此功能将花费投注额的45x。"
+      },
+      "FairyBonus": {
+        "name": "仙子奖金",
+        "description": "在旋转中，一定会落下3个或更多仙子奖金分散，并触发与分散数量相应等级的仙子奖金。购买此功能将花费投注额的35x。"
+      },
+      "FreeSpins": {
+        "name": "免费旋转",
+        "description": "在旋转中，一定会落下3或4个免费旋转分散，并分别触发免费旋转或超级免费旋转。购买此功能将花费投注额的80x。"
+      }
+    }
+  },
+  "zh-TW": {
+    "title": "彩虹的祝福 Megaways™",
+    "features": {
+      "LuckyPipe": {
+        "name": "幸運小矮人",
+        "description": "保證在該次旋轉中觸發1種幸運小矮人功能。購買此功能價格為20x投注額。"
+      },
+      "BeerBonus": {
+        "name": "啤酒獎金",
+        "description": "保證在該次旋轉中落下3或4個啤酒獎金分散，並分別觸發啤酒獎金或超級啤酒獎金。購買此功能價格為45x投注額。"
+      },
+      "FairyBonus": {
+        "name": "小妖精獎金",
+        "description": "保證在該次旋轉中落下至少3個小妖精獎金分散，並根據已落下的分散數量觸發相應級別的小妖精獎金。購買此功能價格為35x投注額。"
+      },
+      "FreeSpins": {
+        "name": "免費旋轉",
+        "description": "保證在該次旋轉中落下3或4個免費旋轉分散，並分別觸發免費旋轉或超級免費旋轉。購買此功能價格為80x投注額。"
+      }
+    }
+  },
+  "ja": {
+    "title": "レインボージャックポットMEGAWAYS™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ラッキーレプラコーン",
+        "description": "ラッキーレプラコーンフィーチャーの1つが必ずトリガーされます。このフィーチャーの購入価格は、ベット額の20倍です。"
+      },
+      "BeerBonus": {
+        "name": "ビールボーナス",
+        "description": "ビールボーナスキャター3つまたは4つが揃い、それぞれビールボーナスまたはメガビールボーナスの発生が確約されます。このフィーチャーの購入価格は、ベットの45倍です。"
+      },
+      "FairyBonus": {
+        "name": "フェアリーボーナス",
+        "description": "フェアリーボーナススキャッター3つ以上が確約され、スキャッターの数に応じたレベルのフェアリーボーナスがトリガーされます。このフィーチャーの購入価格は、ベットの35倍です。"
+      },
+      "FreeSpins": {
+        "name": "フリースピン",
+        "description": "フリースピンスキャッター3つまたは4つが確約され、それぞれフリースピンまたはメガフリースピンがトリガーされます。このフィーチャーの購入価格は、ベットの80倍です。"
+      }
+    }
+  },
+  "ko": {
+    "title": "레인보우 잭팟 MEGAWAYS™",
+    "features": {
+      "LuckyPipe": {
+        "name": "행운의 레프리컨",
+        "description": "회전 중 행운의 레프리컨 기능 1회가 반드시 발생합니다. 기능 구매 가격은 베팅액의 20배입니다."
+      },
+      "BeerBonus": {
+        "name": "맥주 보너스",
+        "description": "회전 중 맥주 보너스 스캐터 3개 또는 4개가 반드시 표시되어 각각 맥주 보너스 또는 메가 맥주 보너스를 발생시킵니다. 기능 구매 가격은 베팅액의 45배입니다."
+      },
+      "FairyBonus": {
+        "name": "요정 보너스",
+        "description": "회전 중 요정 보너스 스캐터 3개 이상이 반드시 표시되며, 표시된 스캐터 개수에 해당하는 레벨의 요정 보너스가 발생합니다. 기능 구매 가격은 베팅액의 35배입니다."
+      },
+      "FreeSpins": {
+        "name": "무료 회전",
+        "description": "회전 중 무료 회전 스캐터 3개 또는 4개가 반드시 표시되어 각각 무료 회전 또는 메가 무료 회전을 발생시킵니다. 기능 구매 가격은 베팅액의 80배입니다."
+      }
+    }
+  },
+  "th": {
+    "title": "แจ็กพอตสายรุ้ง MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ภูติจิ๋วนำโชค",
+        "description": "รับประกันว่าคุณจะได้เรียกใช้งานฟีเจอร์ภูติจิ๋วนำโชค 1 สัญลักษณ์ในรอบหมุน ราคาสำหรับการซื้อฟีเจอร์นี้คือ 20 เท่าของเงินเดิมพัน"
+      },
+      "BeerBonus": {
+        "name": "โบนัสเบียร์",
+        "description": "รับประกันว่าคุณจะหมุนได้สัญลักษณ์สแคทเทอร์โบนัสเบียร์ 3 หรือ 4 สัญลักษณ์ในรอบหมุน และเรียกใช้โบนัสเบียร์หรือโบนัสเบียร์มหาศาลตามลำดับ ราคาสำหรับการซื้อฟีเจอร์นี้คือ 45 เท่าของเงินเดิมพัน"
+      },
+      "FairyBonus": {
+        "name": "โบนัสนางฟ้า",
+        "description": "รับประกันว่าคุณจะหมุนได้สัญลักษณ์สแคทเทอร์โบนัสนางฟ้า 3 สัญลักษณ์ขึ้นไปในรอบหมุน และเรียกใช้โบนัสนางฟ้าในระดับที่สอดคล้องกับจำนวนสัญลักษณ์สแคทเทอร์ที่หมุนได้ ราคาสำหรับการซื้อฟีเจอร์นี้คือ 35 เท่าของเงินเดิมพัน"
+      },
+      "FreeSpins": {
+        "name": "รอบหมุนฟรี",
+        "description": "รับประกันว่าคุณจะหมุนได้สัญลักษณ์สแคทเทอร์รอบหมุนฟรี 3 หรือ 4 สัญลักษณ์ในรอบหมุน และเรียกใช้รอบหมุนฟรีหรือรอบหมุนฟรีมหาศาลตามลำดับ ราคาสำหรับการซื้อฟีเจอร์นี้คือ 80 เท่าของเงินเดิมพัน"
+      }
+    }
+  },
+  "vi": {
+    "title": "Jackpot cầu vồng MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "YÊU TINH MAY MẮN",
+        "description": "Bạn đảm bảo kích hoạt 1 trong số các tính năng của Yêu Tinh May Mắn trong vòng quay. Giá để mua tính năng này là 20x tiền đặt cược."
+      },
+      "BeerBonus": {
+        "name": "TIỀN THƯỞNG BIA",
+        "description": "Bạn đảm bảo quay ra 3 hoặc 4 phân tán TIỀN THƯỞNG BIA trong vòng quay và kích hoạt TIỀN THƯỞNG BIA hoặc TIỀN THƯỞNG BIA MEGA tương ứng. Giá để mua tính năng này là 45x tiền đặt cược."
+      },
+      "FairyBonus": {
+        "name": "TIỀN THƯỞNG CỔ TÍCH",
+        "description": "Bạn đảm bảo quay ra 3 phân tán TIỀN THƯỞNG CỔ TÍCH trở lên trong vòng quay và kích hoạt TIỀN THƯỞNG CỔ TÍCH ở cấp độ tương ứng với số lượng phân tán đã xuất hiện. Giá để mua tính năng này là 35x tiền đặt cược."
+      },
+      "FreeSpins": {
+        "name": "VÒNG QUAY MIỄN PHÍ",
+        "description": "Bạn đảm bảo quay ra 3 hoặc 4 phân tán VÒNG QUAY MIỄN PHÍ trong vòng quay và kích hoạt các VÒNG QUAY MIỄN PHÍ hoặc VÒNG QUAY MIỄN PHÍ MEGA tương ứng. Giá để mua tính năng này là 80x tiền đặt cược."
+      }
+    }
+  },
+  "id": {
+    "title": "Jackpot Pelangi MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "KURCACI KEBERUNTUNGAN",
+        "description": "Anda dijamin akan memicu 1 fitur Kurcaci Keberuntungan di spin. Harga untuk membeli fitur ini adalah 20x jumlah taruhan."
+      },
+      "BeerBonus": {
+        "name": "BONUS BIR",
+        "description": "Anda dijamin akan mendapatkan 3 atau 4 scatter BONUS BIR di spin, dan memicu BONUS BIR atau BONUS BIR MEGA masing-masing. Harga untuk membeli fitur ini adalah 45x jumlah taruhan."
+      },
+      "FairyBonus": {
+        "name": "BONUS PERI",
+        "description": "Anda dijamin akan mendapatkan 3 atau lebih scatter BONUS PERI di spin, dan memicu BONUS PERI di level yang sesuai dengan jumlah scatter yang mendarat. Harga untuk membeli fitur ini adalah 35x jumlah taruhan."
+      },
+      "FreeSpins": {
+        "name": "SPIN GRATIS",
+        "description": "Anda dijamin akan mendapatkan 3 atau 4 scatter SPIN GRATIS di spin, dan memicu SPIN GRATIS atau SPIN GRATIS MEGA masing-masing. Harga untuk membeli fitur ini adalah 80x jumlah taruhan."
+      }
+    }
+  },
+  "da": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "HELDIG ALF",
+        "description": "Du er garanteret at udløse 1 af den heldige alfs funktioner i spinnet. Prisen for at købe denne funktion er 20x indsatsen."
+      },
+      "BeerBonus": {
+        "name": "ØLBONUS",
+        "description": "Du er garanteret at få 3 eller 4 ØLBONUS-scattere i spinnet og udløse henholdsvis ØLBONUSSEN eller MEGAØLBONUSSEN. Prisen for at købe denne funktion er 45x indsatsen."
+      },
+      "FairyBonus": {
+        "name": "FEBONUS",
+        "description": "Du er garanteret at lande 3 eller flere FEBONUS-scattere i spinnet og udløse FEBONUSSEN på det niveau, der svarer til antallet af scattere, der er landet. Prisen for at købe denne funktion er 35x indsatsen."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "Du er garanteret at lande 3 eller 4 FREE SPINS-scattere i spinnet og udløse henholdsvis FREE SPINS eller MEGA FREE SPINS. Prisen for at købe denne funktion er 80x indsatsen."
+      }
+    }
+  },
+  "de": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "GLÜCKSKOBOLD",
+        "description": "Sie lösen während des Drehs garantiert 1 der Glückskobold-Features aus. Der Preis für den Kauf dieses Features beträgt das 20-fache des Einsatzes."
+      },
+      "BeerBonus": {
+        "name": "BIER-BONUS",
+        "description": "Während des Drehs erscheinen garantiert 3 oder 4 BIER-BONUS-Scatter und lösen den BIER-BONUS bzw. den MEGA-BIER-BONUS aus. Der Preis für den Kauf dieses Features beträgt das 45-fache des Einsatzes."
+      },
+      "FairyBonus": {
+        "name": "FEEN-BONUS",
+        "description": "Während des Drehs erscheinen garantiert 3 oder mehr FEEN-BONUS-Scatter und lösen den FEEN-BONUS auf der Stufe aus, die der Anzahl der vorhandenen Scatter entspricht. Der Preis für den Kauf dieses Features beträgt das 35-fache des Einsatzes."
+      },
+      "FreeSpins": {
+        "name": "GRATIS DREHS",
+        "description": "Während des Drehs erscheinen garantiert 3 oder 4 GRATISDREHS-Scatter und lösen jeweils GRATIS DREHS oder MEGA-GRATISDREHS aus. Der Preis für den Kauf dieses Features beträgt das 80-fache des Einsatzes."
+      }
+    }
+  },
+  "el": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ΤΥΧΕΡΟΣ ΚΑΛΙΚΑΝΤΖΑΡΟΣ",
+        "description": "Είναι εγγυημένη η ενεργοποίηση 1 από τις λειτουργίες του Τυχερού Καλικάντζαρου στην περιστροφή. Η τιμή για την αγορά αυτής της λειτουργίας είναι 20x το ποντάρισμα."
+      },
+      "BeerBonus": {
+        "name": "ΜΠΟΝΟΥΣ ΜΠΥΡΑΣ",
+        "description": "Είναι εγγυημένη η προσγείωση 3 ή 4 συμβόλων διασποράς ΜΠΟΝΟΥΣ ΜΠΥΡΑΣ στην περιστροφή, καθώς και η ενεργοποίηση του ΜΠΟΝΟΥΣ ΜΠΥΡΑΣ ή του ΤΕΡΑΣΤΙΟΥ ΜΠΟΝΟΥΣ ΜΠΥΡΑΣ αντίστοιχα. Η τιμή για την αγορά αυτής της λειτουργίας είναι 45x το ποντάρισμα."
+      },
+      "FairyBonus": {
+        "name": "ΜΠΟΝΟΥΣ ΝΕΡΑΙΔΑΣ",
+        "description": "Είναι εγγυημένη η προσγείωση τουλάχιστον 3 συμβόλων διασποράς ΜΠΟΝΟΥΣ ΝΕΡΑΙΔΑΣ στην περιστροφή, καθώς και η ενεργοποίηση του ΜΠΟΝΟΥΣ ΝΕΡΑΙΔΑΣ στο επίπεδο που αντιστοιχεί στον αριθμό των συμβόλων διασποράς που έχουν προσγειωθεί. Η τιμή για την αγορά αυτής της λειτουργίας είναι 35x το ποντάρισμα."
+      },
+      "FreeSpins": {
+        "name": "ΔΩΡΕΑΝ ΣΤΡΟΦΕΣ",
+        "description": "Είναι εγγυημένη η προσγείωση 3 ή 4 συμβόλων διασποράς ΔΩΡΕΑΝ ΣΤΡΟΦΩΝ στην περιστροφή, καθώς και η ενεργοποίηση των ΔΩΡΕΑΝ ΣΤΡΟΦΩΝ ή των ΤΕΡΑΣΤΙΩΝ ΔΩΡΕΑΝ ΣΤΡΟΦΩΝ αντίστοιχα. Η τιμή για την αγορά αυτής της λειτουργίας είναι 80x το ποντάρισμα."
+      }
+    }
+  },
+  "es": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "EL DUENDE DE LA SUERTE",
+        "description": "Activarás una de las funciones del Duende de la Suerte durante el giro. El precio de esta función es x20 la apuesta."
+      },
+      "BeerBonus": {
+        "name": "BONO CERVEZA",
+        "description": "Si consigues 3 o 4 scatters de BONO CERVEZA durante el giro, activarás el BONO CERVEZA o el MEGA BONO CERVEZA respectivamente. El precio de esta función es x45 la apuesta."
+      },
+      "FairyBonus": {
+        "name": "BONO HADA",
+        "description": "Conseguirás 3 o más scatters de BONO HADA durante el giro y activarás el BONO HADA en el nivel correspondiente al número de scatters que hayas conseguido. El precio de esta función es x35 la apuesta."
+      },
+      "FreeSpins": {
+        "name": "GIROS GRATIS",
+        "description": "Si consigues 3 o 4 scatters de GIROS GRATIS durante el giro, activarás GIROS GRATIS o MEGA GIROS GRATIS respectivamente. El precio de esta función es x80 la apuesta."
+      }
+    }
+  },
+  "fi": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ONNEN-LEPREKAUNI",
+        "description": "Kierroksella käynnistyy takuuvarmasti 1 onnenleprekaunin toiminto. Toiminnon ostaminen maksaa 20x panoksen verran."
+      },
+      "BeerBonus": {
+        "name": "OLUTBONUS",
+        "description": "Saat kierroksella taatusti 3 tai 4 OLUTBONUS-scatteria, jotka käynnistävät OLUTBONUKSEN tai MEGAOLUTBONUKSEN. Toiminnon ostaminen maksaa 45x panoksen verran."
+      },
+      "FairyBonus": {
+        "name": "KEIJUBONUS",
+        "description": "Saat kierroksella taatusti 3 tai useamman KEIJUBONUS-scatterin. Ne käynnistävät KEIJUBONUKSEN, jonka taso vastaa ilmestyneiden scatterien lukumäärää. Toiminnon ostaminen maksaa 35x panoksen verran."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS -KIERROKSET",
+        "description": "Saat kierroksella taatusti 3 tai 4 FREE SPINS -scatteria, ja FREE SPINS tai MEGA FREE SPINS -kierrokset käynnistyvät. Toiminnon ostaminen maksaa 80x panoksen verran."
+      }
+    }
+  },
+  "fr": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "LEPRECHAUN PORTE-BONHEUR",
+        "description": "Vous avez la garantie de déclencher l’une des fonctionnalités spéciales du Leprechaun lors du tour. Le prix d’achat de cette fonction est de 20x la mise."
+      },
+      "BeerBonus": {
+        "name": "BONUS DE BIÈRE",
+        "description": "Vous avez la garantie d’obtenir 3 ou 4 symboles Scatter du BONUS DE BIÈRE lors du tour et ainsi de déclencher respectivement le BONUS DE BIÈRE ou le MÉGA BONUS DE BIÈRE. Le prix d’achat de cette fonction est de 45x la mise."
+      },
+      "FairyBonus": {
+        "name": "BONUS DE LA FÉE",
+        "description": "Vous avez la garantie d’obtenir 3 symboles Scatter du BONUS DE LA FÉE ou plus dans le tour et ainsi de déclencher le BONUS DE LA FÉE au niveau correspondant au nombre de symboles Scatter présents. Le prix d’achat de cette fonction est de 35x la mise."
+      },
+      "FreeSpins": {
+        "name": "TOURS GRATUITS",
+        "description": "Vous avez la garantie d’obtenir 3 ou 4 symboles Scatter de TOURS GRATUITS pendant le tour et ainsi de déclencher respectivement les TOURS GRATUITS ou les MÉGA TOURS GRATUITS. Le prix d’achat de cette fonction est de 80x le montant de la mise."
+      }
+    }
+  },
+  "it": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "LEPRECAUNO FORTUNATO",
+        "description": "Viene garantita l’attivazione di 1 delle funzioni del leprecauno fortunato durante il giro. Il prezzo di acquisto di questa funzione è pari a 20 volte l’importo della puntata."
+      },
+      "BeerBonus": {
+        "name": "BONUS BIRRA",
+        "description": "Viene garantito che 3 o 4 simboli scatter del BONUS BIRRA si fermino sui rulli durante il giro, attivando rispettivamente il BONUS BIRRA o il MEGA BONUS BIRRA. Il prezzo di acquisto di questa funzione è pari a 45 volte l’importo della puntata."
+      },
+      "FairyBonus": {
+        "name": "BONUS FATATO",
+        "description": "Viene garantito che 3 o più simboli scatter del BONUS FATATO si fermino sui rulli durante il giro, attivando il BONUS FATATO al livello corrispondente al numero di simboli scatter fermi sui rulli. Il prezzo di acquisto di questa funzione è pari a 35 volte l’importo della puntata."
+      },
+      "FreeSpins": {
+        "name": "GIRI GRATIS",
+        "description": "Viene garantito che 3 o 4 simboli scatter dei GIRI GRATIS si fermino sui rulli durante il giro, attivando rispettivamente i GIRI GRATIS o i MEGA GIRI GRATIS. Il prezzo di acquisto di questa funzione è pari a 80 volte l’importo della puntata."
+      }
+    }
+  },
+  "ka": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "იღბლიანი ლეპრეკონი",
+        "description": "თქვენ გარანტირებული გაქვთ სპინში იღბლიანი ლეპრეკონის 1 ფუნქციის გააქტიურება. ამ ფუნქციის შესაძენი ფასია ფსონის 20x."
+      },
+      "BeerBonus": {
+        "name": "ლუდის ბონუსი",
+        "description": "თქვენ გარანტირებული გაქვთ სპინში ლუდის ბონუსის 3 ან 4 სკატერის ამოსვლა და შესაბამისად, ლუდის ბონუსის ან მეგა ლუდის ბონუსის გააქტიურება. ამ ფუნქციის შესაძენი ფასია ფსონის 45x."
+      },
+      "FairyBonus": {
+        "name": "ფერიის ბონუსი",
+        "description": "თქვენ გარანტირებული გაქვთ სპინში ფერიის ბონუსის 3 ან მეტი სკატერის ამოსვლა და ამოსული სკატერების რაოდენობის შესაბამის დონეზე ფერიის ბონუსის გგააქტიურება. ამ ფუნქციის შესაძენი ფასია ფსონის 35x."
+      },
+      "FreeSpins": {
+        "name": "უფასო სპინები",
+        "description": "თქვენ გარანტირებული გაქვთ სპინში უფასო სპინების 3 ან 4 სკატერის ამოსვლა და შესაბამისად, უფასო სპინების ან მეგა უფასო სპინების გააქტიურება. ამ ფუნქციის შესაძენი ფასია ფსონის 80x."
+      }
+    }
+  },
+  "nl": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "GELUKSKABOUTER",
+        "description": "1 van de gelukskabouterfuncties wordt gegarandeerd geactiveerd in de spin. Deze functie kost 20x de inzet."
+      },
+      "BeerBonus": {
+        "name": "BIERBONUS",
+        "description": "Er verschijnen gegarandeerd 3 of 4 BIERBONUS-scatters in de spin en respectievelijk worden de BIERBONUS of de MEGABIERBONUS geactiveerd. Deze functie kost 45x de inzet."
+      },
+      "FairyBonus": {
+        "name": "FEEËNBONUS",
+        "description": "Je krijgt gegarandeerd 3 of meer FEEËNBONUS-scatters in de spin en activeert de FEEËNBONUS op het niveau dat overeenkomt met het aantal scatters dat is verschenen. Deze functie kost 35x de inzet."
+      },
+      "FreeSpins": {
+        "name": "GRATIS SPINS",
+        "description": "Er verschijnen gegarandeerd 3 of 4 GRATIS SPINS-scatters in de spin en respectievelijk worden GRATIS SPINS of MEGA GRATIS SPINS geactiveerd. Deze functie kost 80x de inzet."
+      }
+    }
+  },
+  "no": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "HELDIG LEPRECHAUN",
+        "description": "Du vil garantert utløse én av heldig leprechaun-funksjonene i spinnet. Prisen for å kjøpe denne funksjonen er 20x innsatsen."
+      },
+      "BeerBonus": {
+        "name": "ØLBONUS",
+        "description": "Du er garantert å få tre eller fire ØLBONUS-scatters i spinnet og utløse henholdsvis ØLBONUS eller MEGA ØLBONUS. Prisen for å kjøpe denne funksjonen er 45x innsatsen."
+      },
+      "FairyBonus": {
+        "name": "FEBONUS",
+        "description": "Du er garantert å få tre eller flere FEBONUS-scatters i spinnet og utløse FEBONUS på nivået som tilsvarer antallet scatters som har landet. Prisen for å kjøpe denne funksjonen er 35x innsatsen."
+      },
+      "FreeSpins": {
+        "name": "GRATISSPINN",
+        "description": "Du er garantert å få tre eller fire GRATISSPINN-scatters i spinnet og utløse henholdsvis GRATISSPINN eller MEGA GRATISSPINN. Prisen for å kjøpe denne funksjonen er 80x innsatsen."
+      }
+    }
+  },
+  "pl": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SZCZĘŚLIWY SKRZAT",
+        "description": "Gwarantowane uruchomienie 1 funkcji Szczęśliwego Skrzata w obrocie. Koszt zakupu tej funkcji wynosi równowartość stawki pomnożonej 20x."
+      },
+      "BeerBonus": {
+        "name": "BONUS PIWNY",
+        "description": "Gwarantowane trafienie 3 lub 4 symboli Scatter BONUSU PIWNEGO w obrocie i uruchomienie odpowiednio BONUSU PIWNEGO lub MEGABONUSU PIWNEGO. Koszt zakupu tej funkcji wynosi równowartość stawki pomnożonej 45x."
+      },
+      "FairyBonus": {
+        "name": "BONUS WRÓŻKI",
+        "description": "Gwarantowane trafienie co najmniej 3 symboli Scatter BONUSU WRÓŻKI w obrocie i uruchomienie BONUSU WRÓŻKI na poziomie odpowiadającym liczbie trafionych symboli Scatter. Koszt zakupu tej funkcji wynosi równowartość stawki pomnożonej 35x."
+      },
+      "FreeSpins": {
+        "name": "DARMOWE OBROTY",
+        "description": "Gwarantowane trafienie co najmniej 3 lub 4 symboli Scatter DARMOWYCH OBROTÓW i uruchomienie odpowiednio DARMOWYCH OBROTÓW lub DARMOWYCH MEGAOBROTÓW. Koszt zakupu tej funkcji wynosi równowartość stawki pomnożonej 80x."
+      }
+    }
+  },
+  "pt": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "DUENDE DA SORTE",
+        "description": "É-lhe garantida a activação de 1 do recursos Duende da Sorte na rodada. O preço de compra deste recurso é 20x o valor da aposta."
+      },
+      "BeerBonus": {
+        "name": "BÓNUS CERVEJA",
+        "description": "É-lhe garantida a aterragem de 3 ou 4 scatters BÓNUS CERVEJA na rodada e a activação do BÓNUS CERVEJA ou do MEGA BÓNUS CERVEJA, respectivamente. O preço de compra deste recurso é 45x o valor da aposta."
+      },
+      "FairyBonus": {
+        "name": "BÓNUS FADA",
+        "description": "É-lhe garantida a aterragem de 3 ou mais scatters BÓNUS FADA na rodada e a activação do BÓNUS FADA no nível correspondente ao número de scatters que tiver aterrado. O preço de compra deste recurso é 35x o valor da aposta."
+      },
+      "FreeSpins": {
+        "name": "RODADAS GRÁTIS",
+        "description": "É-lhe garantida a aterragem de 3 ou 4 scatters RODADAS GRÁTIS na rodada e a activação das RODADAS GRÁTIS ou das MEGA RODADAS GRÁTIS, respectivamente. O preço de compra deste recurso é 80x o valor da aposta."
+      }
+    }
+  },
+  "pt-BR": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "DUENDE DA SORTE",
+        "description": "Você tem a garantia de acionar um dos recursos do Duende da Sorte no giro. O preço para comprar esse recurso é 20x a aposta."
+      },
+      "BeerBonus": {
+        "name": "BÔNUS DE CERVEJA",
+        "description": "Você tem a garantia de conseguir 3 ou 4 scatters de BÔNUS DE CERVEJA no giro e acionar o BÔNUS DE CERVEJA ou o MEGA BÔNUS DE CERVEJA, respectivamente. O preço para comprar esse recurso é 45x a aposta."
+      },
+      "FairyBonus": {
+        "name": "BÔNUS DE FADA",
+        "description": "Você tem a garantia de conseguir 3 ou mais scatters de BÔNUS DE FADA no giro e acionar o BÔNUS DE FADA no nível correspondente ao número de scatters que caíram. O preço para comprar esse recurso é 35x a aposta."
+      },
+      "FreeSpins": {
+        "name": "GIROS GRÁTIS",
+        "description": "Você tem a garantia de conseguir 3 ou 4 scatters de GIROS GRÁTIS no giro e acionar GIROS GRÁTIS ou o MEGA GIROS GRÁTIS, respectivamente. O preço para comprar esse recurso é de 80x a aposta."
+      }
+    }
+  },
+  "ru": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ЛЕПРЕКОН УДАЧИ",
+        "description": "В текущем вращении гарантируется запуск одной из функций Лепрекона Удачи. Цена покупки этой функции составляет 20x ставки."
+      },
+      "BeerBonus": {
+        "name": "ПИВНОЙ БОНУС",
+        "description": "В текущем вращении гарантируется выпадение 3 или 4 скаттеров «ПИВНОЙ БОНУС» и запуск ПИВНОГО БОНУСА или ПИВНОГО МЕГАБОНУСА соответственно. Цена покупки этой функции составляет 45х ставки."
+      },
+      "FairyBonus": {
+        "name": "БОНУС ФЕИ",
+        "description": "В текущем вращении гарантируется выпадение 3 скаттеров «БОНУС ФЕИ» или более и запуск БОНУСА ФЕИ на уровне, соответствующем количеству выпавших скаттеров. Цена покупки этой функции составляет 35х ставки."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "В текущем вращении гарантируется выпадение 3 или 4 скаттеров FREE SPINS и запуск FREE SPINS или MEGA FREE SPINS соответственно. Цена покупки этой функции составляет 80x ставки."
+      }
+    }
+  },
+  "ro": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SPIRIDUȘ NOROCOS",
+        "description": "Vi se garantează activarea uneia dintre funcțiile Spiriduș norocos în rotire. Prețul pentru cumpărarea acestei funcții este de 20x miza."
+      },
+      "BeerBonus": {
+        "name": "BONUS BERE",
+        "description": "Vi se garantează apariția a 3 sau 4 simboluri scatter BONUS BERE în rotire și activarea BONUSULUI BERE sau, respectiv, a MEGA BONUSULUI BERE. Prețul pentru cumpărarea acestei funcții este de 45x miza."
+      },
+      "FairyBonus": {
+        "name": "BONUS ZÂNĂ",
+        "description": "Vi se garantează apariția a 3 sau mai multe simboluri scatter BONUS ZÂNĂ în rotire și activarea BONUSULUI ZÂNĂ la nivelul corespunzător numărului de simboluri scatter care au apărut. Prețul pentru cumpărarea acestei funcții este de 35x miza."
+      },
+      "FreeSpins": {
+        "name": "ROTIRI GRATUITE",
+        "description": "Vi se garantează apariția a 3 sau 4 simboluri scatter ROTIRI GRATUITE în rotire și activarea ROTIRILOR GRATUITE sau, respectiv, a MEGA ROTIRILOR GRATUITE. Prețul pentru cumpărarea acestei funcții este de 80x miza."
+      }
+    }
+  },
+  "sv": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "LYCKO-LEPRECHAUN",
+        "description": "Du kommer garanterat att trigga 1 av lycko-leprechaun-funktionerna i snurret. Priset för att köpa den här funktionen är 20x insatsen."
+      },
+      "BeerBonus": {
+        "name": "ÖL-BONUS",
+        "description": "Du kommer garanterat att få 3 eller 4 ÖL-BONUS-scatters i snurret och utlösa ÖL-BONUS respektive MEGA ÖL-BONUS. Priset för att köpa den här funktionen är 45x insatsen."
+      },
+      "FairyBonus": {
+        "name": "FE-BONUS",
+        "description": "Du kommer garanterat att få 3 eller fler FE-BONUS-scatters i snurret och utlösa FE-BONUS på den nivå som motsvarar antalet scatters som har landat. Priset för att köpa den här funktionen är 35x insatsen."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "Du kommer garanterat att få 3 eller 4 FREE SPINS-scatters i snurret och utlösa FREE SPINS respektive MEGA FREE SPINS. Priset för att köpa den här funktionen är 80x insatsen."
+      }
+    }
+  },
+  "tr": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ŞANSLI CÜCE CİN",
+        "description": "Döndürmede, Şanslı Cüce Cin özelliklerinden 1’ini tetiklemeniz garantidir. Bu özelliği satın almanın ücreti, bahis miktarının 20 katıdır."
+      },
+      "BeerBonus": {
+        "name": "BİRA BONUSU",
+        "description": "Döndürmede, 3 veya 4 BİRA BONUSU saçılım sembolü gelmesi ve sırasıyla BİRA BONUSU veya MEGA BİRA BONUSUNU tetiklemeniz garantidir. Bu özelliği satın almanın ücreti, bahis miktarının 45 katıdır."
+      },
+      "FairyBonus": {
+        "name": "PERİ BONUSU",
+        "description": "Döndürmede, 3 veya daha fazla PERİ BONUSU saçılım sembolü gelmesi ve gelen saçılım sembollerinin sayısına denk gelen seviyedeki PERİ BONUSUNU tetiklemeniz garantidir. Bu özelliği satın almanın ücreti, bahis miktarının 35 katıdır."
+      },
+      "FreeSpins": {
+        "name": "FREE SPINS",
+        "description": "Döndürmede, 3 veya 4 FREE SPINS saçılım sembolü gelmesi ve sırasıyla FREE SPINS veya MEGA FREE SPINS’İ tetiklemeniz garantidir. Bu özelliği satın almanın ücreti, bahis miktarının 80 katıdır."
+      }
+    }
+  },
+  "cs": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ŠTASTNÝ LEPRIKÓN",
+        "description": "Během zatočení se zaručeně spustí 1 z funkcí Šťastný leprikón. Cena za zakoupení této funkce je 20násobek sázky."
+      },
+      "BeerBonus": {
+        "name": "PIVNÍ BONUS",
+        "description": "Během zatočení vám zaručeně padnou 3 nebo 4 scatter symboly PIVNÍ BONUS a spustí se PIVNÍ BONUS nebo MEGA PIVNÍ BONUS. Cena za nákup této funkce je 45x sázky."
+      },
+      "FairyBonus": {
+        "name": "VÍLÍ BONUS",
+        "description": "Pokud vám během zatočení padnou 3 nebo více scatter symbolů VÍLÍ BONUS, spustí se VÍLÍ BONUS na úrovni odpovídající počtu padlých symbolů. Cena za zakoupení této funkce je 35x sázky."
+      },
+      "FreeSpins": {
+        "name": "SPINY ZDARMA",
+        "description": "Během zatočení vám zaručeně padnou 3 nebo 4 scatter symboly SPINŮ ZDARMA a spustí se SPINY ZDARMA nebo MEGA SPINY ZDARMA. Cena za nákup této funkce je 80x sázky."
+      }
+    }
+  },
+  "hy": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ՀԱՋՈՂԱԿ ԼԵՊՐԵԿՈՆ",
+        "description": "Երաշխավորված է, որ պտույտի ընթացքում կակտիվացնեք Հաջողակ Լեպրեկոնի գործառույթներից որևէ 1-ը։ Այս գործառույթը գնելու արժեքը խաղադրույքի 20x է։"
+      },
+      "BeerBonus": {
+        "name": "ԳԱՐԵՋՐԻ ԲՈՆՈՒՍ",
+        "description": "Երաշխավորված է, որ պտույտի ընթացքում կիջեցնեք 3 կամ 4 ԳԱՐԵՋՐԻ ԲՈՆՈՒՍԻ scatter-ներ և կակտիվացնեք համապատասխանաբար ԳԱՐԵՋՐԻ ԲՈՆՈՒՍԸ կամ ՄԵԳԱ ԳԱՐԵՋՐԻ ԲՈՆՈՒՍԸ: Այս գործառույթը գնելու արժեքը ձեր կատարած խաղադրույքի 45x է։"
+      },
+      "FairyBonus": {
+        "name": "ՓԵՐԻԻ ԲՈՆՈՒՍ",
+        "description": "Երաշխավորված է, որ պտույտի ընթացքում կիջեցնեք 3 կամ ավելի ՓԵՐԻԻ ԲՈՆՈՒՍԻ scatter-ներ և կակտիվացնեք ՓԵՐԻԻ ԲՈՆՈՒՍԸ այն մակարդակում, որը համապատասխանում է վայրէջք կատարած scatter-ների քանակին: Այս գործառույթը գնելու արժեքը ձեր կատարած խաղադրույքի 35x է։"
+      },
+      "FreeSpins": {
+        "name": "ԱՆՎՃԱՐ ՊՏՈՒՅՏՆԵՐ",
+        "description": "Երաշխավորված է, որ պտույտի ընթացքում կիջեցնեք 3 կամ 4 ԱՆՎՃԱՐ ՊՏՈՒՅՏՆԵՐԻ scatter-ներ և կակտիվացնեք համապատասխանաբար ԱՆՎՃԱՐ ՊՏՈՒՅՏՆԵՐԸ կամ ՄԵԳԱ ԱՆՎՃԱՐ ՊՏՈՒՅՏՆԵՐԸ։ Այս գործառույթը գնելու արժեքը ձեր կատարած խաղադրույքի 80x է։"
+      }
+    }
+  },
+  "es-PE": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "DUENDE DE LA SUERTE",
+        "description": "Tienes garantizada la activación de 1 de las funciones del Duende de la Suerte en el giro. El precio de compra de esta función es de 20x la apuesta total."
+      },
+      "BeerBonus": {
+        "name": "BONO CERVEZA",
+        "description": "Te garantizamos que si consigues 3 o 4 scatters de BONO CERVEZA en un giro, activarás el BONO CERVEZA o el MEGA BONO CERVEZA respectivamente. El precio de compra de esta función es de 45x la apuesta total."
+      },
+      "FairyBonus": {
+        "name": "BONO HADA",
+        "description": "Te garantizamos que conseguirás 3 o más scatters de BONO HADA en el giro y activarás el BONO HADA en el nivel correspondiente al número de scatters que hayas conseguido. El precio de compra de esta función es de 35x la apuesta total."
+      },
+      "FreeSpins": {
+        "name": "GIROS GRATIS",
+        "description": "Te aseguramos que si obtienes 3 o 4 scatters de GIROS GRATIS durante el giro, activarás los GIROS GRATIS o los MEGA GIROS GRATIS respectivamente. El precio de compra de esta función es de 80x la apuesta total."
+      }
+    }
+  },
+  "hr": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SRETNI VILENJAK",
+        "description": "Zajamčeno ćete pokrenuti 1 značajku Sretnog vilenjaka u vrtnji. Cijena kupnje ove značajke je 20x uloga."
+      },
+      "BeerBonus": {
+        "name": "PIVSKI BONUS",
+        "description": "Zajamčeno ćete dobiti 3 ili 4 rasprskavajuća simbola PIVSKOG BONUSA u vrtnji i pokrenuti PIVSKI BONUS odnosno MEGA PIVSKI BONUS. Cijena kupnje ove značajke je 45x uloga."
+      },
+      "FairyBonus": {
+        "name": "VILINSKI BONUS",
+        "description": "Zajamčeno ćete dobiti 3 ili više rasprskavajućih simbola VILINSKOG BONUSA u vrtnji i pokrenuti VILINSKI BONUS na razini koja odgovara broju rasprskavajućih simbola. Cijena kupnje ove značajke je 35x uloga."
+      },
+      "FreeSpins": {
+        "name": "GRATIS VRTNJE",
+        "description": "Zajamčeno ćete dobiti 3 ili 4 rasprskavajuća simbola GRATIS VRTNJI u vrtnji i pokrenuti GRATIS VRTNJE odnosno MEGA GRATIS VRTNJE. Cijena kupnje ove značajke je 80x uloga."
+      }
+    }
+  },
+  "hu": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SZERENCSÉS KOBOLD",
+        "description": "A pörgetés során garantáltan aktiválsz egyet a „szerencsés kobold” funkciók közül. A funkció megvásárlásának ára a tét 20x-ös értéke."
+      },
+      "BeerBonus": {
+        "name": "SÖRBÓNUSZ",
+        "description": "3 vagy 4 SÖRBÓNUSZ scatter garantáltan megjelenik a pörgetés során, és aktiválja a SÖRBÓNUSZT vagy a MEGASÖRBÓNUSZT. A funkció megvásárlásának ára a tét 45x-ös értéke."
+      },
+      "FairyBonus": {
+        "name": "TÜNDÉRBÓNUSZ",
+        "description": "Legalább 3 TÜNDÉRBÓNUSZ scatter megjelenik a pörgetés során, amelyek a scatterszimbólumok számának megfelelő TÜNDÉRBÓNUSZ-szintet aktiválják. A funkció megvásárlásának ára a tét 35x-ös értéke."
+      },
+      "FreeSpins": {
+        "name": "INGYENJÁTÉKOK",
+        "description": "3 vagy 4 INGYENJÁTÉK scatter garantáltan megjelenik a pörgetés során, és aktiválja az INGYENJÁTÉKOKAT vagy a MEGAINGYENJÁTÉKOKAT. A funkció megvásárlásának ára a tét 80x-os értéke."
+      }
+    }
+  },
+  "sk": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "ŠŤASTNÝ ŠKRIATOK",
+        "description": "Počas točenia sa zaručene spustí 1 z funkcií Šťastného škriatka. Cena zakúpenia tejto funkcie je 20-násobok stávky."
+      },
+      "BeerBonus": {
+        "name": "PIVOVÝ BONUS",
+        "description": "Počas točenia sa zaručene zobrazia 3 alebo 4 symboly Scatter PIVOVÉHO BONUSU, ktoré spustia PIVOVÝ BONUS, respektíve MEGA PIVOVÝ BONUS. Cena zakúpenia tejto funkcie je 45-násobok stávky."
+      },
+      "FairyBonus": {
+        "name": "VÍLÍ BONUS",
+        "description": "Počas točenia sa zaručene zobrazia minimálne 3 symboly Scatter VÍLIEHO BONUSU, ktoré spustia VÍLÍ BONUS s úrovňou podľa počtu zobrazených symbolov Scatter. Cena zakúpenia tejto funkcie je 35-násobok stávky."
+      },
+      "FreeSpins": {
+        "name": "TOČENIA ZDARMA",
+        "description": "Počas točenia sa zaručene zobrazia 3 alebo 4 symboly Scatter TOČENÍ ZDARMA, ktoré spustia TOČENIA ZDARMA, respektíve MEGA TOČENIA ZDARMA. Cena zakúpenia tejto funkcie je 80-násobok stávky."
+      }
+    }
+  },
+  "sl": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SREČNI ŠKRATELJ",
+        "description": "V vrtenju je zagotovljeno sproženje ene od funkcij srečnega škratlja. Cena te funkcije je 20-kratnik vložka."
+      },
+      "BeerBonus": {
+        "name": "BONUS PIVA",
+        "description": "V vrtenju sta zagotovljena pristanek 3 oziroma 4 razpršenih simbolov BONUSA PIVA ter sproženje BONUSA PIVA oziroma MEGA BONUSA PIVA. Cena te funkcije je 45-kratnik vložka."
+      },
+      "FairyBonus": {
+        "name": "BONUS VILE",
+        "description": "V vrtenju sta zagotovljena pristanek 3 ali več razpršenih simbolov BONUSA VILE in sproženje BONUSA VILE na stopnji, ki ustreza pristalemu številu razpršenih simbolov. Cena te funkcije je 35-kratnik vložka."
+      },
+      "FreeSpins": {
+        "name": "ZASTONJ VRTENJA",
+        "description": "V vrtenju sta zagotovljena pristanek 3 oziroma 4 razpršenih simbolov ZASTONJ VRTENJ ter sproženje ZASTONJ VRTENJ oziroma MEGA ZASTONJ VRTENJ. Cena te funkcije je 80-kratnik vložka."
+      }
+    }
+  },
+  "hi": {
+    "title": "रैंबो जैकपॉट्स MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "लकी लेप्रेचौन",
+        "description": "आपको स्पिन में किसी 1 लकी लेप्रेचौन फीचर्स के ट्रिगर कराने की गारंटी दी जाती है। इस फीचर को खरीदने का मूल्य दांव की राशि का 20x है।"
+      },
+      "BeerBonus": {
+        "name": "बियर बोनस",
+        "description": "आपको स्पिन में 3 या 4 बीयर बोनस स्कैटर प्राप्त करने और क्रमशः बीयर बोनस या मेगा बीयर बोनस ट्रिगर करने की गारंटी दी जाती है। इस फीचर को खरीदने का मूल्य दांव की राशि का 45x है।"
+      },
+      "FairyBonus": {
+        "name": "फेयरी बोनस",
+        "description": "आपको स्पिन में 3 या अधिक फेयरी बोनस स्कैटर लैंड करने और लैंड किए हुए स्कैटर्स की संख्या के अनुरूप लेवल पर फेयरी बोनस ट्रिगर करने की गारंटी दी जाती है। इस फीचर को खरीदने का मूल्य दांव की राशि का 35x है।"
+      },
+      "FreeSpins": {
+        "name": "मुफ्त स्पिन्स",
+        "description": "आपको स्पिन में 3 या 4 मुफ्त स्पिन्स स्कैटर प्राप्त करने और क्रमशः मुफ्त स्पिन्स या मेगा मुफ्त स्पिन ट्रिगर करने की गारंटी दी जाती है। इस फीचर को खरीदने का मूल्य दांव की राशि का 80x है।"
+      }
+    }
+  },
+  "ms": {
+    "title": "MegaWays™ Jackpot Pelangi",
+    "features": {
+      "LuckyPipe": {
+        "name": "LEPRECHAUN BERTUAH",
+        "description": "Anda dijamin mencetuskan 1 daripada ciri Leprechaun Bertuah dalam putaran tersebut. Harga untuk membeli ciri ini adalah sebanyak 20x daripada pegangan."
+      },
+      "BeerBonus": {
+        "name": "BONUS BIR",
+        "description": "Anda dijamin mendaratkan 3 atau 4 selerak BONUS BIR dalam putaran tersebut dan masing-masing mencetuskan BONUS BIR atau BONUS BIR MEGA. Harga untuk membeli ciri ini ialah sebanyak 45x daripada pegangan."
+      },
+      "FairyBonus": {
+        "name": "BONUS PARI-PARI",
+        "description": "Anda dijamin mendaratkan 3 atau lebih selerak BONUS PARI-PARI dalam putaran tersebut dan mencetuskan BONUS PARI-PARI pada tahap yang sepadan dengan jumlah selerak yang telah mendarat. Harga untuk membeli ciri ini ialah sebanyak 35x daripada pegangan."
+      },
+      "FreeSpins": {
+        "name": "PUTAR PERCUMA",
+        "description": "Anda dijamin untuk mendaratkan 3 atau 4 selerak PUTAR PERCUMA dalam putaran tersebut dan masing-masing mencetuskan PUTAR PERCUMA atau PUTAR PERCUMA MEGA. Harga untuk membeli ciri ini ialah sebanyak 80x daripada pegangan."
+      }
+    }
+  },
+  "lt": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "SĖKMĘ NEŠANTIS TROLIS",
+        "description": "Sukimo metu užtikrintai aktyvuosite 1 iš sėkmę nešančio trolio funkcijų. Šios funkcijos kaina yra 20 kartus didesnė už statymo sumą."
+      },
+      "BeerBonus": {
+        "name": "ALAUS PREMIJA",
+        "description": "Sukimo metu užtikrintai išsuksite 3 arba 4 ALAUS PREMIJOS sklaidos simbolius ir aktyvuosite atitinkamai ALAUS PREMIJĄ arba ALAUS MEGAPREMIJĄ. Šios funkcijos kaina yra 45 kartus didesnė už statymo sumą."
+      },
+      "FairyBonus": {
+        "name": "FĖJOS PREMIJA",
+        "description": "Sukimo metu užtikrintai išsuksite 3 arba daugiau FĖJOS PREMIJOS sklaidos simbolių ir aktyvuosite FĖJOS PREMIJĄ, kurios lygis atitiks išsuktų sklaidos simbolių skaičių. Šios funkcijos kaina yra 35 kartus didesnė už statymo sumą."
+      },
+      "FreeSpins": {
+        "name": "NEMOKAMI SUKIMAI",
+        "description": "Sukimo metu užtikrintai išsuksite 3 arba 4 NEMOKAMŲ SUKIMŲ sklaidos simbolius ir aktyvuosite atitinkamai NEMOKAMUS SUKIMUS arba NEMOKAMUS MEGASUKIMUS. Šios funkcijos kaina yra 80 kartų didesnė už statymo sumą."
+      }
+    }
+  },
+  "lv": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "VEIKSMĪGAIS LEPREKONS",
+        "description": "Tiek garantēts, ka grieziena laikā aktivizēsiet vienu no veiksmīgā leprekona funkcijām. Šīs funkcijas cena ir 20x lielāka par likmes summu."
+      },
+      "BeerBonus": {
+        "name": "ALUS BONUSS",
+        "description": "Tiek garantēts, ka grieziena laikā uzgriezīsiet 3 vai 4 ALUS BONUSA Scatter simbolus un aktivizēsiet attiecīgi ALUS BONUSU vai MEGA ALUS BONUSU. Šīs funkcijas cena ir 45x lielāka par likmes summu."
+      },
+      "FairyBonus": {
+        "name": "FEJAS BONUSS",
+        "description": "Tiek garantēts, ka grieziena laikā uzgriezīsiet vismaz 3 FEJAS BONUSA Scatter simbolus un aktivizēsiet FEJAS BONUSA līmeni, kas atbilst uzgriezto Scatter simbolu skaitam. Šīs funkcijas cena ir 35x lielāka par likmes summu."
+      },
+      "FreeSpins": {
+        "name": "BEZMAKSAS GRIEZIENI",
+        "description": "Tiek garantēts, ka grieziena laikā uzgriezīsiet 3 vai 4 BEZMAKSAS GRIEZIENU Scatter simbolus un aktivizēsiet attiecīgi BEZMAKSAS GRIEZIENUS vai MEGA BEZMAKSAS GRIEZIENUS. Šīs funkcijas cena ir 80x lielāka par likmes summu."
+      }
+    }
+  },
+  "bg": {
+    "title": "Rainbow Jackpots MegaWays™",
+    "features": {
+      "LuckyPipe": {
+        "name": "КЪСМЕТЛИЙСКИ ЛЕПРИКОН",
+        "description": "Гарантирано ще задействате 1 от функциите на късметлийския леприкон по време на завъртането. Цената за купуване на тази функция е равна на 20х сумата на залога."
+      },
+      "BeerBonus": {
+        "name": "БИРЕН БОНУС",
+        "description": "В завъртането гарантирано ще паднат 3 или 4 скатера БИРЕН БОНУС и ще активират БИРЕНИЯ БОНУС или съответно МЕГА БИРЕНИЯ БОНУС. Цената за купуване на тази функция е равна на 45х сумата на залога."
+      },
+      "FairyBonus": {
+        "name": "БОНУС ОТ ФЕЯ",
+        "description": "В завъртането гарантирано ще паднат 3 или повече скатера БОНУС НА ФЕЯ и ще активират БОНУСА НА ФЕЯ на нивото, което съответства на броя на падналите скатери. Цената за купуване на тази функция е равна на 35х сумата на залога."
+      },
+      "FreeSpins": {
+        "name": "БЕЗПЛАТНИ ЗАВЪРТАНИЯ",
+        "description": "В завъртането гарантирано ще паднат 3 или 4 скатера БЕЗПЛАТНИ ЗАВЪРТАНИЯ и ще активират БЕЗПЛАТНИ ЗАВЪРТАНИЯ или съответно МЕГА БЕЗПЛАТНИ ЗАВЪРТАНИЯ. Цената за купуване на тази функция е равна на 80х сумата на залога."
+      }
+    }
+  }
+}
