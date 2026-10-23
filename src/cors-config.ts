@@ -4,24 +4,23 @@ import type { CorsOptions } from "cors";
 export const allowedCorsOrigins = [
   "https://aavip55.vercel.app",
   "https://api-pgsoft-node-production.up.railway.app",
-  // TUGAS (casino) em producao
   "https://tugas-665257038137.southamerica-east1.run.app",
-  // Local development (game served by this API + local frontend)
+  "https://pgsoft-api-665257038137.southamerica-east1.run.app",
   "http://127.0.0.1:3006",
   "http://localhost:3006",
   "http://127.0.0.1:3000",
   "http://localhost:3000",
 ];
 
-/** Qualquer dominio gerado pelo Railway (muda a cada projeto/deploy). */
-const RAILWAY_ORIGIN = /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/;
+/** Dominios automaticos (Railway e Cloud Run) - mudam a cada deploy. */
+const AUTO_ORIGIN = /^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.(up\.railway\.app|run\.app)$/;
 
 export const corsOptions: CorsOptions = {
   origin(origin, callback) {
     if (
       !origin ||
       allowedCorsOrigins.includes(origin) ||
-      RAILWAY_ORIGIN.test(origin)
+      AUTO_ORIGIN.test(origin)
     ) {
       callback(null, true);
       return;
@@ -33,8 +32,7 @@ export const corsOptions: CorsOptions = {
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 };
 
-// Socket.IO: aceita qualquer origem. So transporta saldo/RTP e a pagina do jogo
-// e servida por este mesmo servidor, cujo dominio muda a cada deploy no Railway.
+// Socket.IO: aceita qualquer origem.
 export const socketIoCors = {
   origin: (_origin: string, cb: (e: Error | null, ok: boolean) => void) => cb(null, true),
   methods: ["GET", "POST"],

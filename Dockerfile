@@ -8,7 +8,11 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
-COPY dist ./dist
+# Assets dos jogos primeiro: camada grande, mas que quase nunca muda.
+COPY dist/public ./dist/public
+
+# Resto do codigo compilado: camada pequena, muda a cada deploy.
+COPY dist/*.js dist/classes dist/controllers dist/database dist/functions dist/jsons dist/logger ./dist/
 
 EXPOSE 8080
 
