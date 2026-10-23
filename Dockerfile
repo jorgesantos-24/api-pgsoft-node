@@ -11,8 +11,14 @@ RUN npm ci --omit=dev && npm cache clean --force
 # Assets dos jogos primeiro: camada grande, mas que quase nunca muda.
 COPY dist/public ./dist/public
 
-# Resto do codigo compilado: camada pequena, muda a cada deploy.
-COPY dist/*.js dist/classes dist/controllers dist/database dist/functions dist/jsons dist/logger ./dist/
+# Resto do codigo compilado, pasta a pasta (camada pequena, muda a cada deploy).
+COPY dist/*.js ./dist/
+COPY dist/classes ./dist/classes
+COPY dist/controllers ./dist/controllers
+COPY dist/database ./dist/database
+COPY dist/functions ./dist/functions
+COPY dist/jsons ./dist/jsons
+COPY dist/logger ./dist/logger
 
 EXPOSE 8080
 
