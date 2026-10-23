@@ -1,0 +1,11 @@
+﻿.git
+node_modules
+src
+notas
+scripts
+*.sql
+.env
+yarn.lock
+yarn-error.log
+*.log
+source.tgz
