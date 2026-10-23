@@ -48,6 +48,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
+const fs_1 = __importDefault(require("fs"));
+const https_1 = __importDefault(require("https"));
 const http_1 = __importDefault(require("http"));
 const index_1 = __importDefault(require("./logger/index"));
 const routes_1 = __importDefault(require("./routes"));
@@ -80,6 +82,23 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on("join", (socket1) => __awaiter(void 0, void 0, void 0, function* () {
         const token = socket1.token;
         const gameid = socket1.gameId;
+        index_1.default.info('[join] token=' + token + ' gameId=' + gameid);
+        const u = yield allfunctions_1.default.getuserbytoken(token);
+        if (u[0]) {
+            socket.emit("att", {
+                token,
+                username: u[0].username,
+                bet: 0,
+                saldo: u[0].saldo,
+                rtp: u[0].rtp,
+                agentid: u[0].agentid,
+                gamecode: gameid,
+            });
+            index_1.default.info('[join] att enviado para ' + u[0].username);
+        }
+        else {
+            index_1.default.info('[join] utilizador NAO encontrado para token ' + token);
+        }
         setInterval(function () {
             return __awaiter(this, void 0, void 0, function* () {
                 const user = yield allfunctions_1.default.getuserbytoken(token);
@@ -158,25 +177,56 @@ app.use((0, cors_1.default)(cors_config_1.corsOptions));
 app.options("*", (0, cors_1.default)(cors_config_1.corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// Autoriza o service worker dos jogos a usar o âmbito "/"
+app.use((req, res, next) => {
+    res.setHeader("Service-Worker-Allowed", "/");
+    next();
+});
+// The games build their API host as "https://api.<domain from 'or'>", which only
+// resolves if a matching "api." DNS entry exists. Railway does not give sub-subdomains,
+// so this injects a small script into each game's index.html that sends /web-api/ and
+// /game-api/ calls to this same server instead. Runs in DEV and PROD; disable with API_SHIM=0.
+const devApiShim = `<script>(function(){
+var O=location.origin;
+function fix(u){try{var x=new URL(String(u),location.href);if(/^\\/(web-api|game-api)\\//.test(x.pathname)&&x.origin!==O){return O+x.pathname+x.search;}}catch(e){var m=String(u).match(/\\/(web-api|game-api)\\/.*/);if(m)return O+m[0];}return u;}
+var op=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){arguments[1]=fix(u);return op.apply(this,arguments);};
+var f=window.fetch;if(f)window.fetch=function(u,i){if(typeof u==="string"||u instanceof URL)u=fix(u);return f.call(this,u,i);};
+})();</script>`;
+app.get(/^\/[^/]+\/(index\.html)?$/, (req, res, next) => {
+    if (process.env.API_SHIM === "0")
+        return next();
+    const file = path_1.default.join(__dirname, "public", req.path.split("/")[1], "index.html");
+    fs_1.default.readFile(file, "utf8", (err, html) => {
+        if (err)
+            return next();
+        res.type("html").send(html.replace(/<head>/i, "<head>" + devApiShim));
+    });
+});
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use(helmet_1.default.contentSecurityPolicy({
+    useDefaults: false,
     directives: {
-        "default-src": ["'none'"],
-        "base-uri": ["'self'"],
+        "default-src": ["'self'", "https:", "data:", "blob:"],
+        "connect-src": ["'self'", "https:", "wss:", "ws:"],
+        "img-src": ["'self'", "data:", "https:", "blob:"],
+        "media-src": ["'self'", "data:", "https:", "blob:"],
+        "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+        "style-src": ["'self'", "'unsafe-inline'", "https:"],
         "font-src": ["'self'", "https:", "data:"],
         "frame-ancestors": [
             "'self'",
-            "https://aavip55.vercel.app",
+            "https:",
             "http://localhost:3000",
+            "http://127.0.0.1:3000",
         ],
-        "img-src": ["'self'", "data:"],
-        "object-src": ["'none'"],
-        "script-src": ["'self'", "https://cdnjs.cloudflare.com"],
-        "style-src": ["'self'", "https://cdnjs.cloudflare.com"],
     },
 }));
 app.use("/status", (req, res) => {
     res.json({ status: "operational" });
+});
+app.use((req, res, next) => {
+    index_1.default.info('[REQ] ' + req.method + ' ' + req.url);
+    next();
 });
 app.use(routes_1.default);
 httpServer.listen(process.env.PORT, () => {

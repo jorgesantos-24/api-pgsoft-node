@@ -4,6 +4,8 @@ import type { CorsOptions } from "cors";
 export const allowedCorsOrigins = [
   "https://aavip55.vercel.app",
   "https://api-pgsoft-node-production.up.railway.app",
+  // TUGAS (casino) em produção
+  "https://tugas-665257038137.southamerica-east1.run.app",
   // Local development (game served by this API + local frontend)
   "http://127.0.0.1:3006",
   "http://localhost:3006",

@@ -20,6 +20,10 @@ const access = {
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT) || 3306,
+    // Return DECIMAL columns (saldo, valorganho...) as numbers, not strings.
+    // Otherwise "98.80" + 0.4 concatenates to "98.800.4" in the game math.
+    decimalNumbers: true,
 };
 const pool = mysql2_1.default.createPool(access);
 const promisePool = pool.promise();

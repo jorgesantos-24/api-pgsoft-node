@@ -164,10 +164,10 @@ app.use((req: Request, res: Response, next) => {
    next()
 })
 
-// DEV only: the games build their API host as "https://api.<domain from 'or'>",
-// which is invalid on 127.0.0.1 (becomes https://api.0.0.1:3006). This injects a
-// small script into each game's index.html that sends /web-api/ and /game-api/
-// calls to this same server instead.
+// The games build their API host as "https://api.<domain from 'or'>", which only
+// resolves if a matching "api." DNS entry exists. Railway does not give sub-subdomains,
+// so this injects a small script into each game's index.html that sends /web-api/ and
+// /game-api/ calls to this same server instead. Runs in DEV and PROD; disable with API_SHIM=0.
 const devApiShim = `<script>(function(){
 var O=location.origin;
 function fix(u){try{var x=new URL(String(u),location.href);if(/^\\/(web-api|game-api)\\//.test(x.pathname)&&x.origin!==O){return O+x.pathname+x.search;}}catch(e){var m=String(u).match(/\\/(web-api|game-api)\\/.*/);if(m)return O+m[0];}return u;}
@@ -175,7 +175,7 @@ var op=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u)
 var f=window.fetch;if(f)window.fetch=function(u,i){if(typeof u==="string"||u instanceof URL)u=fix(u);return f.call(this,u,i);};
 })();</script>`
 app.get(/^\/[^/]+\/(index\.html)?$/, (req: Request, res: Response, next) => {
-   if (process.env.AMBIENTE !== "DEV") return next()
+   if (process.env.API_SHIM === "0") return next()
    const file = path.join(__dirname, "public", req.path.split("/")[1], "index.html")
    fs.readFile(file, "utf8", (err, html) => {
       if (err) return next()
@@ -197,6 +197,8 @@ app.use(
          "font-src": ["'self'", "https:", "data:"],
          "frame-ancestors": [
             "'self'",
+            // TUGAS / AAVIP55 e qualquer front https (o Railway muda de subdominio)
+            "https:",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
          ],
