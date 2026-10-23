@@ -13,9 +13,13 @@ exports.allowedCorsOrigins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
 ];
+/** Qualquer dominio gerado pelo Railway (muda a cada projeto/deploy). */
+const RAILWAY_ORIGIN = /^https:\/\/[a-z0-9-]+\.up\.railway\.app$/;
 exports.corsOptions = {
     origin(origin, callback) {
-        if (!origin || exports.allowedCorsOrigins.includes(origin)) {
+        if (!origin ||
+            exports.allowedCorsOrigins.includes(origin) ||
+            RAILWAY_ORIGIN.test(origin)) {
             callback(null, true);
             return;
         }
@@ -25,7 +29,9 @@ exports.corsOptions = {
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 };
+// Socket.IO: aceita qualquer origem. So transporta saldo/RTP e a pagina do jogo
+// e servida por este mesmo servidor, cujo dominio muda a cada deploy no Railway.
 exports.socketIoCors = {
-    origin: exports.allowedCorsOrigins,
+    origin: (_origin, cb) => cb(null, true),
     methods: ["GET", "POST"],
 };
