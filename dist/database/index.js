@@ -15,16 +15,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mysql2_1 = __importDefault(require("mysql2"));
 const logger_1 = __importDefault(require("../logger"));
 require("dotenv/config");
-const access = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT) || 3306,
-    // Return DECIMAL columns (saldo, valorganho...) as numbers, not strings.
-    // Otherwise "98.80" + 0.4 concatenates to "98.800.4" in the game math.
-    decimalNumbers: true,
-};
+const host = (process.env.DB_HOST || '').trim();
+// Cloud SQL liga por socket Unix em /cloudsql/PROJETO:REGIAO:INSTANCIA.
+// Railway e local usam TCP normal.
+const useSocket = host.startsWith('/');
+const access = useSocket
+    ? {
+        socketPath: host,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        decimalNumbers: true,
+    }
+    : {
+        host,
+        port: Number(process.env.DB_PORT) || 3306,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME,
+        decimalNumbers: true,
+    };
 const pool = mysql2_1.default.createPool(access);
 const promisePool = pool.promise();
 // Testa a conexão ao iniciar
