@@ -33,7 +33,12 @@ export const corsOptions: CorsOptions = {
 };
 
 // Socket.IO: aceita qualquer origem.
+// O primeiro parametro TEM de aceitar "undefined": uma ligacao pode nao trazer
+// o cabecalho Origin, e o tipo customOrigin do socket.io exige "string | undefined".
+// Sem anotacao ": CorsOptions" de proposito - o socket.io traz a sua propria copia
+// dos tipos do cors, e o TypeScript recusa a mistura.
 export const socketIoCors = {
-  origin: (_origin: string, cb: (e: Error | null, ok: boolean) => void) => cb(null, true),
+  origin: (_origin: string | undefined, cb: (e: Error | null, ok: boolean) => void) =>
+    cb(null, true),
   methods: ["GET", "POST"],
 };

@@ -188,8 +188,10 @@ exports.default = {
                     data: {
                         user_code: user[0].username,
                     },
-                });                // saldo do operador (TUGAS) e a unica fonte de verdade
-                if (checkuserbalance.data.user_balance != null) saldoatual = Number(checkuserbalance.data.user_balance)
+                });
+                // saldo do operador (TUGAS) e a unica fonte de verdade
+                if (checkuserbalance.data.user_balance != null)
+                    saldoatual = Number(checkuserbalance.data.user_balance);
                 if (checkuserbalance.data.msg === "INVALID_USER" || checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
                     res.send(yield notcashchicky_1.default.notcash(saldoatual, cs, ml));
                     return;

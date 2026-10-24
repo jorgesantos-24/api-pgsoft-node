@@ -164,7 +164,8 @@ exports.default = {
                     },
                 });
                 // saldo do operador (TUGAS) e a unica fonte de verdade
-                if (checkuserbalance.data.user_balance != null) saldoatual = Number(checkuserbalance.data.user_balance)
+                if (checkuserbalance.data.user_balance != null)
+                    saldoatual = Number(checkuserbalance.data.user_balance);
                 if (checkuserbalance.data.msg === "INVALID_USER") {
                     res.send(yield notcashmouse_1.default.notcash(saldoatual, cs, ml));
                     return false;

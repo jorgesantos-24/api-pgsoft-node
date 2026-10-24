@@ -11,11 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql2_1 = __importDefault(require("mysql2"));
 const logger_1 = __importDefault(require("../logger"));
 require("dotenv/config");
-const host = (process.env.DB_HOST || '').trim();
+const host = ((_a = process.env.DB_HOST) !== null && _a !== void 0 ? _a : '').trim();
 // Cloud SQL liga por socket Unix em /cloudsql/PROJETO:REGIAO:INSTANCIA.
 // Railway e local usam TCP normal.
 const useSocket = host.startsWith('/');

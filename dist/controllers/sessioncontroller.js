@@ -19,9 +19,11 @@ exports.default = {
     verifySession(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const token = req.body.tk;
-            const gi = req.body.gi;
+            const gi = String(req.body.gi);
             try {
+                logger_1.default.info('[verifySession] gi=' + gi + ' tk=' + token);
                 const user = yield allfunctions_1.default.getuserbytoken(token);
+                logger_1.default.info('[verifySession] user=' + (user[0] ? user[0].username : 'NAO ENCONTRADO'));
                 if (!user[0]) {
                     res.send({
                         dt: null,

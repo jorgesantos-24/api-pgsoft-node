@@ -139,6 +139,8 @@ exports.default = {
             const resultadoAleatorio = Math.random();
             const callpending = yield this.getcall(id, gamecode);
             let numeroAleatorio = 0;
+            // These games have no bonus handler: a "bonus" result would never get a
+            // response and the game would spin forever. Close any stuck call instead.
             const semBonus = JOGOS_SEM_BONUS.includes(gamecode);
             if (semBonus) {
                 for (const call of callpending)

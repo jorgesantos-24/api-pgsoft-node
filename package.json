@@ -6,7 +6,7 @@
    "scripts": {
       "dev": "ts-node-dev --respawn --transpile-only src/indexprod.ts",
       "dev:agent": "ts-node --transpile-only scripts/use-dev-agent.ts",
-      "build": "echo 'using prebuilt dist'",
+      "build": "tsc",
       "start": "node dist/indexprod.js"
    },
    "dependencies": {

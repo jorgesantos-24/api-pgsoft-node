@@ -21,7 +21,8 @@ function publicApiBaseUrl() {
     var _a;
     const raw = ((_a = process.env.DOMINIO_API) !== null && _a !== void 0 ? _a : "").trim().replace(/\/$/, "");
     const host = raw.replace(/^https?:\/\//i, "");
-    return host ? `https://${host}` : "https://api-pgsoft-node-production.up.railway.app";
+    const scheme = /^http:\/\//i.test(raw) ? "http" : "https";
+    return host ? `${scheme}://${host}` : "https://api-pgsoft-node-production.up.railway.app";
 }
 function buildLaunchUrl(codegame, token) {
     const base = publicApiBaseUrl();
@@ -31,6 +32,9 @@ function buildLaunchUrl(codegame, token) {
         t: token,
         or: base,
         api: base,
+        // Only the Portuguese asset files exist locally; without this the game
+        // uses the browser language and 404s on missing files, hanging the loader.
+        l: "pt",
     });
     return `${base}/${codegame}/index.html?${q.toString()}`;
 }

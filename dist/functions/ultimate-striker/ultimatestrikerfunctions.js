@@ -113,14 +113,14 @@ exports.default = {
     },
     atualizarLinhaGanho(userId, linhaGanho) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield database_1.default.query("UPDATE users SET linha_ganho = ? WHERE id = ?", [linhaGanho, userId]);
+            const res = yield database_1.default.query("UPDATE users SET linha_ganho = ? WHERE id = ?", [linhaGanho !== null && linhaGanho !== void 0 ? linhaGanho : 0, userId]);
             return res[0];
         });
     },
     obterLinhaGanho(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield database_1.default.query("SELECT linha_ganho FROM users WHERE id = ?", [userId]);
-            return res[0] && res[0][0] ? res[0][0].linha_ganho : null;
+            return res[0] && res[0][0] ? (res[0][0].linha_ganho || null) : null;
         });
     },
 };

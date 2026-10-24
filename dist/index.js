@@ -15,23 +15,13 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -154,6 +144,31 @@ app.use((req, res, next) => {
 app.use((0, cors_1.default)(cors_config_1.corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// --- Cache dos assets estaticos -------------------------------------------------
+// Os ficheiros da PG Soft tem hash no nome (ex.: c87db9bc-....c0d5d.json), por isso
+// o conteudo nunca muda com o mesmo nome: cache eterno e seguro.
+// Sem isto, o express.static manda "max-age=0" e o browser revalida ~236 ficheiros
+// a cada abertura de jogo (alguns levam 10s+) -> tela preta / carregamento infinito.
+app.use((req, res, next) => {
+    const p = req.path;
+    if (p.startsWith("/web-api") || p.startsWith("/game-api")) {
+        next();
+        return;
+    }
+    const media = /\.(png|jpe?g|webp|gif|mp3|ogg|m4a|wav|plist|bin|atlas|fnt|ttf|woff2?)$/i.test(p);
+    const assetJson = p.includes("/assets/") && /\.json$/i.test(p);
+    if (media || assetJson) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    }
+    else if (/\.json$/i.test(p)) {
+        res.setHeader("Cache-Control", "public, max-age=3600");
+    }
+    else {
+        // html, js e rotas sem extensao (ex.: /48) revalidam sempre
+        res.setHeader("Cache-Control", "no-cache");
+    }
+    next();
+});
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "public")));
 app.use(helmet_1.default.contentSecurityPolicy({
     directives: {

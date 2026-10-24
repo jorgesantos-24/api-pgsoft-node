@@ -123,7 +123,7 @@ exports.default = {
                 if (jsonprimay.length === 0) {
                     yield allfunctions_1.default.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
                 }
-                if (jsonprimay[0].game_code === gamename) {
+                else if (jsonprimay[0].game_code === gamename) {
                     logger_1.default.info("[+] Json Recuperado Do Ultimo Spin.");
                 }
                 else {
@@ -192,8 +192,10 @@ exports.default = {
                     data: {
                         user_code: user[0].username,
                     },
-                });                // saldo do operador (TUGAS) e a unica fonte de verdade
-                if (checkuserbalance.data.user_balance != null) saldoatual = Number(checkuserbalance.data.user_balance)
+                });
+                // saldo do operador (TUGAS) e a unica fonte de verdade
+                if (checkuserbalance.data.user_balance != null)
+                    saldoatual = Number(checkuserbalance.data.user_balance);
                 if (checkuserbalance.data.msg === "INVALID_USER" || checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
                     res.send(yield notcashaztec_1.default.notcash(saldoatual, cs, ml));
                     return;

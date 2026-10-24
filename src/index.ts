@@ -134,6 +134,30 @@ app.use((req: Request, res: Response, next) => {
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// --- Cache dos assets estaticos -------------------------------------------------
+// Os ficheiros da PG Soft tem hash no nome (ex.: c87db9bc-....c0d5d.json), por isso
+// o conteudo nunca muda com o mesmo nome: cache eterno e seguro.
+// Sem isto, o express.static manda "max-age=0" e o browser revalida ~236 ficheiros
+// a cada abertura de jogo (alguns levam 10s+) -> tela preta / carregamento infinito.
+app.use((req: Request, res: Response, next) => {
+   const p = req.path
+   if (p.startsWith("/web-api") || p.startsWith("/game-api")) { next(); return }
+
+   const media = /\.(png|jpe?g|webp|gif|mp3|ogg|m4a|wav|plist|bin|atlas|fnt|ttf|woff2?)$/i.test(p)
+   const assetJson = p.includes("/assets/") && /\.json$/i.test(p)
+
+   if (media || assetJson) {
+      res.setHeader("Cache-Control", "public, max-age=31536000, immutable")
+   } else if (/\.json$/i.test(p)) {
+      res.setHeader("Cache-Control", "public, max-age=3600")
+   } else {
+      // html, js e rotas sem extensao (ex.: /48) revalidam sempre
+      res.setHeader("Cache-Control", "no-cache")
+   }
+   next()
+})
+
 app.use("/", express.static(path.join(__dirname, "public")))
 app.use(
    helmet.contentSecurityPolicy({

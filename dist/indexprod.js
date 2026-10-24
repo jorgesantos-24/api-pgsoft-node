@@ -15,23 +15,13 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -49,7 +39,6 @@ const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
 const fs_1 = __importDefault(require("fs"));
-const https_1 = __importDefault(require("https"));
 const http_1 = __importDefault(require("http"));
 const index_1 = __importDefault(require("./logger/index"));
 const routes_1 = __importDefault(require("./routes"));
@@ -182,16 +171,44 @@ app.use((req, res, next) => {
     res.setHeader("Service-Worker-Allowed", "/");
     next();
 });
+// --- Cache dos assets estaticos -------------------------------------------------
+// Os ficheiros da PG Soft tem hash no nome (ex.: c87db9bc-....c0d5d.json), por isso
+// o conteudo nunca muda com o mesmo nome: cache eterno e seguro.
+// Sem isto, o express.static manda "max-age=0" e o browser revalida ~236 ficheiros
+// a cada abertura de jogo (alguns levam 10s+) -> tela preta / carregamento infinito.
+app.use((req, res, next) => {
+    const p = req.path;
+    if (p.startsWith("/web-api") || p.startsWith("/game-api")) {
+        next();
+        return;
+    }
+    const media = /\.(png|jpe?g|webp|gif|mp3|ogg|m4a|wav|plist|bin|atlas|fnt|ttf|woff2?)$/i.test(p);
+    const assetJson = p.includes("/assets/") && /\.json$/i.test(p);
+    if (media || assetJson) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    }
+    else if (/\.json$/i.test(p)) {
+        res.setHeader("Cache-Control", "public, max-age=3600");
+    }
+    else {
+        // html, js e rotas sem extensao (ex.: /48) revalidam sempre
+        res.setHeader("Cache-Control", "no-cache");
+    }
+    next();
+});
 // The games build their API host as "https://api.<domain from 'or'>", which only
 // resolves if a matching "api." DNS entry exists. Railway does not give sub-subdomains,
 // so this injects a small script into each game's index.html that sends /web-api/ and
 // /game-api/ calls to this same server instead. Runs in DEV and PROD; disable with API_SHIM=0.
-const devApiShim = `<script>(function(){
-var O=location.origin;
-function fix(u){try{var x=new URL(String(u),location.href);if(/^\\/(web-api|game-api)\\//.test(x.pathname)&&x.origin!==O){return O+x.pathname+x.search;}}catch(e){var m=String(u).match(/\\/(web-api|game-api)\\/.*/);if(m)return O+m[0];}return u;}
-var op=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){arguments[1]=fix(u);return op.apply(this,arguments);};
-var f=window.fetch;if(f)window.fetch=function(u,i){if(typeof u==="string"||u instanceof URL)u=fix(u);return f.call(this,u,i);};
-})();</script>`;
+// Escrito sem crases de proposito: sobrevive a copiar/colar.
+const devApiShim = [
+    '<script>(function(){',
+    'var O=location.origin;',
+    'function fix(u){try{var x=new URL(String(u),location.href);if(/^\\/(web-api|game-api)\\//.test(x.pathname)&&x.origin!==O){return O+x.pathname+x.search;}}catch(e){var m=String(u).match(/\\/(web-api|game-api)\\/.*/);if(m)return O+m[0];}return u;}',
+    'var op=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){arguments[1]=fix(u);return op.apply(this,arguments);};',
+    'var f=window.fetch;if(f)window.fetch=function(u,i){if(typeof u==="string"||u instanceof URL)u=fix(u);return f.call(this,u,i);};',
+    '})();</script>',
+].join('\n');
 app.get(/^\/[^/]+\/(index\.html)?$/, (req, res, next) => {
     if (process.env.API_SHIM === "0")
         return next();
@@ -215,6 +232,7 @@ app.use(helmet_1.default.contentSecurityPolicy({
         "font-src": ["'self'", "https:", "data:"],
         "frame-ancestors": [
             "'self'",
+            // TUGAS / AAVIP55 e qualquer front https (o Railway muda de subdominio)
             "https:",
             "http://localhost:3000",
             "http://127.0.0.1:3000",

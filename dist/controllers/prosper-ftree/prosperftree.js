@@ -191,8 +191,10 @@ exports.default = {
                     data: {
                         user_code: user[0].username,
                     },
-                });                // saldo do operador (TUGAS) e a unica fonte de verdade
-                if (checkuserbalance.data.user_balance != null) saldoatual = Number(checkuserbalance.data.user_balance)
+                });
+                // saldo do operador (TUGAS) e a unica fonte de verdade
+                if (checkuserbalance.data.user_balance != null)
+                    saldoatual = Number(checkuserbalance.data.user_balance);
                 if (checkuserbalance.data.msg === "INVALID_USER" || checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
                     res.send(yield notcashtree_1.default.notcash(saldoatual, cs, ml));
                     return;
@@ -271,7 +273,7 @@ exports.default = {
                         },
                         err: null,
                     };
-                    yield prosperftreefunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json));
+                    yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
                     const txnid = (0, uuid_1.v4)();
                     const dataFormatada = (0, moment_1.default)().toISOString();
                     yield apicontroller_1.default.callbackgame({
@@ -388,7 +390,7 @@ exports.default = {
                             err: null,
                         };
                         // Salvar os dados do spin
-                        yield prosperftreefunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json));
+                        yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
                         const txnid = (0, uuid_1.v4)();
                         const dataFormatada = (0, moment_1.default)().toISOString();
                         // Salvar a linha de ganho atual no banco de dados

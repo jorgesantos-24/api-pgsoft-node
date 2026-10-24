@@ -17,7 +17,6 @@ const jungledelight_1 = __importDefault(require("./controllers/jungle-dlight/jun
 const doublefortune_1 = __importDefault(require("./controllers/double-fortune/doublefortune"));
 const ganeshagold_1 = __importDefault(require("./controllers/ganesha-gold/ganeshagold"));
 const dragontigerluck_1 = __importDefault(require("./controllers/dragon-tiger-luck/dragontigerluck"));
-const cashmania_1 = __importDefault(require("./controllers/cash-mania/cashmania"));
 const ultimatestriker_1 = __importDefault(require("./controllers/ultimate-striker/ultimatestriker"));
 const butterfly_blossom_1 = __importDefault(require("./controllers/btrfly-blossom/butterfly-blossom"));
 const luckyclover_1 = __importDefault(require("./controllers/lucky-clover/luckyclover"));
@@ -31,7 +30,6 @@ const zombieoutbreak_1 = __importDefault(require("./controllers/zombie-outbreak/
 const majesticts_1 = __importDefault(require("./controllers/majestic-ts/majesticts"));
 //import aztec from "./controllers/treasures-aztec/treasuresaztec"
 const thairiver_1 = __importDefault(require("./controllers/thai-river/thairiver"));
-const shaolinsoccer_1 = __importDefault(require("./controllers/shaolin-soccer/shaolinsoccer"));
 const gdnicefire_1 = __importDefault(require("./controllers/gdn-ice-fire/gdnicefire"));
 const riseapollo_1 = __importDefault(require("./controllers/rise-apollo/riseapollo"));
 const wildbountrysd_1 = __importDefault(require("./controllers/wild-bounty-sd/wildbountrysd"));
@@ -53,6 +51,17 @@ routes.post("/rtg/platform/game/spin", sessioncontroller_1.default.redtigerspin)
 routes.post("/api/v1/game_launch", apicontroller_1.default.launchgame);
 routes.post("/api/v1/getagent", apicontroller_1.default.getagent);
 routes.post("/api/v1/attagent", apicontroller_1.default.attagent);
+//DEV ONLY: fake operator/agent so spins work without the casino site on :3000.
+//Point the agent's callbackurl to http://127.0.0.1:3006/dev-agent/ to use it.
+if (process.env.AMBIENTE === "DEV") {
+    routes.post("/dev-agent/gold_api/user_balance", (req, res) => {
+        res.send({ status: 1, msg: "SUCCESS", user_code: req.body.user_code, user_balance: 999999 });
+    });
+    routes.post("/dev-agent/gold_api/game_callback", (req, res) => {
+        var _a, _b, _c;
+        res.send({ status: 1, msg: "SUCCESS", user_balance: (_c = (_b = (_a = req.body) === null || _a === void 0 ? void 0 : _a.slot) === null || _b === void 0 ? void 0 : _b.user_after_balance) !== null && _c !== void 0 ? _c : 0 });
+    });
+}
 //GAMES CONTROLLERS ROUTES
 routes.post("/web-api/auth/session/v2/verifySession", sessioncontroller_1.default.verifySession);
 //FORTUNE TIGER
@@ -86,8 +95,8 @@ routes.post("/game-api/ganesha-gold/v2/Spin", ganeshagold_1.default.spin);
 routes.post("/game-api/dragon-tiger-luck/v2/GameInfo/Get", dragontigerluck_1.default.getdragontiger);
 routes.post("/game-api/dragon-tiger-luck/v2/Spin", dragontigerluck_1.default.spin);
 //CASH MANIA
-// DESATIVADO (sem dados de jogadas): routes.post("/game-api/cash-mania/v2/GameInfo/Get", cashmania_1.default.getcash);
-// DESATIVADO (sem dados de jogadas): routes.post("/game-api/cash-mania/v2/Spin", cashmania_1.default.spin);
+// DESATIVADO (sem dados de jogadas): routes.post("/game-api/cash-mania/v2/GameInfo/Get", cashmania.getcash)
+// DESATIVADO (sem dados de jogadas): routes.post("/game-api/cash-mania/v2/Spin", cashmania.spin)
 //ULTIMATE STRIKER
 routes.post("/game-api/ultimate-striker/v2/GameInfo/Get", ultimatestriker_1.default.getstriker);
 routes.post("/game-api/ultimate-striker/v2/Spin", ultimatestriker_1.default.spin);
@@ -128,8 +137,8 @@ routes.post("/game-api/majestic-ts/v2/Spin", majesticts_1.default.spin);
 routes.post("/game-api/thai-river/v2/GameInfo/Get", thairiver_1.default.getriver);
 routes.post("/game-api/thai-river/v2/Spin", thairiver_1.default.spin);
 //SHAOLIN SOCCER
-// DESATIVADO (sem dados de jogadas): routes.post("/game-api/shaolin-soccer/v2/GameInfo/Get", shaolinsoccer_1.default.getshaolin);
-// DESATIVADO (sem dados de jogadas): routes.post("/game-api/shaolin-soccer/v2/Spin", shaolinsoccer_1.default.spin);
+// DESATIVADO (sem dados de jogadas): routes.post("/game-api/shaolin-soccer/v2/GameInfo/Get", shaolin.getshaolin)
+// DESATIVADO (sem dados de jogadas): routes.post("/game-api/shaolin-soccer/v2/Spin", shaolin.spin)
 //GDN ICE FIRE
 routes.post("/game-api/gdn-ice-fire/v2/GameInfo/Get", gdnicefire_1.default.geticefire);
 routes.post("/game-api/gdn-ice-fire/v2/Spin", gdnicefire_1.default.spin);
