@@ -318,7 +318,10 @@ export default {
                         throw new Error("Dados de ganho inválidos");
                     }
             
-                    let valorganho = r2(cs * ml * 1);
+                    const refBet = Number(ganhojson[steps].tbb) || Number(ganhojson[steps].tb) || 0
+                    const escala = refBet > 0 ? bet / refBet : 1
+                    const multPasso = Number(ganhojson[steps].multiplicador) || (refBet > 0 ? (Number(r2(ganhojson[steps].tw * escala)) || 0) / refBet : 0)
+                    let valorganho = r2(bet * multPasso)
                     let wmvalue = 0;
                     console.log("VALOR GANHO " + valorganho);
             
@@ -343,7 +346,7 @@ export default {
                                 wsc: ganhojson[steps].wsc,
                                 wpl: ganhojson[steps].wpl,
                                 nwpl: ganhojson[steps].nwpl,
-                                ssaw: ganhojson[steps].ssaw,
+                                ssaw: r2(ganhojson[steps].ssaw * escala),
                                 orl: ganhojson[steps].orl,
                                 ptbr: ganhojson[steps].ptbr,
                                 ptu: ganhojson[steps].ptu,
@@ -354,14 +357,14 @@ export default {
                                 usf: ganhojson[steps].usf,
                                 gm: ganhojson[steps].gm,
                                 rns: ganhojson[steps].rns,
-                                twbm: ganhojson[steps].twbm,
+                                twbm: r2(ganhojson[steps].twbm * escala),
                                 crtw: ganhojson[steps].crtw,
                                 imw: ganhojson[steps].imw,
                                 sc: ganhojson[steps].sc,
                                 fs: ganhojson[steps].fs,
                                 gwt: ganhojson[steps].gwt,
                                 fb: ganhojson[steps].fb,
-                                ctw: ganhojson[steps].ctw,
+                                ctw: r2(ganhojson[steps].ctw * escala),
                                 pmt: ganhojson[steps].pmt,
                                 cwc: ganhojson[steps].cwc,
                                 fstc: ganhojson[steps].fstc,
@@ -376,7 +379,7 @@ export default {
                                 st: ganhojson[steps].st,
                                 nst: ganhojson[steps].nst,
                                 pf: ganhojson[steps].pf,
-                                aw: ganhojson[steps].aw,
+                                aw: r2(ganhojson[steps].aw * escala),
                                 wid: ganhojson[steps].wid,
                                 wt: "C",
                                 wk: "0_C",
