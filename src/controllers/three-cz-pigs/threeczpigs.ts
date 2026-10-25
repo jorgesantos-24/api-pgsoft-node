@@ -334,20 +334,14 @@ export default {
                   throw new Error("Saldo ou aposta inválidos")
                }
 
-               let newbalance
-
-               // Verifica se o steps já começou a contar, se sim, não subtrai o bet
-               if (getSteps(token, gamename) > 0) {
-                  newbalance = saldoatual + valorganho // Não desconta o bet quando os steps estão contando
-                  logger.info("Steps em andamento, não desconta o bet")
-               } else {
-                  newbalance = saldoatual + valorganho - bet // Subtrai o bet apenas se os steps não estão contando
-               }
+               // A aposta e cobrada UMA vez, no primeiro passo da sequencia
+               const betPasso = steps > 0 ? 0 : bet
+               const newbalance = r2(saldoatual + valorganho - betPasso)
 
                // Atualizar saldo, debitar aposta e atualizar ganho
                await treasuresthreeczfunctions.attsaldobyatk(token, newbalance)
-               await treasuresthreeczfunctions.atualizardebitado(token, bet)
-               await treasuresthreeczfunctions.atualizarapostado(token, bet)
+               await treasuresthreeczfunctions.atualizardebitado(token, betPasso)
+               await treasuresthreeczfunctions.atualizarapostado(token, betPasso)
                await treasuresthreeczfunctions.atualizarganho(token, valorganho)
 
                let json = {
@@ -443,7 +437,7 @@ export default {
                      game_code: gamename,
                      round_id: await gerarNumeroUnico(),
                      type: "BASE",
-                     bet: bet,
+                     bet: betPasso,
                      win: Number(valorganho),
                      txn_id: `${txnid}`,
                      txn_type: "debit_credit",

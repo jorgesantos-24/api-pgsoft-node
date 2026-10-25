@@ -379,12 +379,13 @@ export default {
                   throw new Error("Saldo ou aposta inválidos")
                }
 
-               const newbalance = r2(saldoatual + valorganho - bet)
+               const betPasso = steps > 0 ? 0 : bet
+               const newbalance = r2(saldoatual + valorganho - betPasso)
 
                // Atualizar saldo, debitar aposta e atualizar ganho
                await ninjaraccoonfunctions.attsaldobyatk(token, newbalance)
-               await ninjaraccoonfunctions.atualizardebitado(token, bet)
-               await ninjaraccoonfunctions.atualizarapostado(token, bet)
+               await ninjaraccoonfunctions.atualizardebitado(token, betPasso)
+               await ninjaraccoonfunctions.atualizarapostado(token, betPasso)
                await ninjaraccoonfunctions.atualizarganho(token, valorganho)
 
                let json = {
@@ -485,7 +486,7 @@ export default {
                      game_code: gamename,
                      round_id: await gerarNumeroUnico(),
                      type: "BASE",
-                     bet: bet,
+                     bet: betPasso,
                      win: Number(valorganho),
                      txn_id: `${txnid}`,
                      txn_type: "debit_credit",

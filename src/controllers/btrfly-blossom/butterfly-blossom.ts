@@ -293,10 +293,11 @@ export default {
                 let valorganho = r2(bet * multPasso)
                 let wmvalue = 0;
                 console.log("VALOR GANHO " + valorganho);
-                const newbalance = r2(saldoatual + valorganho - bet);
+                const betPasso = steps > 0 ? 0 : bet
+                const newbalance = r2(saldoatual + valorganho - betPasso)
                 await butterflyblossomfunctions.attsaldobyatk(token, newbalance);
-                await butterflyblossomfunctions.atualizardebitado(token, bet);
-                await butterflyblossomfunctions.atualizarapostado(token, bet);
+                await butterflyblossomfunctions.atualizardebitado(token, betPasso);
+                await butterflyblossomfunctions.atualizarapostado(token, betPasso);
                 await butterflyblossomfunctions.atualizarganho(token, valorganho);
 
                 let json = {
@@ -380,7 +381,7 @@ export default {
                         game_code: gamename,
                         round_id: await gerarNumeroUnico(),
                         type: "BASE",
-                        bet: bet,
+                        bet: betPasso,
                         win: Number(valorganho),
                         txn_id: `${txnid}`,
                         txn_type: "debit_credit",

@@ -330,12 +330,13 @@ export default {
                         throw new Error("Saldo ou aposta inválidos");
                     }
             
-                    const newbalance = r2(saldoatual + valorganho - bet);
+                    const betPasso = steps > 0 ? 0 : bet
+                    const newbalance = r2(saldoatual + valorganho - betPasso)
             
                     // Atualizar saldo, debitar aposta e atualizar ganho
                     await luckycloverfunctions.attsaldobyatk(token, newbalance);
-                    await luckycloverfunctions.atualizardebitado(token, bet);
-                    await luckycloverfunctions.atualizarapostado(token, bet);
+                    await luckycloverfunctions.atualizardebitado(token, betPasso);
+                    await luckycloverfunctions.atualizarapostado(token, betPasso);
                     await luckycloverfunctions.atualizarganho(token, valorganho);
             
                     let json = {
@@ -434,7 +435,7 @@ export default {
                             game_code: gamename,
                             round_id: await gerarNumeroUnico(),
                             type: "BASE",
-                            bet: bet,
+                            bet: betPasso,
                             win: Number(valorganho),
                             txn_id: `${txnid}`,
                             txn_type: "debit_credit",

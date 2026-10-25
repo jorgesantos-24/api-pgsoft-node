@@ -333,12 +333,13 @@ export default {
                   throw new Error("Saldo ou aposta inválidos")
                }
 
-               const newbalance = r2(saldoatual + valorganho - bet)
+               const betPasso = steps > 0 ? 0 : bet
+               const newbalance = r2(saldoatual + valorganho - betPasso)
 
                // Atualizar saldo, debitar aposta e atualizar ganho
                await wildbanditofunctions.attsaldobyatk(token, newbalance)
-               await wildbanditofunctions.atualizardebitado(token, bet)
-               await wildbanditofunctions.atualizarapostado(token, bet)
+               await wildbanditofunctions.atualizardebitado(token, betPasso)
+               await wildbanditofunctions.atualizarapostado(token, betPasso)
                await wildbanditofunctions.atualizarganho(token, valorganho)
 
                let json = {
@@ -427,7 +428,7 @@ export default {
                      game_code: gamename,
                      round_id: await gerarNumeroUnico(),
                      type: "BASE",
-                     bet: bet,
+                     bet: betPasso,
                      win: Number(valorganho),
                      txn_id: `${txnid}`,
                      txn_type: "debit_credit",

@@ -402,11 +402,12 @@ exports.default = {
                         if (typeof saldoatual !== "number" || typeof bet !== "number") {
                             throw new Error("Saldo ou aposta inválidos");
                         }
-                        const newbalance = r2(saldoatual + valorganho - bet);
+                        const betPasso = steps > 0 ? 0 : bet;
+                        const newbalance = r2(saldoatual + valorganho - betPasso);
                         // Atualizar saldo, debitar aposta e atualizar ganho
                         yield raccoonfunctions_1.default.attsaldobyatk(token, newbalance);
-                        yield raccoonfunctions_1.default.atualizardebitado(token, bet);
-                        yield raccoonfunctions_1.default.atualizarapostado(token, bet);
+                        yield raccoonfunctions_1.default.atualizardebitado(token, betPasso);
+                        yield raccoonfunctions_1.default.atualizarapostado(token, betPasso);
                         yield raccoonfunctions_1.default.atualizarganho(token, valorganho);
                         let json = {
                             dt: {
@@ -500,7 +501,7 @@ exports.default = {
                                 game_code: gamename,
                                 round_id: yield gerarNumeroUnico(),
                                 type: "BASE",
-                                bet: bet,
+                                bet: betPasso,
                                 win: Number(valorganho),
                                 txn_id: `${txnid}`,
                                 txn_type: "debit_credit",
