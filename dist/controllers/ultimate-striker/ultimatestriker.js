@@ -376,7 +376,7 @@ exports.default = {
                         }
                         else {
                             //numeroAleatorio = 3;
-                            numeroAleatorio = Math.floor(Math.random() * 13) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
+                            numeroAleatorio = Math.floor(Math.random() * 43) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                             linhaGanhoAnterior = numeroAleatorio; // Armazenar a nova linha de ganho
                         }
                         console.log("Linha de ganho escolhida: " + numeroAleatorio);

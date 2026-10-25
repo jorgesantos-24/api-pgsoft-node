@@ -293,7 +293,7 @@ export default {
                if (linhaGanhoAnterior !== null && linhaGanhoAnterior !== undefined) {
                   numeroAleatorio = linhaGanhoAnterior
                } else {
-                  numeroAleatorio = 1
+                  numeroAleatorio = Math.floor(Math.random() * 4) + 1
                   //numeroAleatorio = Math.floor(Math.random() * 11) // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                   linhaGanhoAnterior = numeroAleatorio // Armazenar a nova linha de ganho
                }
