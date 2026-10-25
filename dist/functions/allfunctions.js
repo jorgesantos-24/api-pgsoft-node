@@ -20,7 +20,7 @@ function formatarProbabilidade(valor) {
     console.log("VALOR: " + valorInteiro);
     return valorInteiro.toString().padStart(3, "0");
 }
-const JOGOS_SEM_BONUS = ["piggy-gold", "lucky-clover", "ninja-raccoon", "rise-apollo", "ultimate-striker"];
+const JOGOS_SEM_BONUS = ["piggy-gold", "lucky-clover", "ninja-raccoon", "rise-apollo", "ultimate-striker", "wild-bounty-sd"];
 exports.default = {
     createOrUpdateSpin(playerId, gamecode, gameData) {
         return __awaiter(this, void 0, void 0, function* () {

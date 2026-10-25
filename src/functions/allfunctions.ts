@@ -10,7 +10,7 @@ function formatarProbabilidade(valor: number): string {
    return valorInteiro.toString().padStart(3, "0")
 }
 
-const JOGOS_SEM_BONUS = ["piggy-gold", "lucky-clover", "ninja-raccoon", "rise-apollo", "ultimate-striker"]
+const JOGOS_SEM_BONUS = ["piggy-gold", "lucky-clover", "ninja-raccoon", "rise-apollo", "ultimate-striker", "wild-bounty-sd"]
 
 export default {
    async createOrUpdateSpin(playerId: number, gamecode: any, gameData: any) {
