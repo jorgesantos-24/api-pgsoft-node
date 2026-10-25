@@ -209,7 +209,7 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
@@ -308,12 +308,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
                      tw: valorganho,
-                     np: -bet,
+                     np: r2(valorganho - bet),
                      ocr: null,
                      mr: null,
                      ge: [1, 11],
@@ -399,51 +399,16 @@ export default {
                valorganho = r2(valorganho * wmvalue)
             }
 
-            let newbalance = 0
+            const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1
+            const betPasso = primeiroPasso ? bet : 0
 
-            if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-               newbalance = saldoatual - bet + valorganho
-               await bikiniparadisefunctions.attsaldobyatk(token, newbalance)
-
-               await apicontroller.callbackgame({
-                  agent_code: agent[0].agentcode,
-                  agent_secret: agent[0].secretKey,
-                  user_code: user[0].username,
-                  user_balance: user[0].saldo,
-                  user_total_credit: user[0].valorganho,
-                  user_total_debit: user[0].valorapostado,
-                  game_type: "slot",
-                  slot: {
-                     provider_code: "PGSOFT",
-                     game_code: gamename,
-                     round_id: await gerarNumeroUnico(),
-                     type: "BASE",
-                     bet: bet,
-                     win: valorganho,
-                     txn_id: `${txnid}`,
-                     txn_type: "debit_credit",
-                     is_buy: false,
-                     is_call: false,
-                     user_before_balance: user[0].saldo,
-                     user_after_balance: newbalance,
-                     agent_before_balance: 100,
-                     agent_after_balance: 100,
-                     created_at: dataFormatada,
-                  },
-               })
-            }
-
-            newbalance = saldoatual + valorganho
-
-            if (calltwo[0].steps === 0) {
-               newbalance = saldoatual + valorganho - bet
-            }
+            const newbalance = r2(saldoatual - betPasso + valorganho)
 
             await bikiniparadisefunctions.attawcall(calltwo[0].id, valorganho)
-
             await bikiniparadisefunctions.attsaldobyatk(token, newbalance)
-            await bikiniparadisefunctions.atualizardebitado(token, bet)
-            await bikiniparadisefunctions.atualizarapostado(token, bet)
+            await bikiniparadisefunctions.atualizardebitado(token, betPasso)
+            await bikiniparadisefunctions.atualizarapostado(token, betPasso)
+            await bikiniparadisefunctions.atualizarganho(token, valorganho)
 
             if (calltwo[0].steps > 0) {
                await allfunctions.subtrairstepscall(resultadospin.idcall)
@@ -488,12 +453,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - betPasso),
                      bl: newbalance,
-                     tb: bet,
+                     tb: betPasso,
                      tbb: bet,
                      tw: valorganho,
-                     np: -valorganho,
+                     np: r2(valorganho - betPasso),
                      ocr: null,
                      mr: null,
                      ge: [2, 1, 11],
@@ -515,7 +480,7 @@ export default {
                   game_code: gamename,
                   round_id: await gerarNumeroUnico(),
                   type: "BASE",
-                  bet: 0,
+                  bet: betPasso,
                   win: Number(valorganho),
                   txn_id: `${txnid}`,
                   txn_type: "debit_credit",

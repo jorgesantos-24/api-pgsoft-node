@@ -14,6 +14,8 @@ import linhaganhocash from "../../jsons/cash-mania/linhaganhocash"
 import linhaperdacash from "../../jsons/cash-mania/linhaperdacash"
 import notcashcash from "../../jsons/cash-mania/notcashcash"
 
+const r2 = (v: number) => Math.round((Number(v) + Number.EPSILON) * 100) / 100
+
 export default {
    async getcash(req: Request, res: Response) {
       try {
@@ -244,7 +246,7 @@ export default {
                       wbn: null,
                       wfg: null,
                       blb: saldoatual,
-                      blab: newbalance,
+                      blab: r2(saldoatual - bet),
                       bl: newbalance,
                       tb: bet,
                       tbb: bet,
@@ -354,12 +356,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
                      tw: valorganho,
-                     np: bet,
+                     np: r2(valorganho - bet),
                      ocr: null,
                      mr: null,
                      ge: [1, 11]
@@ -430,10 +432,10 @@ export default {
                 await allfunctions.completecall(calltwo[0].id);
             }
         
-            let multiplicador = 0;
+            let multplicador = 0;
         
             if (bonusjson[calltwo[0].steps].rwsp != null) {
-                multiplicador = await countrwsp(bonusjson[calltwo[0].steps].rwsp);
+                multplicador = await countrwsp(bonusjson[calltwo[0].steps].rwsp);
             }
         
             if (bonusjson[calltwo[0].steps].lw != null) {
@@ -445,7 +447,7 @@ export default {
             const txnid = v4();
             const dataFormatada = moment().toISOString();
         
-            let valorganho = cs * ml * multiplicador;
+            let valorganho = cs * ml * multplicador;
         
             // Verifica e aplica as mudanças de rv
             if (bonusjson[calltwo[0].steps].rv != null) {
@@ -454,60 +456,35 @@ export default {
                 logger.info(`Valor de rv depois de rvchange: ${JSON.stringify(bonusjson[calltwo[0].steps].rv)}`);
             }
         
-            // Calcula o multiplicador de ganho
-            let multiplicadorGanho = 0;
+            // Calcula o multplicador de ganho
+            let multplicadorGanho = 0;
             if (Array.isArray(bonusjson[calltwo[0].steps].rv) && bonusjson[calltwo[0].steps].rv.length > 4) {
                 const rvValue = bonusjson[calltwo[0].steps].rv[4];
                 logger.info(`Valor de rv[4]: ${rvValue}`);
                 if (rvValue > 0) {
-                    multiplicadorGanho = rvValue; // Usando diretamente o valor de rv[4] como multiplicador
-                    logger.info(`Multiplicador de Ganho calculado: ${multiplicadorGanho}`);
+                    multplicadorGanho = rvValue; // Usando diretamente o valor de rv[4] como multplicador
+                    logger.info(`Multiplicador de Ganho calculado: ${multplicadorGanho}`);
                 } else {
                     logger.info(`rv[4] não é positivo: ${rvValue}`);
-                    multiplicadorGanho = 0;
+                    multplicadorGanho = 0;
                 }
             } else {
                 logger.info(`bonusjson.rv é indefinido, não é um array, ou não possui o índice 4.`);
-                multiplicadorGanho = 0;
+                multplicadorGanho = 0;
             }
         
-            valorganho *= multiplicadorGanho;
+            valorganho *= multplicadorGanho;
         
-            let newbalance = saldoatual - bet + valorganho;
-            await cashmaniafunctions.attsaldobyatk(token, newbalance);
-        
-            await apicontroller.callbackgame({
-                agent_code: agent[0].agentcode,
-                agent_secret: agent[0].secretKey,
-                user_code: user[0].username,
-                user_balance: user[0].saldo,
-                user_total_credit: user[0].valorganho,
-                user_total_debit: user[0].valorapostado,
-                game_type: "slot",
-                slot: {
-                    provider_code: "PGSOFT",
-                    game_code: gamename,
-                    round_id: await gerarNumeroUnico(),
-                    type: "BASE",
-                    bet: bet,
-                    win: valorganho,
-                    txn_id: `${txnid}`,
-                    txn_type: "debit_credit",
-                    is_buy: false,
-                    is_call: false,
-                    user_before_balance: user[0].saldo,
-                    user_after_balance: newbalance,
-                    agent_before_balance: 100,
-                    agent_after_balance: 100,
-                    created_at: dataFormatada,
-                },
-            });
-        
-            await cashmaniafunctions.attawcall(calltwo[0].id, valorganho);
-        
-            await cashmaniafunctions.attsaldobyatk(token, newbalance);
-            await cashmaniafunctions.atualizardebitado(token, bet);
-            await cashmaniafunctions.atualizarapostado(token, bet);
+            const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1
+            const betPasso = primeiroPasso ? bet : 0
+
+            const newbalance = r2(saldoatual - betPasso + valorganho)
+
+            await cashmaniafunctions.attawcall(calltwo[0].id, valorganho)
+            await cashmaniafunctions.attsaldobyatk(token, newbalance)
+            await cashmaniafunctions.atualizardebitado(token, betPasso)
+            await cashmaniafunctions.atualizarapostado(token, betPasso)
+            await cashmaniafunctions.atualizarganho(token, valorganho);
         
             if (calltwo[0].steps > 0) {
                 await allfunctions.subtrairstepscall(resultadospin.idcall);
@@ -555,12 +532,12 @@ export default {
                         wbn: null,
                         wfg: null,
                         blb: saldoatual,
-                        blab: newbalance,
+                        blab: r2(saldoatual - betPasso),
                         bl: newbalance,
                         tb: 0.0,
                         tbb: bet,
                         tw: valorganho,
-                        np: valorganho,
+                        np: r2(valorganho - betPasso),
                         ocr: null,
                         mr: null,
                         ge: [1, 11]
@@ -582,7 +559,7 @@ export default {
                     game_code: gamename,
                     round_id: await gerarNumeroUnico(),
                     type: "BASE",
-                    bet: bet,
+                    bet: betPasso,
                     win: valorganho,
                     txn_id: `${txnid}`,
                     txn_type: "debit_credit",

@@ -287,7 +287,7 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                blab: r2(saldoatual - bet),
                                 bl: newbalance,
                                 tb: bet,
                                 tbb: bet,
@@ -379,12 +379,12 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                blab: r2(saldoatual - bet),
                                 bl: newbalance,
                                 tb: bet,
                                 tbb: bet,
                                 tw: bet,
-                                np: valorganho,
+                                np: r2(valorganho - bet),
                                 ocr: null,
                                 mr: null,
                                 ge: [3, 11],
@@ -482,45 +482,14 @@ exports.default = {
                         valorganho = r2(valorganhorolozero * 8 + valorganhoroloone * 8);
                     }
                     console.log("VALOR GANHO " + valorganho);
-                    let newbalance = 0;
-                    if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-                        newbalance = saldoatual - bet + valorganho;
-                        yield piggygoldfunctions_1.default.attsaldobyatk(token, newbalance);
-                        yield apicontroller_1.default.callbackgame({
-                            agent_code: agent[0].agentcode,
-                            agent_secret: agent[0].secretKey,
-                            user_code: user[0].username,
-                            user_balance: user[0].saldo,
-                            user_total_credit: user[0].valorganho,
-                            user_total_debit: user[0].valorapostado,
-                            game_type: "slot",
-                            slot: {
-                                provider_code: "PGSOFT",
-                                game_code: gamename,
-                                round_id: yield gerarNumeroUnico(),
-                                type: "BASE",
-                                bet: bet,
-                                win: valorganho,
-                                txn_id: `${txnid}`,
-                                txn_type: "debit_credit",
-                                is_buy: false,
-                                is_call: false,
-                                user_before_balance: user[0].saldo,
-                                user_after_balance: newbalance,
-                                agent_before_balance: 100,
-                                agent_after_balance: 100,
-                                created_at: dataFormatada,
-                            },
-                        });
-                    }
-                    newbalance = saldoatual + valorganho;
-                    if (calltwo[0].steps === 0) {
-                        newbalance = saldoatual + valorganho - bet;
-                    }
+                    const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1;
+                    const betPasso = primeiroPasso ? bet : 0;
+                    const newbalance = r2(saldoatual - betPasso + valorganho);
                     yield piggygoldfunctions_1.default.attawcall(calltwo[0].id, valorganho);
                     yield piggygoldfunctions_1.default.attsaldobyatk(token, newbalance);
-                    yield piggygoldfunctions_1.default.atualizardebitado(token, bet);
-                    yield piggygoldfunctions_1.default.atualizarapostado(token, bet);
+                    yield piggygoldfunctions_1.default.atualizardebitado(token, betPasso);
+                    yield piggygoldfunctions_1.default.atualizarapostado(token, betPasso);
+                    yield piggygoldfunctions_1.default.atualizarganho(token, valorganho);
                     if (calltwo[0].steps > 0) {
                         yield allfunctions_1.default.subtrairstepscall(resultadospin.idcall);
                     }
@@ -561,12 +530,12 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                blab: r2(saldoatual - betPasso),
                                 bl: newbalance,
-                                tb: bet,
+                                tb: betPasso,
                                 tbb: bet,
                                 tw: valorganho,
-                                np: valorganho,
+                                np: r2(valorganho - betPasso),
                                 ocr: null,
                                 mr: null,
                                 ge: [1, 11],
@@ -587,7 +556,7 @@ exports.default = {
                             game_code: gamename,
                             round_id: yield gerarNumeroUnico(),
                             type: "BASE",
-                            bet: 0,
+                            bet: betPasso,
                             win: Number(valorganho),
                             txn_id: `${txnid}`,
                             txn_type: "debit_credit",

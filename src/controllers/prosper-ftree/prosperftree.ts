@@ -37,14 +37,14 @@ async function lwchange(json1: { [key: string]: any }, json2: { [key: string]: a
 }
 
 async function countrwsp(json: { [key: string]: any }) {
-   let multiplicador = 0
+   let multplicador = 0
    for (let i = 1; i <= 25; i++) {
       const chave = i.toString()
       if (json.hasOwnProperty(chave)) {
-         multiplicador += parseFloat(json[chave])
+         multplicador += parseFloat(json[chave])
       }
    }
-   return multiplicador
+   return multplicador
 }
 
 async function gerarNumeroUnico() {
@@ -233,7 +233,7 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
@@ -361,12 +361,12 @@ export default {
                         wbn: null,
                         wfg: null,
                         blb: saldoatual,
-                        blab: newbalance,
+                        blab: r2(saldoatual - bet),
                         bl: newbalance,
                         tb: bet,
                         tbb: bet,
                         tw: ganhojson[steps].tw,
-                        np: -bet,
+                        np: r2(valorganho - bet),
                         ocr: null,
                         mr: null,
                         ge: [1, 11],
@@ -473,10 +473,10 @@ export default {
                     await allfunctions.completecall(calltwo[0].id);
                 }
         
-                let multiplicador = 0;
+                let multplicador = 0;
         
                 if (bonusjson[calltwo[0].steps]?.rwsp != null) {
-                    multiplicador = await countrwsp(bonusjson[calltwo[0].steps].rwsp);
+                    multplicador = await countrwsp(bonusjson[calltwo[0].steps].rwsp);
                 }
         
                 if (bonusjson[calltwo[0].steps]?.lw != null) {
@@ -486,58 +486,24 @@ export default {
                 let wmvalue = 0;
                 const txnid = uuidv4();
                 const dataFormatada = moment().toISOString();
-                let valorganho = r2(cs * ml * multiplicador);
-                let valorganhonowm = cs * ml * multiplicador;
+                let valorganho = r2(cs * ml * multplicador);
+                let valorganhonowm = cs * ml * multplicador;
         
                 if (bonusjson[calltwo[0].steps]?.rwm != null) {
                     wmvalue = await returnrwm(bonusjson[calltwo[0].steps].rwm);
                     valorganho = r2(valorganho * wmvalue);
                 }
         
-                let newbalance = 0;
-        
-                if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-                    newbalance = saldoatual - bet + valorganho;
-                    await prosperftreefunctions.attsaldobyatk(token, newbalance);
-        
-                    await apicontroller.callbackgame({
-                        agent_code: agent[0].agentcode,
-                        agent_secret: agent[0].secretKey,
-                        user_code: user[0].username,
-                        user_balance: user[0].saldo,
-                        user_total_credit: user[0].valorganho,
-                        user_total_debit: user[0].valorapostado,
-                        game_type: "slot",
-                        slot: {
-                            provider_code: "PGSOFT",
-                            game_code: gamename,
-                            round_id: await gerarNumeroUnico(),
-                            type: "BASE",
-                            bet: bet,
-                            win: valorganho,
-                            txn_id: `${txnid}`,
-                            txn_type: "debit_credit",
-                            is_buy: false,
-                            is_call: false,
-                            user_before_balance: user[0].saldo,
-                            user_after_balance: newbalance,
-                            agent_before_balance: 100,
-                            agent_after_balance: 100,
-                            created_at: dataFormatada,
-                        },
-                    });
-                }
-        
-                newbalance = saldoatual + valorganho;
-        
-                if (calltwo[0].steps === 0) {
-                    newbalance = saldoatual + valorganho - bet;
-                }
-        
-                await prosperftreefunctions.attawcall(calltwo[0].id, valorganho);
-                await prosperftreefunctions.attsaldobyatk(token, newbalance);
-                await prosperftreefunctions.atualizardebitado(token, bet);
-                await prosperftreefunctions.atualizarapostado(token, bet);
+                const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1
+                const betPasso = primeiroPasso ? bet : 0
+
+                const newbalance = r2(saldoatual - betPasso + valorganho)
+
+                await prosperftreefunctions.attawcall(calltwo[0].id, valorganho)
+                await prosperftreefunctions.attsaldobyatk(token, newbalance)
+                await prosperftreefunctions.atualizardebitado(token, betPasso)
+                await prosperftreefunctions.atualizarapostado(token, betPasso)
+                await prosperftreefunctions.atualizarganho(token, valorganho);
         
                 if (calltwo[0].steps > 0) {
                     await allfunctions.subtrairstepscall(resultadospin.idcall);
@@ -584,12 +550,12 @@ export default {
                             wbn: null,
                             wfg: null,
                             blb: saldoatual,
-                            blab: newbalance,
+                            blab: r2(saldoatual - betPasso),
                             bl: newbalance,
-                            tb: bet,
+                            tb: betPasso,
                             tbb: bet,
                             tw: bonusjson[calltwo[0].steps].tw,
-                            np: -bet,
+                            np: r2(valorganho - betPasso),
                             ocr: null,
                             mr: null,
                             ge: [1, 11],
@@ -611,7 +577,7 @@ export default {
                         game_code: gamename,
                         round_id: await gerarNumeroUnico(),
                         type: "BASE",
-                        bet: 0,
+                        bet: betPasso,
                         win: Number(valorganho),
                         txn_id: `${txnid}`,
                         txn_type: "debit_credit",
