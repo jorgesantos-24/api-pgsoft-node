@@ -52,6 +52,8 @@ const notcashbouty_1 = __importDefault(require("../../jsons/wild-bounty-sd/notca
 const linhaganhobouty_1 = __importDefault(require("../../jsons/wild-bounty-sd/linhaganhobouty"));
 // Arredonda dinheiro para 2 casas (evita 123.19999999999999)
 const r2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+// Calibracao de RTP: 32% de acerto x 0.85 de premio medio por sequencia = 27% de RTP. 27% x 3.5 = ~95%.
+const FATOR_RTP = 3.5;
 const stepsStorage = {};
 function lwchange(json1, json2, cs, ml) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -340,8 +342,8 @@ exports.default = {
                             throw new Error("Dados de ganho inválidos");
                         }
                         const multplicador = yield countrwsp(ganhojson[steps].rwsp || 0);
-                        yield lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs, ml);
-                        let valorganho = r2(cs * ml * multplicador);
+                        yield lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs * FATOR_RTP, ml);
+                        let valorganho = r2(cs * ml * multplicador * FATOR_RTP);
                         let wmvalue = 0;
                         console.log("VALOR GANHO " + valorganho);
                         // Verificar se saldoatual e bet são válidos

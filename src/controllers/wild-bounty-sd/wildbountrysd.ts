@@ -19,6 +19,9 @@ import linhaganhobounty from "../../jsons/wild-bounty-sd/linhaganhobouty"
 // Arredonda dinheiro para 2 casas (evita 123.19999999999999)
 const r2 = (v: number) => Math.round((Number(v) + Number.EPSILON) * 100) / 100
 
+// Calibracao de RTP: 32% de acerto x 0.85 de premio medio por sequencia = 27% de RTP. 27% x 3.5 = ~95%.
+const FATOR_RTP = 3.5
+
 
 const stepsStorage: { [key: string]: number } = {}
 
@@ -323,9 +326,9 @@ export default {
                }
 
                const multplicador = await countrwsp(ganhojson[steps].rwsp || 0)
-               await lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs, ml)
+               await lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs * FATOR_RTP, ml)
 
-               let valorganho = r2(cs * ml * multplicador)
+               let valorganho = r2(cs * ml * multplicador * FATOR_RTP)
                let wmvalue = 0
                console.log("VALOR GANHO " + valorganho)
 
