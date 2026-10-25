@@ -5,6 +5,9 @@ export default {
       const jsons: any = {
        
       }
-      return jsons[bet]
+      const base = Math.floor(Number(bet)) || 0
+      const totalLinhas = Object.keys(jsons).length || 1
+      const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1
+      return jsons[idx]
    },
 }

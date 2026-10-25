@@ -322,7 +322,7 @@ exports.default = {
                     try {
                         const userId = user[0].id;
                         // Recuperar a linha de ganho do banco de dados
-                        let linhaGanhoAnterior = yield threeczpigsfunctions_1.default.obterLinhaGanho(userId);
+                        let linhaGanhoAnterior = yield threeczpigsfunctions_1.default.obterLinhaGanho(userId, gamename);
                         // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                         let numeroAleatorio;
                         if (linhaGanhoAnterior !== null && linhaGanhoAnterior !== undefined) {
@@ -330,7 +330,7 @@ exports.default = {
                         }
                         else {
                             //numeroAleatorio = 3;
-                            numeroAleatorio = Math.floor(Math.random() * 33) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
+                            numeroAleatorio = Math.floor(Math.random() * 22) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                             linhaGanhoAnterior = numeroAleatorio; // Armazenar a nova linha de ganho
                         }
                         console.log("Linha de ganho escolhida: " + numeroAleatorio);
@@ -426,14 +426,14 @@ exports.default = {
                         const txnid = (0, uuid_1.v4)();
                         const dataFormatada = (0, moment_1.default)().toISOString();
                         // Salvar a linha de ganho atual no banco de dados
-                        yield threeczpigsfunctions_1.default.atualizarLinhaGanho(userId, numeroAleatorio);
+                        yield threeczpigsfunctions_1.default.atualizarLinhaGanho(userId, gamename, numeroAleatorio);
                         logger_1.default.info("LINHA DE GANHO SALVA NO BD: " + numeroAleatorio);
                         console.log("linha de ganho " + numeroAleatorio);
                         // Incrementar e verificar steps
                         incrementSteps(token, gamename);
                         if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                             resetSteps(token, gamename);
-                            yield threeczpigsfunctions_1.default.atualizarLinhaGanho(userId, null); // Resetar a linha de ganho quando os steps são resetados
+                            yield threeczpigsfunctions_1.default.atualizarLinhaGanho(userId, gamename, null); // Resetar a linha de ganho quando os steps são resetados
                         }
                         // Callback para o jogo
                         yield apicontroller_1.default.callbackgame({

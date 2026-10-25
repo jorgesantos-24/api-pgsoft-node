@@ -190,7 +190,10 @@ exports.default = {
                     [1]: { "id": 210, "orl": [6, 8, 5, 9, 8, 7, 9, 9, 4, 9, 6, 7, 3, 3, 9, 7, 4, 0, 4, 9, 9, 6, 8, 3, 6], "sc": 0, "wp": null, "sw": null, "wsc": null, "wpl": null, "ogs": [10, 20], "gs": [10, 20], "gsd": null, "rns": [[], [], [6], [], [9, 6]], "rngs": [[], [], [true], [], [true, false]], "ssaw": 1.8, "rc": true, "ogml": 1, "gml": 2, "cp": null, "fs": null, "gwt": -1, "fb": null, "ctw": 0.0, "pmt": null, "cwc": 0, "fstc": { "4": 1 }, "pcwc": 0, "rwsp": null, "hashr": "1:6;7;6;7;9#8;9;7;4;6#5;9;3;0;8#9;4;3;4;3#8;9;9;9;6#MV#0#MT#1#MG#0#", "ml": 2, "cs": 0.3, "rl": [6, 8, 5, 9, 8, 7, 9, 9, 4, 9, 6, 7, 3, 3, 9, 7, 4, 0, 4, 9, 9, 6, 8, 3, 6], "sid": "1838774387701906944", "psid": "1838774382429666816", "st": 4, "nst": 1, "pf": 1, "aw": 1.8, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 99726.4, "blab": 99726.4, "bl": 99726.4, "tb": 0.0, "tbb": 6.0, "tw": 0.0, "np": 0.0, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0, "tipo": "ganho" },
                 },
             };
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

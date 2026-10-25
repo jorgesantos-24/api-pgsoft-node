@@ -148,7 +148,10 @@ exports.default = {
                     },
                 },
             };
-            return (_a = jsons[bet]) !== null && _a !== void 0 ? _a : jsons[1];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return (_a = jsons[idx]) !== null && _a !== void 0 ? _a : jsons[1];
         });
     },
 };

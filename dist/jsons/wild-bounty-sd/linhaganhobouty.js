@@ -53,7 +53,10 @@ exports.default = {
                     [1]: { "id": 33, "wp": null, "lw": null, "snww": null, "wpl": null, "prbr": null, "orl": [5, 6, 4, 2, 4, 3, 8, 2, 8, 8, 7, 3, 5, 3, 8, 5, 8, 5, 5, 4, 8, 5, 7, 4], "rns": [[5], [2], [2], [5], [5], []], "sc": 0, "gm": 2, "ngm": 1, "gsb": [8], "gs": [8], "ngs": [[0], [0], [0], [0], [0], []], "wgs": null, "ssaw": 1.8, "crtw": 0.0, "twbm": 0.0, "imw": false, "fs": null, "gwt": -1, "ctw": 0.0, "pmt": null, "cwc": 0, "fstc": { "4": 1 }, "pcwc": 0, "rwsp": null, "hashr": "1:5;2;2;5;5;5#6;4;8;3;5;7#4;3;8;8;4;4#8;7;5;8#3;8#MV#0#MT#2#MG#0#", "fb": null, "ml": 2, "cs": 0.3, "rl": [5, 6, 4, 2, 4, 3, 8, 2, 8, 8, 7, 3, 5, 3, 8, 5, 8, 5, 5, 4, 8, 5, 7, 4], "sid": "1839817040832953856", "psid": "1839817034780573184", "st": 4, "nst": 1, "pf": 1, "aw": 1.8, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 99985.6, "blab": 99985.6, "bl": 99985.6, "tb": 0.0, "tbb": 12.0, "tw": 0.0, "np": 0.0, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0, "tipo": "ganho" },
                 },
             };
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

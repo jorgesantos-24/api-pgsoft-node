@@ -112,6 +112,9 @@ export default {
             [1]: {"id": 143, "wp": null, "lw": null, "sc": 0, "wc": 0, "orl": [4, 9, 11, 10, 5, 4, 7, 9, 7, 8, 10, 7, 12, 5, 5, 4, 3, 3, 4, 4, 3, 3], "wm": {}, "lml": 0, "rml": 0, "gm": 1, "snww": null, "wpl": null, "ptbr": null, "crtw": 0.0, "cc": 1, "rns": [[4], [5, 4], [8], [], []], "twbm": 0.0, "ssaw": 2.4, "imw": false, "fs": null, "gwt": -1, "ctw": 0.0, "pmt": null, "cwc": 0, "fstc": {"4": 1}, "pcwc": 0, "rwsp": null, "hashr": "1:4;5;8;5;4#9;4;10;5;4#11;7;7;4;3#10;9;12;3;3#7;3#MV#0#MT#1#MG#0#", "fb": null, "ml": 2, "cs": 0.3, "rl": [4, 9, 11, 10, 5, 4, 7, 9, 7, 8, 10, 7, 12, 5, 5, 4, 3, 3, 4, 4, 3, 3], "sid": "1838781612117917184", "psid": "1838781605797101056", "st": 4, "nst": 1, "pf": 1, "aw": 2.4, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 99922.0, "blab": 99922.0, "bl": 99922.0, "tb": 0.0, "tbb": 12.0, "tw": 0.0, "np": 0.0, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0, "tipo": "ganho"},
         },
       }
-      return jsons[bet]
+      const base = Math.floor(Number(bet)) || 0
+      const totalLinhas = Object.keys(jsons).length || 1
+      const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1
+      return jsons[idx]
    },
 }

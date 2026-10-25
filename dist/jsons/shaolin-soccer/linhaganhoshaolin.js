@@ -14,7 +14,10 @@ exports.default = {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("linha de ganho " + bet);
             const jsons = {};
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

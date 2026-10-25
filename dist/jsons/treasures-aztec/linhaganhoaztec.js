@@ -172,7 +172,10 @@ exports.default = {
                     [4]: { "id": 160, "wp": null, "twp": null, "lw": null, "trl": [5, 5, 4, 4], "torl": [5, 5, 4, 4], "orl": [10, 11, 11, 7, 7, 12, 8, 8, 8, 12, 4, 7, 1, 10, 10, 6, 6, 6, 6, 6, 7, 7, 1, 1, 1, 8, 12, 10, 12, 12], "bwp": null, "now": 9000, "nowpr": [5, 6, 5, 3, 4, 5], "snww": null, "esb": { "4": [13, 14], "5": [16, 17, 18, 19], "6": [20, 21], "7": [22, 23] }, "ebb": { "4": { "fp": 13, "lp": 14, "bt": 1, "ls": 1 }, "5": { "fp": 16, "lp": 19, "bt": 1, "ls": 2 }, "6": { "fp": 20, "lp": 21, "bt": 1, "ls": 2 }, "7": { "fp": 22, "lp": 23, "bt": 2, "ls": 1 } }, "es": { "4": [13, 14], "5": [16, 17, 18, 19], "6": [20, 21], "7": [22, 23] }, "eb": { "4": { "fp": 13, "lp": 14, "bt": 1, "ls": 1 }, "5": { "fp": 16, "lp": 19, "bt": 1, "ls": 2 }, "6": { "fp": 20, "lp": 21, "bt": 1, "ls": 2 }, "7": { "fp": 22, "lp": 23, "bt": 2, "ls": 1 } }, "ssaw": 265.2, "tptbr": null, "ptbr": null, "ptbrp": null, "gml": 5, "ngml": 1, "sc": 3, "rs": { "esst": {}, "espt": {}, "rns": [[10, 11, 11], [12], [4], [6], [], []], "trns": [], "bweb": {} }, "fs": null, "gwt": -1, "ctw": 0.0, "pmt": null, "cwc": 0, "fstc": { "4": 4 }, "pcwc": 0, "rwsp": null, "hashr": "4:10;12;4;6;7;8#11;8;7;6;7;12#11;8;1;6;1;10#7;8;10;6;1;12#7;12;10;6;1;12#MV#0#MT#5#MG#0#", "fb": null, "ml": 2, "cs": 0.3, "rl": [10, 11, 11, 7, 7, 12, 8, 8, 8, 12, 4, 7, 1, 10, 10, 6, 6, 6, 6, 6, 7, 7, 1, 1, 1, 8, 12, 10, 12, 12], "sid": "1838862736672357888", "psid": "1838862695945666048", "st": 4, "nst": 1, "pf": 1, "aw": 265.2, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 100089.4, "blab": 100089.4, "bl": 100089.4, "tb": 0.0, "tbb": 12.0, "tw": 0.0, "np": 0.0, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0, "tipo": "ganho" },
                 },
             };
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

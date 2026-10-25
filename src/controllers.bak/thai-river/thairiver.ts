@@ -300,7 +300,7 @@ export default {
                const userId = user[0].id
 
                // Recuperar a linha de ganho do banco de dados
-               let linhaGanhoAnterior = await thairiverfunctions.obterLinhaGanho(userId)
+               let linhaGanhoAnterior = await thairiverfunctions.obterLinhaGanho(userId, gamename)
 
                // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                let numeroAleatorio
@@ -415,14 +415,14 @@ export default {
                const dataFormatada = moment().toISOString()
 
                // Salvar a linha de ganho atual no banco de dados
-               await thairiverfunctions.atualizarLinhaGanho(userId, numeroAleatorio)
+               await thairiverfunctions.atualizarLinhaGanho(userId, gamename, numeroAleatorio)
                logger.info("LINHA DE GANHO SALVA NO BD: " + numeroAleatorio)
 
                // Incrementar e verificar steps
                incrementSteps(token, gamename)
                if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                   resetSteps(token, gamename)
-                  await thairiverfunctions.atualizarLinhaGanho(userId, null) // Resetar a linha de ganho quando os steps são resetados
+                  await thairiverfunctions.atualizarLinhaGanho(userId, gamename, null) // Resetar a linha de ganho quando os steps são resetados
                }
 
                // Callback para o jogo: bet=0 nos passos de cascata, senao o site cobra duas vezes

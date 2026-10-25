@@ -117,7 +117,10 @@ exports.default = {
                     [0]: { "id": 141, "wp": { "3": [3, 7, 8, 10, 11, 14, 17], "8": [2, 6, 8, 10, 11, 16, 17] }, "wpl": [2, 3, 6, 7, 8, 10, 11, 14, 16, 17], "lw": { "3": 12.0, "8": 1.6 }, "snww": { "3": 4, "8": 4 }, "ssaw": 13.6, "orl": [12, 2, 8, 3, 7, 6, 8, 3, 0, 7, 0, 6, 9, 3, 13, 8, 10, 5, 9], "sc": 0, "wc": 2, "imw": false, "gm": 1, "mf": false, "cwf": true, "cwp": [11, 17], "dpf": true, "dpp": [0, 14, 16], "twbm": 13.6, "rns": null, "frns": [[9], [], [], [5], [7]], "fs": null, "gwt": 2, "ctw": 13.6, "pmt": null, "cwc": 1, "fstc": null, "pcwc": 1, "rwsp": { "3": 30.0, "8": 4.0 }, "hashr": "0:9;7;0;0;7#2;6;7;6;8#8;8;0;9;0#3;3;3;9#R#3#03132022303342#MV#2.0#MT#1#R#8#02122022304142#MV#2.0#MT#1#MG#13.6#", "fb": null, "ml": 1, "cs": 0.1, "rl": [9, 2, 8, 3, 7, 6, 8, 3, 0, 7, 0, 0, 6, 9, 3, 7, 8, 0, 9], "sid": "1839870745993215488", "psid": "1839870745993215488", "st": 1, "nst": 4, "pf": 1, "aw": 13.6, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 99885.9, "blab": 99883.9, "bl": 99897.5, "tb": 2.0, "tbb": 2.0, "tw": 13.6, "np": 11.6, "ocr": null, "mr": null, "ge": [3, 11], "multiplicador": 6.8, "tipo": "ganho" }
                 }
             };
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

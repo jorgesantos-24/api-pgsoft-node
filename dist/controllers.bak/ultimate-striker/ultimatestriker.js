@@ -368,7 +368,7 @@ exports.default = {
                     try {
                         const userId = user[0].id;
                         // Recuperar a linha de ganho do banco de dados
-                        let linhaGanhoAnterior = yield ultimatestrikerfunctions_1.default.obterLinhaGanho(userId);
+                        let linhaGanhoAnterior = yield ultimatestrikerfunctions_1.default.obterLinhaGanho(userId, gamename);
                         // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                         let numeroAleatorio;
                         if (linhaGanhoAnterior !== null && linhaGanhoAnterior !== undefined) {
@@ -472,13 +472,13 @@ exports.default = {
                         const txnid = (0, uuid_1.v4)();
                         const dataFormatada = (0, moment_1.default)().toISOString();
                         // Salvar a linha de ganho atual no banco de dados
-                        yield ultimatestrikerfunctions_1.default.atualizarLinhaGanho(userId, numeroAleatorio);
+                        yield ultimatestrikerfunctions_1.default.atualizarLinhaGanho(userId, gamename, numeroAleatorio);
                         logger_1.default.info('LINHA DE GANHO SALVA NO BD: ' + numeroAleatorio);
                         // Incrementar e verificar steps
                         incrementSteps(token, gamename);
                         if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                             resetSteps(token, gamename);
-                            yield ultimatestrikerfunctions_1.default.atualizarLinhaGanho(userId, null); // Resetar a linha de ganho quando os steps são resetados
+                            yield ultimatestrikerfunctions_1.default.atualizarLinhaGanho(userId, gamename, null); // Resetar a linha de ganho quando os steps são resetados
                         }
                         yield apicontroller_1.default.callbackgame({
                             agent_code: agent[0].agentcode,

@@ -299,7 +299,7 @@ export default {
                const userId = user[0].id
 
                // Recuperar a linha de ganho do banco de dados
-               let linhaGanhoAnterior = await majesticfunctions.obterLinhaGanho(userId)
+               let linhaGanhoAnterior = await majesticfunctions.obterLinhaGanho(userId, gamename)
 
                // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                let numeroAleatorio
@@ -402,7 +402,7 @@ export default {
                const dataFormatada = moment().toISOString()
 
                // Salvar a linha de ganho atual no banco de dados
-               await majesticfunctions.atualizarLinhaGanho(userId, numeroAleatorio)
+               await majesticfunctions.atualizarLinhaGanho(userId, gamename, numeroAleatorio)
                logger.info("LINHA DE GANHO SALVA NO BD: " + numeroAleatorio)
 
                console.log("linha de ganho " + numeroAleatorio)
@@ -411,7 +411,7 @@ export default {
                incrementSteps(token, gamename)
                if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                   resetSteps(token, gamename)
-                  await majesticfunctions.atualizarLinhaGanho(userId, null) // Resetar a linha de ganho quando os steps são resetados
+                  await majesticfunctions.atualizarLinhaGanho(userId, gamename, null) // Resetar a linha de ganho quando os steps são resetados
                }
 
                // Callback para o jogo

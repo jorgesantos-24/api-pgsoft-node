@@ -296,7 +296,7 @@ export default {
                     const userId = user[0].id;
             
                     // Recuperar a linha de ganho do banco de dados
-                    let linhaGanhoAnterior = await riseapollofunctions.obterLinhaGanho(userId);
+                    let linhaGanhoAnterior = await riseapollofunctions.obterLinhaGanho(userId, gamename);
             
                     // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                     let numeroAleatorio;
@@ -304,7 +304,7 @@ export default {
                         numeroAleatorio = linhaGanhoAnterior;
                     } else {
                         //numeroAleatorio = 10;
-                        numeroAleatorio = Math.floor(Math.random() * 11); // Supondo que maxLinhas seja o número máximo de linhas disponíveis
+                        numeroAleatorio = Math.floor(Math.random() * 34) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                         linhaGanhoAnterior = numeroAleatorio; // Armazenar a nova linha de ganho
                     }
             
@@ -403,7 +403,7 @@ export default {
                     const dataFormatada = moment().toISOString();
 
                     // Salvar a linha de ganho atual no banco de dados
-                    await riseapollofunctions.atualizarLinhaGanho(userId, numeroAleatorio);
+                    await riseapollofunctions.atualizarLinhaGanho(userId, gamename, numeroAleatorio);
                     logger.info('LINHA DE GANHO SALVA NO BD: ' + numeroAleatorio);
                    
                     console.log("linha de ganho " + numeroAleatorio);
@@ -412,7 +412,7 @@ export default {
                     incrementSteps(token, gamename);
                     if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                         resetSteps(token, gamename);
-                        await riseapollofunctions.atualizarLinhaGanho(userId, null); // Resetar a linha de ganho quando os steps são resetados
+                        await riseapollofunctions.atualizarLinhaGanho(userId, gamename, null); // Resetar a linha de ganho quando os steps são resetados
                     }
             
             

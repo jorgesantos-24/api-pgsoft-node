@@ -305,7 +305,7 @@ export default {
                const userId = user[0].id
 
                // Recuperar a linha de ganho do banco de dados
-               let linhaGanhoAnterior = await wildbountysdfunctions.obterLinhaGanho(userId)
+               let linhaGanhoAnterior = await wildbountysdfunctions.obterLinhaGanho(userId, gamename)
 
                // Se houver um ganho anterior, use a linha armazenada, caso contrário, gere uma nova
                let numeroAleatorio
@@ -313,7 +313,7 @@ export default {
                   numeroAleatorio = linhaGanhoAnterior
                } else {
                   //numeroAleatorio = 3;
-                  numeroAleatorio = Math.floor(Math.random() * 33) + 1 // Supondo que maxLinhas seja o número máximo de linhas disponíveis
+                  numeroAleatorio = Math.floor(Math.random() * 8) + 1 // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                   linhaGanhoAnterior = numeroAleatorio // Armazenar a nova linha de ganho
                }
 
@@ -421,7 +421,7 @@ export default {
                const dataFormatada = moment().toISOString()
 
                // Salvar a linha de ganho atual no banco de dados
-               await wildbountysdfunctions.atualizarLinhaGanho(userId, numeroAleatorio)
+               await wildbountysdfunctions.atualizarLinhaGanho(userId, gamename, numeroAleatorio)
                logger.info("LINHA DE GANHO SALVA NO BD: " + numeroAleatorio)
 
                console.log("linha de ganho " + numeroAleatorio)
@@ -430,7 +430,7 @@ export default {
                incrementSteps(token, gamename)
                if (getSteps(token, gamename) >= Object.keys(ganhojson).length) {
                   resetSteps(token, gamename)
-                  await wildbountysdfunctions.atualizarLinhaGanho(userId, null) // Resetar a linha de ganho quando os steps são resetados
+                  await wildbountysdfunctions.atualizarLinhaGanho(userId, gamename, null) // Resetar a linha de ganho quando os steps são resetados
                }
 
                // Callback para o jogo

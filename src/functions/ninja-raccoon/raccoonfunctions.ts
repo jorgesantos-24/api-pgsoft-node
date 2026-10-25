@@ -77,13 +77,19 @@ export default {
 
       return res[0]
    },
-   async atualizarLinhaGanho(userId: any, linhaGanho: null) {
-      const res = await promisePool.query<ResultSetHeader>("UPDATE users SET linha_ganho = ? WHERE id = ?", [linhaGanho ?? 0, userId]);
+   async atualizarLinhaGanho(userId: any, gamecode: string, linhaGanho: number | null) {
+      const res = await promisePool.query<ResultSetHeader>(
+         "INSERT INTO linhasganho (iduser, gamecode, linha) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE linha = VALUES(linha)",
+         [userId, gamecode, linhaGanho ?? 0],
+      );
       return res[0];
-    },
-  
-    async obterLinhaGanho(userId: number) {
-      const res = await promisePool.query<RowDataPacket[]>("SELECT linha_ganho FROM users WHERE id = ?", [userId]);
-      return res[0] && res[0][0] ? (res[0][0].linha_ganho || null) : null;
+   },
+
+    async obterLinhaGanho(userId: number, gamecode: string) {
+       const res = await promisePool.query<RowDataPacket[]>(
+          "SELECT linha FROM linhasganho WHERE iduser = ? AND gamecode = ?",
+          [userId, gamecode],
+       );
+       return res[0] && res[0][0] ? (res[0][0].linha || null) : null;
     },
 }

@@ -75,7 +75,10 @@ exports.default = {
                 [59]: { "id": 219, "norl": null, "wp": { "9": [0, 4, 7, 9] }, "lw": { "9": 6.0 }, "lwm": {}, "snw": { "9": 1 }, "slw": 6.0, "slwm": 6.0, "sc": 0, "stw": 6.0, "stwm": 6.0, "fs": null, "orl": [9, 7, 5, 6, 9, 4, 4, 9, 2, 9, 3, 3, 6, 5, 5, 2, 9, 6], "gwt": -1, "ctw": 6.0, "pmt": null, "cwc": 1, "fstc": null, "pcwc": 1, "rwsp": { "0": { "9": 10.0 } }, "hashr": "0:9;5;4;9;5;9#7;6;4;3;5;6#9;9;3;2#2;6#R#9#00122230#MV#12.0#MT#1#MG#6.0#", "fb": null, "ml": 2, "cs": 0.3, "rl": [9, 7, 5, 6, 9, 4, 4, 9, 2, 9, 3, 3, 6, 5, 5, 2, 9, 6], "sid": "1839117236897250816", "psid": "1839117236897250816", "st": 1, "nst": 1, "pf": 1, "aw": 6.0, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 100388.8, "blab": 100376.8, "bl": 100382.8, "tb": 12.0, "tbb": 12.0, "tw": 6.0, "np": -6.0, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0.5, "tipo": "ganho" },
                 [60]: { "id": 220, "norl": null, "wp": { "7": [1, 2, 6] }, "lw": { "7": 3.6 }, "lwm": {}, "snw": { "7": 1 }, "slw": 3.6, "slwm": 3.6, "sc": 0, "stw": 7.2, "stwm": 7.2, "fs": null, "orl": [9, 7, 0, 9, 5, 8, 7, 4, 4, 2, 2, 8, 5, 5, 5, 6, 7, 8], "gwt": -1, "ctw": 7.2, "pmt": null, "cwc": 2, "fstc": null, "pcwc": 2, "rwsp": { "0": { "7": 6.0 } }, "hashr": "0:9;0;8;2;5;7#7;9;7;2;5;8#5;4;8;6#4;5#R#7#011021#MV#12.0#MT#1#MG#7.2#", "fb": null, "ml": 2, "cs": 0.3, "rl": [9, 7, 0, 9, 5, 8, 7, 4, 4, 2, 2, 8, 5, 5, 5, 6, 7, 8], "sid": "1839117242802830848", "psid": "1839117242802830848", "st": 1, "nst": 1, "pf": 1, "aw": 7.2, "wid": 0, "wt": "C", "wk": "0_C", "wbn": null, "wfg": null, "blb": 100382.8, "blab": 100370.8, "bl": 100378.0, "tb": 12.0, "tbb": 12.0, "tw": 7.2, "np": -4.8, "ocr": null, "mr": null, "ge": [1, 11], "multiplicador": 0.6, "tipo": "ganho" }
             };
-            return jsons[bet];
+            const base = Math.floor(Number(bet)) || 0;
+            const totalLinhas = Object.keys(jsons).length || 1;
+            const idx = ((base - 1) % totalLinhas + totalLinhas) % totalLinhas + 1;
+            return jsons[idx];
         });
     },
 };

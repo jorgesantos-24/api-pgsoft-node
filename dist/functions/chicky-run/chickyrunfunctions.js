@@ -105,16 +105,16 @@ exports.default = {
             return res[0];
         });
     },
-    atualizarLinhaGanho(userId, linhaGanho) {
+    atualizarLinhaGanho(userId, gamecode, linhaGanho) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield database_1.default.query("UPDATE users SET linha_ganho = ? WHERE id = ?", [linhaGanho !== null && linhaGanho !== void 0 ? linhaGanho : 0, userId]);
+            const res = yield database_1.default.query("INSERT INTO linhasganho (iduser, gamecode, linha) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE linha = VALUES(linha)", [userId, gamecode, linhaGanho !== null && linhaGanho !== void 0 ? linhaGanho : 0]);
             return res[0];
         });
     },
-    obterLinhaGanho(userId) {
+    obterLinhaGanho(userId, gamecode) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield database_1.default.query("SELECT linha_ganho FROM users WHERE id = ?", [userId]);
-            return res[0] && res[0][0] ? (res[0][0].linha_ganho || null) : null;
+            const res = yield database_1.default.query("SELECT linha FROM linhasganho WHERE iduser = ? AND gamecode = ?", [userId, gamecode]);
+            return res[0] && res[0][0] ? (res[0][0].linha || null) : null;
         });
     },
 };
