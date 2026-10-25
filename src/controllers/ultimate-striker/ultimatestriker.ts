@@ -19,6 +19,11 @@ import notcashstriker from "../../jsons/ultimate-striker/notcashstriker";
 // Arredonda dinheiro para 2 casas (evita 123.19999999999999)
 const r2 = (v: number) => Math.round((Number(v) + Number.EPSILON) * 100) / 100
 
+// Escala dos dados gravados: as linhas de ganho foram gravadas com cs=0.3, ml=2.
+// Todos os valores de dinheiro do JSON tem de ser multiplicados por (cs*ml)/(0.3*2)
+// para corresponderem a aposta actual. Sem isto o premio nao tem relacao com a aposta.
+const CS_GRAVADO = 0.3
+const ML_GRAVADO = 2
 
 
 const stepsStorage: { [key: string]: number } = {};
@@ -105,9 +110,12 @@ export default {
                     fb: { is: true, bm: 100, t: 0.75 },
                     wt: { mw: 5, bw: 20, mgw: 35, smgw: 50 },
                     maxwm: null,
-                    cs: [0.02, 0.12, 0.8],
+                    // Moedas proprias do Ultimate Striker. Estavam copiadas do Bikini
+                    // Paradise ([0.02, 0.12, 0.8]), o que fazia a tela mostrar uma
+                    // aposta diferente da que o servidor cobrava.
+                    cs: [0.03, 0.1, 0.3, 0.9],
                     ml: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                    mxl: 25,
+                    mxl: 20,
                     bl: user[0].saldo,
                     inwe: false,
                     iuwe: false,
@@ -177,29 +185,59 @@ export default {
             }
 
             let steps = getSteps(token, gamename);
+            // So o passo 0 de uma rodada cobra. Nos passos de cascata o bet ja foi pago.
+            const primeiroPasso = steps === 0;
+
+            // Compra de bonus: cobra bet * fb.bm e sincroniza com o site.
+            // Antes descontava 40 fixos so na BD local, sem callback ao operador.
+            let comprouBonus = false;
+            if (req.body.fb === "2") {
+                const valorcompra = r2(bet * 100);
+                if (saldoatual < valorcompra) {
+                    res.send(await notcashstriker.notcash(saldoatual, cs, ml));
+                    return;
+                }
+                const saldocompra = r2(saldoatual - valorcompra);
+                await ultimatestrikerfunctions.attsaldobyatk(token, saldocompra);
+                await apicontroller.callbackgame({
+                    agent_code: agent[0].agentcode,
+                    agent_secret: agent[0].secretKey,
+                    user_code: user[0].username,
+                    user_balance: user[0].saldo,
+                    user_total_credit: user[0].valorganho,
+                    user_total_debit: user[0].valorapostado,
+                    game_type: "slot",
+                    slot: {
+                        provider_code: "PGSOFT",
+                        game_code: gamename,
+                        round_id: await gerarNumeroUnico(),
+                        type: "BASE",
+                        bet: valorcompra,
+                        win: 0,
+                        txn_id: `${uuidv4()}`,
+                        txn_type: "debit_credit",
+                        is_buy: true,
+                        is_call: false,
+                        user_before_balance: saldoatual,
+                        user_after_balance: saldocompra,
+                        agent_before_balance: 100,
+                        agent_after_balance: 100,
+                        created_at: moment().toISOString(),
+                    },
+                });
+                saldoatual = saldocompra;
+                comprouBonus = true;
+                logger.info('[!] COMPRA DE BONUS: -' + valorcompra);
+            }
+
+            // Quanto e cobrado NESTA chamada: 0 nos passos de cascata e na compra de bonus
+            const betPasso = comprouBonus ? 0 : (primeiroPasso ? bet : 0);
+
             const resultadospin = await allfunctions.calcularganho(bet, saldoatual, token, gamename);
 
-            if (steps > 0) {
+            if (steps > 0 || comprouBonus) {
                 resultadospin.result = "ganho";
             }
-
-            if (req.body.fb === "2") {
-                let valorcompra: number = 40;
-                const saldocompra = saldoatual - valorcompra;
-                
-                logger.info(`[!] Saldo Atual: ${saldoatual}`);
-                logger.info(`[!] Novo Saldo após compra: ${saldocompra}`);
-                logger.info(`[!] Token Enviado: ${token}`);
-                
-                try {
-                    await ultimatestrikerfunctions.attsaldobyatk(token, saldocompra);
-                    logger.info('[!] COMPRA BONUS ACIONADO COM SUCESSO!');
-                    resultadospin.result = "ganho";
-                } catch (error) {
-                    logger.error('[!] ERRO AO ATUALIZAR SALDO:', error);
-                }
-            }
-            
 
             if (resultadospin.result === "perda") {
                 let newbalance = r2(saldoatual - bet);
@@ -297,7 +335,7 @@ export default {
                         txn_type: "debit_credit",
                         is_buy: false,
                         is_call: false,
-                        user_before_balance: user[0].saldo,
+                        user_before_balance: saldoatual,
                         user_after_balance: newbalance,
                         agent_before_balance: 100,
                         agent_after_balance: 100,
@@ -330,24 +368,33 @@ export default {
                 const ganhojson = await linhaganhostriker.linhaganho(numeroAleatorio);
             
                 // Verificar se ganhojson não é nulo ou indefinido
-                if (!ganhojson) {
+                if (!ganhojson || !ganhojson[steps]) {
                     throw new Error("Dados de ganho inválidos");
                 }
 
-                let valorganho = r2(cs * ml * 100);
-                let wmvalue = 0;
-                console.log("VALOR GANHO " + valorganho);
+                const passojson = ganhojson[steps];
+
+                // Escala: os valores gravados nao tem relacao com a aposta actual.
+                // Sem isto o premio era um 100x fixo a moeda.
+                const escala = (cs * ml) / (CS_GRAVADO * ML_GRAVADO);
+
+                let tw = r2(Number(passojson.tw || 0) * escala);
+                let aw = r2(Number(passojson.aw || 0) * escala);
+                let valorganho = tw;
+                console.log("VALOR GANHO " + valorganho + " (escala " + escala + ")");
 
                 // Verificar se saldoatual e bet são válidos
                 if (typeof saldoatual !== 'number' || typeof bet !== 'number') {
                     throw new Error("Saldo ou aposta inválidos");
                 }
 
-                const newbalance = r2(saldoatual + valorganho - bet);
-                
+                const newbalance = r2(saldoatual + valorganho - betPasso);
+
                 await ultimatestrikerfunctions.attsaldobyatk(token, newbalance);
-                await ultimatestrikerfunctions.atualizardebitado(token, bet);
-                await ultimatestrikerfunctions.atualizarapostado(token, bet);
+                if (betPasso > 0) {
+                    await ultimatestrikerfunctions.atualizardebitado(token, betPasso);
+                    await ultimatestrikerfunctions.atualizarapostado(token, betPasso);
+                }
                 await ultimatestrikerfunctions.atualizarganho(token, valorganho);
 
                 const possibilidades = Math.floor(Math.random() * 8193);
@@ -355,59 +402,59 @@ export default {
                 let json = {
                     "dt": {
                         "si": {
-                            "wp": ganhojson[steps].wp,
-                            "lw": ganhojson[steps].lw,
-                            "bwp": ganhojson[steps].bwp,
-                            "snww": ganhojson[steps].snww,
-                            "now": ganhojson[steps].now,
-                            "nowpr": ganhojson[steps].nowpr,
-                            "es": ganhojson[steps].es,
-                            "eb": ganhojson[steps].eb,
-                            "esb": ganhojson[steps].esb,
-                            "ebb": ganhojson[steps].ebb,
-                            "ptbr": ganhojson[steps].ptbr,
-                            "orl": ganhojson[steps].orl,
-                            "ssaw": ganhojson[steps].ssaw,
-                            "sc": ganhojson[steps].sc,
-                            "gm": ganhojson[steps].gm,
-                            "omf": ganhojson[steps].omf,
-                            "mf": ganhojson[steps].mf,
-                            "mi": ganhojson[steps].mi,
-                            "twbm": ganhojson[steps].twbm,
-                            "crtw": ganhojson[steps].crtw,
-                            "imw": ganhojson[steps].imw,
-                            "rs": ganhojson[steps].rs,
-                            "fs": ganhojson[steps].fs,
-                            "gwt": ganhojson[steps].gwt,
-                            "fb": ganhojson[steps].fb,
-                            "ctw": ganhojson[steps].ctw,
-                            "pmt": ganhojson[steps].pmt,
-                            "cwc": ganhojson[steps].cwc,
-                            "fstc": ganhojson[steps].fstc,
-                            "pcwc": ganhojson[steps].pcwc,
-                            "rwsp": ganhojson[steps].rwsp,
-                            "hashr": ganhojson[steps].hashr,
+                            "wp": passojson.wp,
+                            "lw": passojson.lw,
+                            "bwp": passojson.bwp,
+                            "snww": passojson.snww,
+                            "now": passojson.now,
+                            "nowpr": passojson.nowpr,
+                            "es": passojson.es,
+                            "eb": passojson.eb,
+                            "esb": passojson.esb,
+                            "ebb": passojson.ebb,
+                            "ptbr": passojson.ptbr,
+                            "orl": passojson.orl,
+                            "ssaw": r2(Number(passojson.ssaw || 0) * escala),
+                            "sc": passojson.sc,
+                            "gm": passojson.gm,
+                            "omf": passojson.omf,
+                            "mf": passojson.mf,
+                            "mi": passojson.mi,
+                            "twbm": r2(Number(passojson.twbm || 0) * escala),
+                            "crtw": r2(Number(passojson.crtw || 0) * escala),
+                            "imw": passojson.imw,
+                            "rs": passojson.rs,
+                            "fs": passojson.fs,
+                            "gwt": passojson.gwt,
+                            "fb": passojson.fb,
+                            "ctw": r2(Number(passojson.ctw || 0) * escala),
+                            "pmt": passojson.pmt,
+                            "cwc": passojson.cwc,
+                            "fstc": passojson.fstc,
+                            "pcwc": passojson.pcwc,
+                            "rwsp": passojson.rwsp,
+                            "hashr": passojson.hashr,
                             "ml": ml,
                             "cs": cs,
-                            "rl": ganhojson[steps].rl,
-                            "sid": ganhojson[steps].sid,
-                            "psid": ganhojson[steps].psid,
-                            "st": ganhojson[steps].st,
-                            "nst": ganhojson[steps].nst,
-                            "pf": ganhojson[steps].pf,
-                            "aw": ganhojson[steps].aw,
-                            "wid": ganhojson[steps].wid,
+                            "rl": passojson.rl,
+                            "sid": passojson.sid,
+                            "psid": passojson.psid,
+                            "st": passojson.st,
+                            "nst": passojson.nst,
+                            "pf": passojson.pf,
+                            "aw": aw,
+                            "wid": passojson.wid,
                             "wt": "C",
                             "wk": "0_C",
                             "wbn": null,
                             "wfg": null,
                             "blb": saldoatual,
-                            "blab": newbalance,
+                            "blab": betPasso > 0 ? r2(saldoatual - betPasso) : saldoatual,
                             "bl": newbalance,
-                            "tb": 0,
+                            "tb": betPasso,
                             "tbb": bet,
-                            "tw": ganhojson[steps].tw,
-                            "np": ganhojson[steps].np,
+                            "tw": tw,
+                            "np": r2(tw - betPasso),
                             "ocr": null,
                             "mr": null,
                             "ge": [1, 11]
@@ -444,13 +491,13 @@ export default {
                         game_code: gamename,
                         round_id: await gerarNumeroUnico(),
                         type: "BASE",
-                        bet: bet,
+                        bet: betPasso,
                         win: Number(valorganho),
                         txn_id: `${txnid}`,
                         txn_type: "debit_credit",
                         is_buy: false,
                         is_call: false,
-                        user_before_balance: user[0].saldo,
+                        user_before_balance: saldoatual,
                         user_after_balance: newbalance,
                         agent_before_balance: 100,
                         agent_after_balance: 100,
@@ -482,4 +529,3 @@ export default {
         }
     },
 };
-

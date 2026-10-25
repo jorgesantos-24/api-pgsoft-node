@@ -213,7 +213,7 @@ exports.default = {
             }
             try {
                 const user = yield raccoonfunctions_1.default.getuserbyatk(token);
-                let bet = r2(cs * ml * 30);
+                let bet = r2(cs * ml * 20);
                 console.log(bet);
                 let saldoatual = Number(user[0].saldo);
                 const gamename = "ninja-raccoon";
@@ -414,7 +414,7 @@ exports.default = {
                                     wpl: ganhojson[steps].wpl,
                                     twbm: ganhojson[steps].twbm,
                                     rtw: ganhojson[steps].rtw,
-                                    mwp: ganhojson[steps].mvp,
+                                    mwp: ganhojson[steps].mwp,
                                     mlw: ganhojson[steps].mlw,
                                     msnww: ganhojson[steps].msnww,
                                     mwpl: ganhojson[steps].mwpl,

@@ -142,9 +142,7 @@ exports.default = {
             function verificarValores(json) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const numerosVerificados = [];
-                    // Iterar sobre os índices em 'mt'
                     for (const chaveMT in json.mf.mt) {
-                        // Verificar se o valor correspondente em 'ms' é verdadeiro
                         const valorMS = json.mf.ms[chaveMT];
                         if (json.mf.ms[chaveMT] === true) {
                             numerosVerificados.push(json.mf.mt[chaveMT]);
@@ -299,7 +297,6 @@ exports.default = {
                     if (mulplicadores.length > 0) {
                         valorganho = r2(cs * ml * multplicador * parseFloat(mulplicadores[0]));
                     }
-                    // Chamar a função para verificar os valores
                     const newbalance = r2(saldoatual + valorganho - bet);
                     yield fortunedragonfunctions_1.default.attsaldobyatk(token, newbalance);
                     yield fortunedragonfunctions_1.default.atualizardebitado(token, bet);
@@ -342,12 +339,14 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                // saldo depois da aposta, ANTES do premio: o motor mostra o
+                                // desconto e so soma o ganho quando o premio aparece no ecra
+                                blab: r2(saldoatual - bet),
                                 bl: newbalance,
                                 tb: bet,
                                 tbb: bet,
                                 tw: valorganho,
-                                np: bet,
+                                np: r2(valorganho - bet),
                                 ocr: null,
                                 mr: null,
                                 ge: [1, 11],
@@ -419,45 +418,14 @@ exports.default = {
                     const txnid = (0, uuid_1.v4)();
                     const dataFormatada = (0, moment_1.default)().toISOString();
                     let valorganho = r2(cs * ml * multplicador * mulplicadores);
-                    let newbalance = 0;
-                    if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-                        newbalance = saldoatual - bet + valorganho;
-                        yield fortunedragonfunctions_1.default.attsaldobyatk(token, newbalance);
-                        yield apicontroller_1.default.callbackgame({
-                            agent_code: agent[0].agentcode,
-                            agent_secret: agent[0].secretKey,
-                            user_code: user[0].username,
-                            user_balance: user[0].saldo,
-                            user_total_credit: user[0].valorganho,
-                            user_total_debit: user[0].valorapostado,
-                            game_type: "slot",
-                            slot: {
-                                provider_code: "PGSOFT",
-                                game_code: gamename,
-                                round_id: yield gerarNumeroUnico(),
-                                type: "BASE",
-                                bet: bet,
-                                win: valorganho,
-                                txn_id: `${txnid}`,
-                                txn_type: "debit_credit",
-                                is_buy: false,
-                                is_call: false,
-                                user_before_balance: user[0].saldo,
-                                user_after_balance: newbalance,
-                                agent_before_balance: 100,
-                                agent_after_balance: 100,
-                                created_at: dataFormatada,
-                            },
-                        });
-                    }
-                    newbalance = saldoatual + valorganho;
-                    if (calltwo[0].steps === 0) {
-                        newbalance = saldoatual + valorganho - bet;
-                    }
+                    const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1;
+                    const betPasso = primeiroPasso ? bet : 0;
+                    const newbalance = r2(saldoatual - betPasso + valorganho);
                     yield fortunedragonfunctions_1.default.attawcall(calltwo[0].id, valorganho);
                     yield fortunedragonfunctions_1.default.attsaldobyatk(token, newbalance);
-                    yield fortunedragonfunctions_1.default.atualizardebitado(token, bet);
-                    yield fortunedragonfunctions_1.default.atualizarapostado(token, bet);
+                    yield fortunedragonfunctions_1.default.atualizardebitado(token, betPasso);
+                    yield fortunedragonfunctions_1.default.atualizarapostado(token, betPasso);
+                    yield fortunedragonfunctions_1.default.atualizarganho(token, valorganho);
                     if (calltwo[0].steps > 0) {
                         yield allfunctions_1.default.subtrairstepscall(resultadospin.idcall);
                     }
@@ -501,12 +469,14 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                // idem: saldo depois da aposta do passo, antes do premio
+                                blab: r2(saldoatual - betPasso),
                                 bl: newbalance,
-                                tb: bet,
-                                tbb: bet,
+                                tb: betPasso,
+                                tbb: betPasso,
                                 tw: valorganho,
-                                np: -bet,
+                                // CORRECCAO 3: o np tem de reflectir a aposta do passo (0 fora do primeiro)
+                                np: r2(valorganho - betPasso),
                                 ocr: null,
                                 mr: null,
                                 ge: [2, 11],
@@ -527,7 +497,7 @@ exports.default = {
                             game_code: gamename,
                             round_id: yield gerarNumeroUnico(),
                             type: "BASE",
-                            bet: 0,
+                            bet: betPasso,
                             win: Number(valorganho),
                             txn_id: `${txnid}`,
                             txn_type: "debit_credit",

@@ -205,6 +205,10 @@ exports.default = {
                     return;
                 }
                 let steps = getSteps(token, gamename);
+                // So o passo 0 de uma rodada cobra a aposta. Nos passos de cascata o bet ja
+                // foi pago no inicio da rodada, por isso tb=0 e o callback vai com bet=0.
+                const primeiroPasso = steps === 0;
+                const betPasso = primeiroPasso ? bet : 0;
                 const resultadospin = yield allfunctions_1.default.calcularganho(bet, saldoatual, token, gamename);
                 if (steps > 0) {
                     resultadospin.result = "ganho";
@@ -212,9 +216,7 @@ exports.default = {
                 if (resultadospin.result === "bonus") {
                     resultadospin.result = "ganho";
                 }
-                if (resultadospin.result === "perda") {
-                    resultadospin.result = "ganho";
-                }
+                // NAO converter perda em ganho aqui: o ramo de perda abaixo tem de correr.
                 if (resultadospin.result === "perda") {
                     let newbalance = r2(saldoatual - bet);
                     yield riverfunctions_1.default.attsaldobyatk(token, newbalance);
@@ -268,9 +270,9 @@ exports.default = {
                                 wk: "0_C",
                                 wbn: null,
                                 wfg: null,
-                                blb: 0.0,
-                                blab: 0.0,
-                                bl: saldoatual,
+                                blb: saldoatual,
+                                blab: newbalance,
+                                bl: newbalance,
                                 tb: bet,
                                 tbb: bet,
                                 tw: 0.0,
@@ -304,7 +306,7 @@ exports.default = {
                             txn_type: "debit_credit",
                             is_buy: false,
                             is_call: false,
-                            user_before_balance: user[0].saldo,
+                            user_before_balance: saldoatual,
                             user_after_balance: newbalance,
                             agent_before_balance: 100,
                             agent_after_balance: 100,
@@ -344,19 +346,16 @@ exports.default = {
                         if (typeof saldoatual !== "number" || typeof bet !== "number") {
                             throw new Error("Saldo ou aposta inválidos");
                         }
-                        let newbalance;
-                        // Verifica se o steps já começou a contar, se sim, não subtrai o bet
-                        if (getSteps(token, gamename) > 0) {
-                            newbalance = saldoatual + valorganho; // Não desconta o bet quando os steps estão contando
-                            logger_1.default.info("Steps em andamento, não desconta o bet");
-                        }
-                        else {
-                            newbalance = saldoatual + valorganho - bet; // Subtrai o bet apenas se os steps não estão contando
-                        }
-                        // Atualizar saldo, debitar aposta e atualizar ganho
+                        // So desconta o bet no primeiro passo da rodada
+                        let newbalance = primeiroPasso
+                            ? r2(saldoatual - bet + valorganho)
+                            : r2(saldoatual + valorganho);
+                        // Atualizar saldo; debito e apostado so contam no primeiro passo
                         yield riverfunctions_1.default.attsaldobyatk(token, newbalance);
-                        yield riverfunctions_1.default.atualizardebitado(token, bet);
-                        yield riverfunctions_1.default.atualizarapostado(token, bet);
+                        if (primeiroPasso) {
+                            yield riverfunctions_1.default.atualizardebitado(token, bet);
+                            yield riverfunctions_1.default.atualizarapostado(token, bet);
+                        }
                         yield riverfunctions_1.default.atualizarganho(token, valorganho);
                         let json = {
                             dt: {
@@ -365,7 +364,7 @@ exports.default = {
                                     wbwp: ganhojson[steps].wbwp,
                                     wp: ganhojson[steps].wp,
                                     twp: ganhojson[steps].twp,
-                                    lw: lwchange,
+                                    lw: ganhojson[steps].lw,
                                     trl: ganhojson[steps].trl,
                                     torl: ganhojson[steps].torl,
                                     bwp: ganhojson[steps].bwp,
@@ -406,12 +405,12 @@ exports.default = {
                                     wbn: null,
                                     wfg: null,
                                     blb: saldoatual,
-                                    blab: newbalance,
+                                    blab: primeiroPasso ? r2(saldoatual - bet) : saldoatual,
                                     bl: newbalance,
-                                    tb: bet,
+                                    tb: betPasso,
                                     tbb: bet,
                                     tw: valorganho,
-                                    np: -bet,
+                                    np: r2(valorganho - betPasso),
                                     ocr: null,
                                     mr: null,
                                     ge: [1, 11],
@@ -432,7 +431,7 @@ exports.default = {
                             resetSteps(token, gamename);
                             yield riverfunctions_1.default.atualizarLinhaGanho(userId, null); // Resetar a linha de ganho quando os steps são resetados
                         }
-                        // Callback para o jogo
+                        // Callback para o jogo: bet=0 nos passos de cascata, senao o site cobra duas vezes
                         yield apicontroller_1.default.callbackgame({
                             agent_code: agent[0].agentcode,
                             agent_secret: agent[0].secretKey,
@@ -446,13 +445,13 @@ exports.default = {
                                 game_code: gamename,
                                 round_id: yield gerarNumeroUnico(),
                                 type: "BASE",
-                                bet: bet,
+                                bet: betPasso,
                                 win: Number(valorganho),
                                 txn_id: `${txnid}`,
                                 txn_type: "debit_credit",
                                 is_buy: false,
                                 is_call: false,
-                                user_before_balance: user[0].saldo,
+                                user_before_balance: saldoatual,
                                 user_after_balance: newbalance,
                                 agent_before_balance: 100,
                                 agent_after_balance: 100,

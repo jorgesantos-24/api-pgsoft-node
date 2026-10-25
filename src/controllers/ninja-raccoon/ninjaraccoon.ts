@@ -170,7 +170,7 @@ export default {
       }
       try {
          const user = await ninjaraccoonfunctions.getuserbyatk(token)
-         let bet: number = r2(cs * ml * 30)
+         let bet: number = r2(cs * ml * 20)
          console.log(bet)
          let saldoatual: number = Number(user[0].saldo)
          const gamename = "ninja-raccoon"
@@ -393,7 +393,7 @@ export default {
                         wpl: ganhojson[steps].wpl,
                         twbm: ganhojson[steps].twbm,
                         rtw: ganhojson[steps].rtw,
-                        mwp: ganhojson[steps].mvp,
+                        mwp: ganhojson[steps].mwp,
                         mlw: ganhojson[steps].mlw,
                         msnww: ganhojson[steps].msnww,
                         mwpl: ganhojson[steps].mwpl,

@@ -166,7 +166,7 @@ exports.default = {
             const token = req.body.atk;
             try {
                 const user = yield majestictsfunctions_1.default.getuserbyatk(token);
-                let bet = r2(cs * ml * 20);
+                let bet = r2(cs * ml * 10);
                 let saldoatual = Number(user[0].saldo);
                 const gamename = "majestic-ts";
                 (0, serverEvents_1.emitirEventoInterno)("att", {

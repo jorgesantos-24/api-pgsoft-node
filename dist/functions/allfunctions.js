@@ -131,7 +131,7 @@ exports.default = {
     },
     adicionarZeroAntes(numero) {
         return __awaiter(this, void 0, void 0, function* () {
-            return Number("0." + numero.toString());
+            return Number(numero) / 100;
         });
     },
     determinarResultado(probabilidadeGanho, probabilidadebonus, id, gamecode) {

@@ -103,7 +103,7 @@ export default {
    },
 
    async adicionarZeroAntes(numero: number): Promise<number> {
-      return Number("0." + numero.toString())
+      return Number(numero) / 100
    },
 
    async determinarResultado(probabilidadeGanho: number, probabilidadebonus: number, id: number, gamecode: string) {

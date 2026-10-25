@@ -131,7 +131,7 @@ export default {
 
       try {
          const user = await majesticfunctions.getuserbyatk(token)
-         let bet: number = r2(cs * ml * 20)
+         let bet: number = r2(cs * ml * 10)
          let saldoatual: number = Number(user[0].saldo)
          const gamename = "majestic-ts"
 
