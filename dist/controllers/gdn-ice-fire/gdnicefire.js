@@ -223,9 +223,6 @@ exports.default = {
                     resultadospin.result = "ganho";
                 }
                 if (resultadospin.result === "perda") {
-                    resultadospin.result = "ganho";
-                }
-                if (resultadospin.result === "perda") {
                     let newbalance = r2(saldoatual - bet);
                     yield icefirefunctions_1.default.attsaldobyatk(token, newbalance);
                     yield icefirefunctions_1.default.atualizardebitado(token, bet);
@@ -318,9 +315,9 @@ exports.default = {
                 if (resultadospin.result === "ganho") {
                     const numeroAleatorio = Math.floor(Math.random() * 60) + 1; // Supondo que maxLinhas seja o número máximo de linhas disponíveis
                     const ganhojson = yield linhaganhoicefire_1.default.linhaganho(numeroAleatorio);
-                    const multplicador = yield countrwsp(ganhojson.rwsp[0] || ganhojson.rwsp);
+                    const multplicador = Number(ganhojson.multiplicador);
                     console.log("MULTIPLICADOR: " + multplicador);
-                    let valorganho = r2(cs * ml * bet * multplicador);
+                    let valorganho = r2(bet * multplicador);
                     console.log("VALOR GANHO " + valorganho);
                     console.log("SALDO ANTES DO GANHO: " + saldoatual);
                     const newbalance = r2(saldoatual - bet + valorganho);
@@ -368,12 +365,12 @@ exports.default = {
                                 wbn: null,
                                 wfg: null,
                                 blb: saldoatual,
-                                blab: newbalance,
+                                blab: r2(saldoatual - bet),
                                 bl: newbalance,
                                 tb: bet,
                                 tbb: bet,
                                 tw: valorganho,
-                                np: -bet,
+                                np: r2(valorganho - bet),
                                 ocr: null,
                                 mr: null,
                                 ge: [1, 11],

@@ -195,11 +195,6 @@ export default {
          if (resultadospin.result === "bonus") {
             resultadospin.result = "ganho"
          }
-
-         if (resultadospin.result === "perda") {
-            resultadospin.result = "ganho"
-         }
-
          if (resultadospin.result === "perda") {
             let newbalance = r2(saldoatual - bet)
             await gdnicefirefunctions.attsaldobyatk(token, newbalance)
@@ -297,9 +292,9 @@ export default {
          if (resultadospin.result === "ganho") {
             const numeroAleatorio = Math.floor(Math.random() * 60) + 1 // Supondo que maxLinhas seja o número máximo de linhas disponíveis
             const ganhojson = await linhaganhoicefire.linhaganho(numeroAleatorio)
-            const multplicador = await countrwsp(ganhojson.rwsp[0] || ganhojson.rwsp)
+            const multplicador = Number(ganhojson.multiplicador)
             console.log("MULTIPLICADOR: " + multplicador)
-            let valorganho = r2(cs * ml * bet * multplicador)
+            let valorganho = r2(bet * multplicador)
 
             console.log("VALOR GANHO " + valorganho)
 
@@ -352,12 +347,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
                      tw: valorganho,
-                     np: -bet,
+                     np: r2(valorganho - bet),
                      ocr: null,
                      mr: null,
                      ge: [1, 11],
