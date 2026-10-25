@@ -222,9 +222,6 @@ exports.default = {
                     resultadospin.result = "ganho";
                 }
                 if (resultadospin.result === "perda") {
-                    resultadospin.result = "ganho";
-                }
-                if (resultadospin.result === "perda") {
                     let newbalance = r2(saldoatual - bet);
                     yield bountyfunctions_1.default.attsaldobyatk(token, newbalance);
                     yield bountyfunctions_1.default.atualizardebitado(token, bet);
@@ -344,7 +341,7 @@ exports.default = {
                         }
                         const multplicador = yield countrwsp(ganhojson[steps].rwsp || 0);
                         yield lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs, ml);
-                        let valorganho = r2(cs * ml * multplicador * 20);
+                        let valorganho = r2(cs * ml * multplicador);
                         let wmvalue = 0;
                         console.log("VALOR GANHO " + valorganho);
                         // Verificar se saldoatual e bet são válidos

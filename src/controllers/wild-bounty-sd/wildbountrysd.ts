@@ -196,10 +196,6 @@ export default {
          }
 
          if (resultadospin.result === "perda") {
-            resultadospin.result = "ganho"
-         }
-
-         if (resultadospin.result === "perda") {
             let newbalance = r2(saldoatual - bet)
             await wildbountysdfunctions.attsaldobyatk(token, newbalance)
             await wildbountysdfunctions.atualizardebitado(token, bet)
@@ -329,7 +325,7 @@ export default {
                const multplicador = await countrwsp(ganhojson[steps].rwsp || 0)
                await lwchange(ganhojson[steps].rwsp, ganhojson[steps].lw, cs, ml)
 
-               let valorganho = r2(cs * ml * multplicador * 20)
+               let valorganho = r2(cs * ml * multplicador)
                let wmvalue = 0
                console.log("VALOR GANHO " + valorganho)
 
