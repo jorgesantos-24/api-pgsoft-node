@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = __importDefault(require("../logger"));
 const allfunctions_1 = __importDefault(require("../functions/allfunctions"));
+const attTrain_1 = require("../attTrain");
 require("dotenv/config");
 exports.default = {
     verifySession(req, res) {
@@ -22,6 +23,9 @@ exports.default = {
             const gi = String(req.body.gi);
             try {
                 logger_1.default.info('[verifySession] gi=' + gi + ' tk=' + token);
+                // O motor respondeu: o treino de att cumpriu a missao e pode parar.
+                // Sem isto, o servidor continuaria a mandar att durante 20s em todos os jogos.
+                (0, attTrain_1.pararTreino)(token);
                 const user = yield allfunctions_1.default.getuserbytoken(token);
                 logger_1.default.info('[verifySession] user=' + (user[0] ? user[0].username : 'NAO ENCONTRADO'));
                 if (!user[0]) {
@@ -3127,63 +3131,9 @@ exports.default = {
     },
     gamesrules(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = req.body.atk;
             const gi = req.body.gid;
             try {
-                let gamename = "";
-                if (gi === "126") {
-                    gamename = "fortune-tiger";
-                }
-                else if (gi === "98") {
-                    gamename = "fortune-ox";
-                }
-                else if (gi === "1695365") {
-                    gamename = "fortune-dragon";
-                }
-                else if (gi === "1543462") {
-                    gamename = "fortune-rabbit";
-                }
-                else if (gi === "68") {
-                    gamename = "fortune-mouse";
-                }
-                else if (gi === "69") {
-                    gamename = "bikine-paradise";
-                }
-                else if (gi === "40") {
-                    gamename = "jungle-delight";
-                }
-                else if (gi === "48") {
-                    gamename = "double-fortune";
-                }
-                else if (gi === "42") {
-                    gamename = "ganesha-gold";
-                }
-                else if (gi === "63") {
-                    gamename = "dragon-tiger-luck";
-                }
-                else if (gi === "125") {
-                    gamename = "butterfly-blossom";
-                }
-                else if (gi === "1601012") {
-                    gamename = "lucky-clover";
-                }
-                else if (gi === "1489936") {
-                    gamename = "ultimate-striker";
-                }
-                else if (gi === "1682240") {
-                    gamename = "cash-mania";
-                }
-                else {
-                    res.send({
-                        dt: null,
-                        err: {
-                            cd: "1302",
-                            msg: "OERR: Operator return an error. Failed to verify operator player session",
-                            tid: "YNGTHB25",
-                        },
-                    });
-                    return false;
-                }
+                logger_1.default.info('[gamesrules] gid=' + gi);
                 res.send({
                     dt: {
                         rtp: { Default: { min: 140.0, max: 140.0 } },
@@ -3200,63 +3150,9 @@ exports.default = {
     },
     betsummary(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = req.body.atk;
             const gi = req.body.gid;
             try {
-                let gamename = "";
-                if (gi === "126") {
-                    gamename = "fortune-tiger";
-                }
-                else if (gi === "98") {
-                    gamename = "fortune-ox";
-                }
-                else if (gi === "1695365") {
-                    gamename = "fortune-dragon";
-                }
-                else if (gi === "1543462") {
-                    gamename = "fortune-rabbit";
-                }
-                else if (gi === "68") {
-                    gamename = "fortune-mouse";
-                }
-                else if (gi === "69") {
-                    gamename = "bikine-paradise";
-                }
-                else if (gi === "40") {
-                    gamename = "jungle-delight";
-                }
-                else if (gi === "48") {
-                    gamename = "double-fortune";
-                }
-                else if (gi === "42") {
-                    gamename = "ganesha-gold";
-                }
-                else if (gi === "63") {
-                    gamename = "dragon-tiger-luck";
-                }
-                else if (gi === "125") {
-                    gamename = "butterfly-blossom";
-                }
-                else if (gi === "1601012") {
-                    gamename = "lucky-clover";
-                }
-                else if (gi === "1489936") {
-                    gamename = "ultimate-striker";
-                }
-                else if (gi === "1682240") {
-                    gamename = "cash-mania";
-                }
-                else {
-                    res.send({
-                        dt: null,
-                        err: {
-                            cd: "1302",
-                            msg: "OERR: Operator return an error. Failed to verify operator player session",
-                            tid: "YNGTHB25",
-                        },
-                    });
-                    return false;
-                }
+                logger_1.default.info('[betsummary] gid=' + gi);
                 res.send({
                     dt: { lut: 0, bs: null },
                     err: null,
@@ -3494,66 +3390,9 @@ exports.default = {
     },
     bethistory(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const token = req.body.atk;
             const gi = req.body.gid;
             try {
-                let gamename = "";
-                if (gi === "126") {
-                    gamename = "fortune-tiger";
-                }
-                else if (gi === "98") {
-                    gamename = "fortune-ox";
-                }
-                else if (gi === "1695365") {
-                    gamename = "fortune-dragon";
-                }
-                else if (gi === "1543462") {
-                    gamename = "fortune-rabbit";
-                }
-                else if (gi === "68") {
-                    gamename = "fortune-mouse";
-                }
-                else if (gi === "69") {
-                    gamename = "bikine-paradise";
-                }
-                else if (gi === "40") {
-                    gamename = "jungle-delight";
-                }
-                else if (gi === "48") {
-                    gamename = "double-fortune";
-                }
-                else if (gi === "42") {
-                    gamename = "ganesha-gold";
-                }
-                else if (gi === "63") {
-                    gamename = "dragon-tiger-luck";
-                }
-                else if (gi === "125") {
-                    gamename = "butterfly-blossom";
-                }
-                else if (gi === "1601012") {
-                    gamename = "lucky-clover";
-                }
-                else if (gi === "1489936") {
-                    gamename = "ultimate-striker";
-                }
-                else if (gi === "1529867") {
-                    gamename = "ninja-raccoon";
-                }
-                else if (gi === "1682240") {
-                    gamename = "cash-mania";
-                }
-                else {
-                    res.send({
-                        dt: null,
-                        err: {
-                            cd: "1302",
-                            msg: "OERR: Operator return an error. Failed to verify operator player session",
-                            tid: "YNGTHB25",
-                        },
-                    });
-                    return false;
-                }
+                logger_1.default.info('[bethistory] gid=' + gi);
                 res.send({
                     dt: { bh: [] },
                     err: null,

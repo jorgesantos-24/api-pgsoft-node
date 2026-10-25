@@ -49,6 +49,7 @@ const socket_io_1 = require("socket.io");
 const allfunctions_1 = __importDefault(require("./functions/allfunctions"));
 const serverEvents_1 = require("./serverEvents");
 const cors_config_1 = require("./cors-config");
+const attTrain_1 = require("./attTrain");
 require("dotenv/config");
 // const privateKey = fs.readFileSync("server.key", "utf8")
 // const certificate = fs.readFileSync("server.crt", "utf8")
@@ -67,33 +68,70 @@ index_1.default.info('DOMINIO CONECTADO: ' + process.env.DOMINIO_API);
 const users = new Map();
 io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     io.setMaxListeners(50);
-    console.log("Usuário Conectado", socket.id);
-    socket.on("join", (socket1) => __awaiter(void 0, void 0, void 0, function* () {
-        const token = socket1.token;
-        const gameid = socket1.gameId;
+    index_1.default.info('[connect] id=' + socket.id);
+    // DIAGNOSTICO: registra tudo o que o cliente envia pelo socket.
+    // Se houver um evento sem handler (ex.: algo de spin), aparece aqui.
+    socket.onAny((event, ...args) => {
+        let payload = '';
+        try {
+            payload = JSON.stringify(args).slice(0, 400);
+        }
+        catch (e) {
+            payload = '[nao serializavel]';
+        }
+        index_1.default.info('[sock] id=' + socket.id + ' evento=' + event + ' payload=' + payload);
+    });
+    socket.on("join", (payload) => __awaiter(void 0, void 0, void 0, function* () {
+        payload = payload || {};
+        let token = payload.token;
+        const gameid = payload.gameId;
+        // REDE DE SEGURANCA: se o link do jogo vier com "atk" em vez de "t", o motor
+        // manda o join sem token e a sessao morre (erro C1002). O referer do iframe
+        // tem o URL completo do jogo, por isso o token vai-se buscar la.
+        if (!token) {
+            const ref = socket.handshake.headers.referer || "";
+            const m = ref.match(/[?&](?:t|atk)=([0-9a-fA-F-]{36})/);
+            if (m) {
+                token = m[1];
+                index_1.default.info('[join] token recuperado do referer: ' + token);
+            }
+        }
         index_1.default.info('[join] token=' + token + ' gameId=' + gameid);
+        if (!token) {
+            index_1.default.info('[join] SEM TOKEN. socket=' + socket.id + ' referer=' + (socket.handshake.headers.referer || ''));
+            return;
+        }
         const u = yield allfunctions_1.default.getuserbytoken(token);
-        if (u[0]) {
-            socket.emit("att", {
-                token,
-                username: u[0].username,
-                bet: 0,
-                saldo: u[0].saldo,
-                rtp: u[0].rtp,
-                agentid: u[0].agentid,
-                gamecode: gameid,
-            });
-            index_1.default.info('[join] att enviado para ' + u[0].username);
-        }
-        else {
+        if (!u[0]) {
             index_1.default.info('[join] utilizador NAO encontrado para token ' + token);
+            return;
         }
-        setInterval(function () {
+        const att = {
+            token,
+            username: u[0].username,
+            bet: 0,
+            saldo: u[0].saldo,
+            rtp: u[0].rtp,
+            agentid: u[0].agentid,
+            gamecode: gameid,
+        };
+        // O cliente manda o "join" ANTES de acabar de arrancar o motor, por isso um
+        // att unico chega muitas vezes antes de o ouvinte existir e perde-se.
+        // Em vez de disparar 5 e calar aos 6s, insistimos ate o motor responder
+        // com o verifySession (pararTreino, chamado no sessioncontroller).
+        index_1.default.info('[join] arranca treino de att para ' + u[0].username);
+        (0, attTrain_1.treinoAtt)(socket, token, att);
+        // RTP recalculado a cada 10s enquanto a sessao viver.
+        const intervalo = setInterval(function () {
             return __awaiter(this, void 0, void 0, function* () {
+                if (!socket.connected) {
+                    clearInterval(intervalo);
+                    return;
+                }
                 const user = yield allfunctions_1.default.getuserbytoken(token);
                 if (!user[0]) {
-                    socket.disconnect(true);
-                    return false;
+                    clearInterval(intervalo);
+                    return;
                 }
                 const retornado = user[0].valorganho;
                 const valorapostado = user[0].valorapostado;
@@ -107,52 +145,31 @@ io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
     io.removeAllListeners("attganho");
     io.removeAllListeners("att");
     (0, serverEvents_1.adicionarListener)("attganho", (dados) => __awaiter(void 0, void 0, void 0, function* () {
-        users.forEach((valor, chave) => __awaiter(void 0, void 0, void 0, function* () {
-            let newvalue = parseFloat(users.get(socket.id).aw) + dados.aw;
-            users.set(socket.id, {
-                aw: newvalue,
-            });
-        }));
+        const atual = users.get(socket.id);
+        if (!atual)
+            return;
+        const newvalue = parseFloat(atual.aw || 0) + dados.aw;
+        users.set(socket.id, Object.assign(Object.assign({}, atual), { aw: newvalue }));
         (0, serverEvents_1.emitirEventoInterno)("awreceive", {
-            aw: users.get(socket.id).aw,
+            aw: newvalue,
         });
     }));
     (0, serverEvents_1.adicionarListener)("att", (dados) => {
-        users.forEach((valor, chave) => {
-            if (valor.token === dados.token) {
-                return false;
-            }
-            else {
-                users.set(socket.id, {
-                    token: dados.token,
-                    username: dados.username,
-                    bet: dados.bet,
-                    saldo: dados.saldo,
-                    rtp: dados.rtp,
-                    agentid: dados.agentid,
-                    socketid: socket.id,
-                    gamecode: dados.gamecode,
-                    aw: 0,
-                });
-            }
+        users.set(socket.id, {
+            token: dados.token,
+            username: dados.username,
+            bet: dados.bet,
+            saldo: dados.saldo,
+            rtp: dados.rtp,
+            agentid: dados.agentid,
+            socketid: socket.id,
+            gamecode: dados.gamecode,
+            aw: 0,
         });
-        if (Object.keys(users).length === 0) {
-            users.set(socket.id, {
-                token: dados.token,
-                username: dados.username,
-                bet: dados.bet,
-                saldo: dados.saldo,
-                rtp: dados.rtp,
-                agentid: dados.agentid,
-                socketid: socket.id,
-                gamecode: dados.gamecode,
-                aw: 0,
-            });
-        }
     });
     socket.on("disconnect", (reason) => {
         users.delete(socket.id);
-        console.log("Cliente desconectado:", reason);
+        index_1.default.info('[disconnect] id=' + socket.id + ' motivo=' + reason);
     });
 }));
 // Middleware para adicionar compressão

@@ -13,6 +13,7 @@ import { Server, Socket } from "socket.io"
 import allfunctions from "./functions/allfunctions"
 import { emitirEventoInterno, adicionarListener } from "./serverEvents"
 import { corsOptions, socketIoCors } from "./cors-config"
+import { treinoAtt } from "./attTrain"
 
 import "dotenv/config"
 
@@ -45,37 +46,70 @@ const users = new Map<string, any>()
 
 io.on("connection", async (socket: Socket) => {
    io.setMaxListeners(50);
-   console.log("Usuário Conectado", socket.id);
+   logger.info('[connect] id=' + socket.id)
 
-   socket.on("join", async (socket1) => {
-      const token: any = socket1.token
-      const gameid: any = socket1.gameId
+   // DIAGNOSTICO: registra tudo o que o cliente envia pelo socket.
+   // Se houver um evento sem handler (ex.: algo de spin), aparece aqui.
+   socket.onAny((event: string, ...args: any[]) => {
+      let payload = ''
+      try { payload = JSON.stringify(args).slice(0, 400) } catch (e) { payload = '[nao serializavel]' }
+      logger.info('[sock] id=' + socket.id + ' evento=' + event + ' payload=' + payload)
+   })
+
+   socket.on("join", async (payload: any) => {
+      payload = payload || {}
+
+      let token: string = payload.token
+      const gameid: any = payload.gameId
+
+      // REDE DE SEGURANCA: se o link do jogo vier com "atk" em vez de "t", o motor
+      // manda o join sem token e a sessao morre (erro C1002). O referer do iframe
+      // tem o URL completo do jogo, por isso o token vai-se buscar la.
+      if (!token) {
+         const ref = socket.handshake.headers.referer || ""
+         const m = ref.match(/[?&](?:t|atk)=([0-9a-fA-F-]{36})/)
+         if (m) {
+            token = m[1]
+            logger.info('[join] token recuperado do referer: ' + token)
+         }
+      }
 
       logger.info('[join] token=' + token + ' gameId=' + gameid)
 
-      const u = await allfunctions.getuserbytoken(token)
-      if (u[0]) {
-         socket.emit("att", {
-            token,
-            username: u[0].username,
-            bet: 0,
-            saldo: u[0].saldo,
-            rtp: u[0].rtp,
-            agentid: u[0].agentid,
-            gamecode: gameid,
-         })
-         logger.info('[join] att enviado para ' + u[0].username)
-      } else {
-         logger.info('[join] utilizador NAO encontrado para token ' + token)
+      if (!token) {
+         logger.info('[join] SEM TOKEN. socket=' + socket.id + ' referer=' + (socket.handshake.headers.referer || ''))
+         return
       }
 
-      setInterval(async function () {
-         const user = await allfunctions.getuserbytoken(token)
+      const u = await allfunctions.getuserbytoken(token)
+      if (!u[0]) {
+         logger.info('[join] utilizador NAO encontrado para token ' + token)
+         return
+      }
 
-         if (!user[0]) {
-            socket.disconnect(true)
-            return false
-         }
+      const att = {
+         token,
+         username: u[0].username,
+         bet: 0,
+         saldo: u[0].saldo,
+         rtp: u[0].rtp,
+         agentid: u[0].agentid,
+         gamecode: gameid,
+      }
+
+      // O cliente manda o "join" ANTES de acabar de arrancar o motor, por isso um
+      // att unico chega muitas vezes antes de o ouvinte existir e perde-se.
+      // Em vez de disparar 5 e calar aos 6s, insistimos ate o motor responder
+      // com o verifySession (pararTreino, chamado no sessioncontroller).
+      logger.info('[join] arranca treino de att para ' + u[0].username)
+      treinoAtt(socket, token, att)
+
+      // RTP recalculado a cada 10s enquanto a sessao viver.
+      const intervalo = setInterval(async function () {
+         if (!socket.connected) { clearInterval(intervalo); return }
+
+         const user = await allfunctions.getuserbytoken(token)
+         if (!user[0]) { clearInterval(intervalo); return }
 
          const retornado = user[0].valorganho
          const valorapostado = user[0].valorapostado
@@ -92,55 +126,35 @@ io.on("connection", async (socket: Socket) => {
    io.removeAllListeners("att");
 
    adicionarListener("attganho", async (dados) => {
-      users.forEach(async (valor, chave) => {
-         let newvalue = parseFloat(users.get(socket.id).aw) + dados.aw
-         users.set(socket.id, {
-            aw: newvalue,
-         })
-      })
+      const atual = users.get(socket.id)
+      if (!atual) return
+
+      const newvalue = parseFloat(atual.aw || 0) + dados.aw
+      users.set(socket.id, { ...atual, aw: newvalue })
+
       emitirEventoInterno("awreceive", {
-         aw: users.get(socket.id).aw,
+         aw: newvalue,
       })
    })
 
    adicionarListener("att", (dados) => {
-      users.forEach((valor, chave) => {
-         if (valor.token === dados.token) {
-            return false
-         } else {
-            users.set(socket.id, {
-               token: dados.token,
-               username: dados.username,
-               bet: dados.bet,
-               saldo: dados.saldo,
-               rtp: dados.rtp,
-               agentid: dados.agentid,
-               socketid: socket.id,
-               gamecode: dados.gamecode,
-               aw: 0,
-            })
-         }
+      users.set(socket.id, {
+         token: dados.token,
+         username: dados.username,
+         bet: dados.bet,
+         saldo: dados.saldo,
+         rtp: dados.rtp,
+         agentid: dados.agentid,
+         socketid: socket.id,
+         gamecode: dados.gamecode,
+         aw: 0,
       })
-
-      if (Object.keys(users).length === 0) {
-         users.set(socket.id, {
-            token: dados.token,
-            username: dados.username,
-            bet: dados.bet,
-            saldo: dados.saldo,
-            rtp: dados.rtp,
-            agentid: dados.agentid,
-            socketid: socket.id,
-            gamecode: dados.gamecode,
-            aw: 0,
-         })
-      }
    })
 
    socket.on("disconnect", (reason) => {
       users.delete(socket.id)
 
-      console.log("Cliente desconectado:", reason)
+      logger.info('[disconnect] id=' + socket.id + ' motivo=' + reason)
    })
 })
 
