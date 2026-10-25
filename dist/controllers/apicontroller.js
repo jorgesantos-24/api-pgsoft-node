@@ -269,6 +269,7 @@ exports.default = {
     },
     callbackgame(json) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("[DBG] cb inicio " + (json && json.slot ? json.slot.game_code : "?"));
             const agent = yield apifunctions_1.default.getagentbysecretkey(json.agent_secret);
             try {
                 yield (0, axios_1.default)({
@@ -286,6 +287,7 @@ exports.default = {
                     .catch((error) => {
                     console.log(error);
                 });
+                console.log("[DBG] cb fim");
             }
             catch (error) {
                 console.log(error);

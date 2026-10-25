@@ -187,6 +187,7 @@ export default {
                 await butterflyblossomfunctions.attsaldobyatk(token, newbalance);
                 await butterflyblossomfunctions.atualizardebitado(token, bet);
                 await butterflyblossomfunctions.atualizarapostado(token, bet);
+                console.log("[DBG] ramo PERDA");
                 const perdajson = await linhaperdabtrfly.linhaperda();
 
                 let json = {
@@ -285,11 +286,12 @@ export default {
 
             if (resultadospin.result === "ganho") {
                 const numeroAleatorio = 1;
+                console.log("[DBG] ramo GANHO");
                 const ganhojson = await linhaganhobtrfly.linhaganho(numeroAleatorio);
 
                 const refBet = Number(ganhojson[steps].tbb) || Number(ganhojson[steps].tb) || 0
                 const escala = refBet > 0 ? bet / refBet : 1
-                const multPasso = Number(ganhojson[steps].multiplicador) || (refBet > 0 ? (Number(r2(ganhojson[steps].tw * escala)) || 0) / refBet : 0)
+                const multPasso = Number(ganhojson[steps].multiplicador) || (refBet > 0 ? (Number(ganhojson[steps].tw) || 0) / refBet : 0)
                 let valorganho = r2(bet * multPasso)
                 let wmvalue = 0;
                 console.log("VALOR GANHO " + valorganho);
@@ -317,41 +319,41 @@ export default {
                             rs: ganhojson[steps].rs,
                             fs: ganhojson[steps].fs,
                             sc: 0,
-                            saw: 1.95,
-                            tlw: 1.95,
+                            saw: valorganho,
+                            tlw: valorganho,
                             gm: 1,
                             gmi: 0,
                             gml: ganhojson[steps].gml,
                             gwt: -1,
                             fb: null,
-                            ctw: 1.95,
+                            ctw: valorganho,
                             pmt: null,
                             cwc: ganhojson[steps].cwc,
                             fstc: null,
                             pcwc: 1,
                             rwsp: ganhojson[steps].rwsp,
                             hashr: "0:8;6;6;8;7#7;3;4;5;2#4;3;8;0;7#R#4#022132#MV#3.00#MT#1#R#6#102032#MV#3.00#MT#1#MG#1.95#",
-                            ml: 5,
-                            cs: 0.03,
+                            ml: ml,
+                            cs: cs,
                             rl: ganhojson[steps].rl,
                             sid: "1768381452779453952",
                             psid: "1768381452779453952",
                             st: ganhojson[steps].st,
                             nst: ganhojson[steps].nst,
                             pf: 1,
-                            aw: 1.95,
+                            aw: valorganho,
                             wid: 0,
                             wt: "C",
                             wk: "0_C",
                             wbn: null,
                             wfg: null,
-                            blb: 99980.5,
-                            blab: 99977.5,
-                            bl: 99979.45,
-                            tb: 3.0,
-                            tbb: 3.0,
-                            tw: 1.95,
-                            np: -1.05,
+                            blb: saldoatual,
+                            blab: r2(saldoatual - betPasso),
+                            bl: newbalance,
+                            tb: betPasso,
+                            tbb: bet,
+                            tw: valorganho,
+                            np: r2(valorganho - betPasso),
                             ocr: null,
                             mr: null,
                             ge: [1, 11],
@@ -398,7 +400,8 @@ export default {
                 return;
             }
 
-            if (resultadospin.result === "bonus" && resultadospin.gamecode === "bikini-paradise") {
+            if (resultadospin.result === "bonus" && resultadospin.gamecode === gamename) {
+                console.log("[DBG] ramo BONUS");
                 const bonusjson = await linhabonusbikini.linhabonus(resultadospin.json);
                 let call = await allfunctions.getcallbyid(resultadospin.idcall);
 
@@ -442,50 +445,13 @@ export default {
                     valorganho = r2(valorganho * wmvalue);
                 }
 
-                let newbalance = 0;
-
-                if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-                    newbalance = saldoatual - bet + valorganho;
-                    await butterflyblossomfunctions.attsaldobyatk(token, newbalance);
-
-                    await apicontroller.callbackgame({
-                        agent_code: agent[0].agentcode,
-                        agent_secret: agent[0].secretKey,
-                        user_code: user[0].username,
-                        user_balance: user[0].saldo,
-                        user_total_credit: user[0].valorganho,
-                        user_total_debit: user[0].valorapostado,
-                        game_type: "slot",
-                        slot: {
-                            provider_code: "PGSOFT",
-                            game_code: gamename,
-                            round_id: await gerarNumeroUnico(),
-                            type: "BASE",
-                            bet: bet,
-                            win: valorganho,
-                            txn_id: `${txnid}`,
-                            txn_type: "debit_credit",
-                            is_buy: false,
-                            is_call: false,
-                            user_before_balance: user[0].saldo,
-                            user_after_balance: newbalance,
-                            agent_before_balance: 100,
-                            agent_after_balance: 100,
-                            created_at: dataFormatada,
-                        },
-                    });
-                }
-
-                newbalance = saldoatual + valorganho;
-
-                if (calltwo[0].steps === 0) {
-                    newbalance = saldoatual + valorganho - bet;
-                }
+                const betPassoBonus = calltwo[0].steps === Object.keys(bonusjson).length - 1 ? bet : 0;
+                const newbalance = r2(saldoatual - betPassoBonus + valorganho);
 
                 await butterflyblossomfunctions.attawcall(calltwo[0].id, valorganho);
                 await butterflyblossomfunctions.attsaldobyatk(token, newbalance);
-                await butterflyblossomfunctions.atualizardebitado(token, bet);
-                await butterflyblossomfunctions.atualizarapostado(token, bet);
+                await butterflyblossomfunctions.atualizardebitado(token, betPassoBonus);
+                await butterflyblossomfunctions.atualizarapostado(token, betPassoBonus);
 
                 if (calltwo[0].steps > 0) {
                     await allfunctions.subtrairstepscall(resultadospin.idcall);
@@ -533,10 +499,10 @@ export default {
                             blb: saldoatual,
                             blab: newbalance,
                             bl: newbalance,
-                            tb: bet,
-                            tbb: bet,
+                            tb: betPassoBonus,
+                            tbb: betPassoBonus,
                             tw: valorganho,
-                            np: -valorganho,
+                            np: r2(valorganho - betPassoBonus),
                             ocr: null,
                             mr: null,
                             ge: [2, 1, 11],
@@ -558,7 +524,7 @@ export default {
                         game_code: gamename,
                         round_id: await gerarNumeroUnico(),
                         type: "BASE",
-                        bet: 0,
+                        bet: betPassoBonus,
                         win: Number(valorganho),
                         txn_id: `${txnid}`,
                         txn_type: "debit_credit",

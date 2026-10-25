@@ -238,6 +238,7 @@ export default {
       }
    },
    async callbackgame(json: any) {
+      console.log("[DBG] cb inicio " + (json && json.slot ? json.slot.game_code : "?"))
       const agent = await apifunctions.getagentbysecretkey(json.agent_secret)
 
       try {
@@ -256,6 +257,7 @@ export default {
             .catch((error: any) => {
                console.log(error)
             })
+      console.log("[DBG] cb fim")
       } catch (error) {
          console.log(error)
       }

@@ -337,7 +337,7 @@ exports.default = {
                         }
                         const refBet = Number(ganhojson[steps].tbb) || Number(ganhojson[steps].tb) || 0;
                         const escala = refBet > 0 ? bet / refBet : 1;
-                        const multPasso = Number(ganhojson[steps].multiplicador) || (refBet > 0 ? (Number(r2(ganhojson[steps].tw * escala)) || 0) / refBet : 0);
+                        const multPasso = Number(ganhojson[steps].multiplicador) || (refBet > 0 ? (Number(ganhojson[steps].tw) || 0) / refBet : 0);
                         let valorganho = r2(bet * multPasso);
                         let wmvalue = 0;
                         console.log("VALOR GANHO " + valorganho);
