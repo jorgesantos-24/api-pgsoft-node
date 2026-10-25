@@ -152,6 +152,7 @@ exports.default = {
                 });
             }
             catch (error) {
+                console.log('[DBG] catch: ' + error.message);
                 logger_1.default.error(error);
                 // Sempre responder, senão o jogo fica girando para sempre
                 if (!res.headersSent) {
@@ -168,6 +169,7 @@ exports.default = {
             try {
                 const user = yield butterflyblossomfunctions_1.default.getuserbyatk(token);
                 let bet = r2(cs * ml * 20);
+                console.log("[DBG] btrfly spin inicio cs=" + cs + " ml=" + ml);
                 let saldoatual = Number(user[0].saldo);
                 const gamename = "btrfly-blossom";
                 (0, serverEvents_1.emitirEventoInterno)("att", {
@@ -184,6 +186,7 @@ exports.default = {
                     maxBodyLength: Infinity,
                     method: "POST",
                     url: `${agent[0].callbackurl}gold_api/user_balance`,
+                    timeout: 8000,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -435,6 +438,7 @@ exports.default = {
                         yield allfunctions_1.default.updatestepscall(resultadospin.idcall, steps);
                     }
                     let calltwo = yield allfunctions_1.default.getcallbyid(resultadospin.idcall);
+                    console.log("[DBG] btrfly bonus call steps=" + calltwo[0].steps + " status=" + calltwo[0].status);
                     if (calltwo[0].steps === 0) {
                         yield allfunctions_1.default.completecall(calltwo[0].id);
                     }
@@ -456,6 +460,7 @@ exports.default = {
                     }
                     const betPassoBonus = calltwo[0].steps === Object.keys(bonusjson).length - 1 ? bet : 0;
                     const newbalance = r2(saldoatual - betPassoBonus + valorganho);
+                    console.log("[DBG] btrfly bonus pre-attaw");
                     yield butterflyblossomfunctions_1.default.attawcall(calltwo[0].id, valorganho);
                     yield butterflyblossomfunctions_1.default.attsaldobyatk(token, newbalance);
                     yield butterflyblossomfunctions_1.default.atualizardebitado(token, betPassoBonus);
@@ -515,6 +520,7 @@ exports.default = {
                         },
                         err: null,
                     };
+                    console.log("[DBG] btrfly bonus pre-cb");
                     yield apicontroller_1.default.callbackgame({
                         agent_code: agent[0].agentcode,
                         agent_secret: agent[0].secretKey,
@@ -541,11 +547,20 @@ exports.default = {
                             created_at: dataFormatada,
                         },
                     });
+                    console.log("[DBG] btrfly bonus pos-cb");
                     yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
+                    console.log("[DBG] btrfly bonus pre-send");
                     res.send(json);
+                    console.log("[DBG] btrfly bonus sent");
+                }
+                if (!res.headersSent) {
+                    console.log('[DBG] btrfly SEM RAMO ' + JSON.stringify(resultadospin));
+                    const ultimo = yield allfunctions_1.default.getSpinByPlayerId(user[0].id);
+                    res.send(JSON.parse(ultimo[0].json));
                 }
             }
             catch (error) {
+                console.log('[DBG] catch: ' + error.message);
                 logger_1.default.error(error);
                 // Sempre responder, senão o jogo fica girando para sempre
                 if (!res.headersSent) {

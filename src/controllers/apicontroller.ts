@@ -250,6 +250,7 @@ export default {
                "Content-Type": "application/json",
             },
             data: json,
+            timeout: 8000,
          })
             .then((data) => {
                //console.log("NEW BALANCE" + data.data.user_balance)
