@@ -311,12 +311,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - bet),
                      bl: newbalance,
                      tb: bet,
                      tbb: bet,
                      tw: valorganho,
-                     np: bet,
+                     np: r2(valorganho - bet),
                      ocr: null,
                      mr: null,
                      ge: [1, 11],
@@ -404,49 +404,19 @@ export default {
 
             console.log("MULT JSON " + JSON.stringify(mulplicadoresjson))
             console.log("valorganho  " + valorganho)
-            let newbalance = 0
 
-            if (calltwo[0].steps === Object.keys(bonusjson).length - 1) {
-               newbalance = saldoatual - bet + valorganho
-               await fortunerabbitfunctions.attsaldobyatk(token, newbalance)
-               await apicontroller.callbackgame({
-                  agent_code: agent[0].agentcode,
-                  agent_secret: agent[0].secretKey,
-                  user_code: user[0].username,
-                  user_balance: user[0].saldo,
-                  user_total_credit: user[0].valorganho,
-                  user_total_debit: user[0].valorapostado,
-                  game_type: "slot",
-                  slot: {
-                     provider_code: "PGSOFT",
-                     game_code: gamename,
-                     round_id: await gerarNumeroUnico(),
-                     type: "BASE",
-                     bet: bet,
-                     win: valorganho,
-                     txn_id: `${txnid}`,
-                     txn_type: "debit_credit",
-                     is_buy: false,
-                     is_call: false,
-                     user_before_balance: user[0].saldo,
-                     user_after_balance: newbalance,
-                     agent_before_balance: 100,
-                     agent_after_balance: 100,
-                     created_at: dataFormatada,
-                  },
-               })
-            }
+            // CORRECAO: o bet e cobrado UMA unica vez, no primeiro passo do bonus.
+            // Nos restantes passos betPasso = 0. Antes o bet era debitado em todos os
+            // passos e existia um segundo callbackgame com o mesmo txn_id, pagando o
+            // primeiro passo duas vezes e dessincronizando o saldo do ecra.
+            const primeiroPasso = calltwo[0].steps === Object.keys(bonusjson).length - 1
+            const betPasso = primeiroPasso ? bet : 0
+            const newbalance = r2(saldoatual - betPasso + valorganho)
 
             await fortunerabbitfunctions.attawcall(calltwo[0].id, valorganho)
-            newbalance = saldoatual + valorganho
-
-            if (calltwo[0].steps === 0) {
-               newbalance = saldoatual + valorganho - bet
-            }
-
             await fortunerabbitfunctions.attsaldobyatk(token, newbalance)
-            await fortunerabbitfunctions.atualizardebitado(token, bet)
-            await fortunerabbitfunctions.atualizarapostado(token, bet)
+            await fortunerabbitfunctions.atualizardebitado(token, betPasso)
+            await fortunerabbitfunctions.atualizarapostado(token, betPasso)
             await fortunerabbitfunctions.atualizarganho(token, valorganho)
             if (calltwo[0].steps > 0) {
                await allfunctions.subtrairstepscall(resultadospin.idcall)
@@ -492,12 +462,12 @@ export default {
                      wbn: null,
                      wfg: null,
                      blb: saldoatual,
-                     blab: newbalance,
+                     blab: r2(saldoatual - betPasso),
                      bl: newbalance,
-                     tb: bet,
-                     tbb: bet,
+                     tb: betPasso,
+                     tbb: betPasso,
                      tw: valorganho,
-                     np: valorganho,
+                     np: r2(valorganho - betPasso),
                      ocr: null,
                      mr: null,
                      ge: [2, 11],
@@ -521,7 +491,7 @@ export default {
                   game_code: gamename,
                   round_id: await gerarNumeroUnico(),
                   type: "BASE",
-                  bet: 0,
+                  bet: betPasso,
                   win: Number(valorganho),
                   txn_id: `${txnid}`,
                   txn_type: "debit_credit",
