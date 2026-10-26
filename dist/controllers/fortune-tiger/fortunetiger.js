@@ -49,6 +49,7 @@ const linhaperdatiger_1 = __importDefault(require("../../jsons/fortune-tiger/lin
 const linhabonustiger_1 = __importDefault(require("../../jsons/fortune-tiger/linhabonustiger"));
 const notcashtiger_1 = __importDefault(require("../../jsons/fortune-tiger/notcashtiger"));
 require("dotenv/config");
+const FATOR_RTP = 0.687;
 exports.default = {
     getiger(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -276,8 +277,8 @@ exports.default = {
                 if (resultadospin.result === "ganho") {
                     const ganhojson = yield linhaganhotiger_1.default.linhaganho(bet);
                     const multplicador = yield countrwsp(ganhojson.rwsp);
-                    yield lwchange(ganhojson.rwsp, ganhojson.lw, cs, ml);
-                    const valorganho = r2(cs * ml * multplicador);
+                    yield lwchange(ganhojson.rwsp, ganhojson.lw, cs * FATOR_RTP, ml);
+                    const valorganho = r2(cs * ml * multplicador * FATOR_RTP);
                     const newbalance = r2(saldoatual + valorganho - bet);
                     yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
                     yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
@@ -372,10 +373,10 @@ exports.default = {
                     let calltwo = yield allfunctions_1.default.getcallbyid(resultadospin.idcall);
                     if (calltwo[0].steps === 0) {
                         const multplicador = yield countrwsp(cartajson[calltwo[0].steps].rwsp);
-                        yield lwchange(cartajson[calltwo[0].steps].rwsp, cartajson[calltwo[0].steps].lw, cs, ml);
-                        let valorganho = r2(cs * ml * multplicador);
+                        yield lwchange(cartajson[calltwo[0].steps].rwsp, cartajson[calltwo[0].steps].lw, cs * FATOR_RTP, ml);
+                        let valorganho = r2(cs * ml * multplicador * FATOR_RTP);
                         if (cartajson[calltwo[0].steps].completed === true) {
-                            valorganho = r2(cs * ml * multplicador * 10);
+                            valorganho = r2(cs * ml * multplicador * 10 * FATOR_RTP);
                         }
                         const newbalance = r2(saldoatual + valorganho - bet);
                         yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);

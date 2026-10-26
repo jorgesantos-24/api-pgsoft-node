@@ -51,6 +51,7 @@ const linhaperdaox_1 = __importDefault(require("../../jsons/fortune-ox/linhaperd
 const notcashox_1 = __importDefault(require("../../jsons/fortune-ox/notcashox"));
 // Arredonda dinheiro para 2 casas (evita 123.19999999999999)
 const r2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+const FATOR_RTP = 0.49;
 exports.default = {
     getox(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -275,8 +276,8 @@ exports.default = {
                     const ganhojson = yield linhaganhoox_1.default.linhaganho(bet);
                     const multplicador = yield countrwsp(ganhojson.rwsp);
                     logger_1.default.info(`Multiplicador: ${multplicador}`);
-                    yield lwchange(ganhojson.rwsp, ganhojson.lw, cs, ml);
-                    const valorganho = r2(cs * ml * multplicador);
+                    yield lwchange(ganhojson.rwsp, ganhojson.lw, cs * FATOR_RTP, ml);
+                    const valorganho = r2(cs * ml * multplicador * FATOR_RTP);
                     logger_1.default.info(`Valor ganho: ${valorganho}`);
                     const newbalance = r2(saldoatual + valorganho - bet);
                     yield fortuneoxfunctions_1.default.attsaldobyatk(token, newbalance);
@@ -381,11 +382,11 @@ exports.default = {
                     if (calltwo[0].steps === 0) {
                         const multplicador = yield countrwsp(bonusjson[calltwo[0].steps].rwsp);
                         logger_1.default.info(`Multiplicador: ${multplicador}`);
-                        yield lwchange(bonusjson[calltwo[0].steps].rwsp, bonusjson[calltwo[0].steps].lw, cs, ml);
-                        let valorganho = r2(cs * ml * multplicador);
+                        yield lwchange(bonusjson[calltwo[0].steps].rwsp, bonusjson[calltwo[0].steps].lw, cs * FATOR_RTP, ml);
+                        let valorganho = r2(cs * ml * multplicador * FATOR_RTP);
                         logger_1.default.info(`Valor ganho antes do ult. spin: ${valorganho}`);
                         if (bonusjson[calltwo[0].steps].completed === true) {
-                            valorganho = r2(cs * ml * multplicador * 10);
+                            valorganho = r2(cs * ml * multplicador * 10 * FATOR_RTP);
                         }
                         const newbalance = r2(saldoatual + valorganho - bet);
                         yield fortuneoxfunctions_1.default.attsaldobyatk(token, newbalance);
