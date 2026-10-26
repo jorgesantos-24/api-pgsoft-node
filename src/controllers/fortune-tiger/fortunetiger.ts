@@ -16,24 +16,26 @@ import notcashtiger from "../../jsons/fortune-tiger/notcashtiger"
 
 import "dotenv/config"
 
+const FATOR_RTP = 0.687
+
 export default {
    async getiger(req: Request, res: Response) {
       try {
          const token = req.body.atk;
-            const gamename = "fortune-tiger";
-            const user = await allfunctions.getuserbyatk(token);
-            logger.info('[+] Usuario logado: '+ user[0].username)
-            const jsonprimay = await allfunctions.getSpinByPlayerId(user[0].id);
-            const jsoninicial = await allfunctions.getjsonprimary(gamename);
-                if (jsonprimay.length === 0) {
-                    await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-                } else if (jsonprimay[0].game_code === gamename){
-                    logger.info('[+] Json Recuperado Do Ultimo Spin.')
-                } else {
-                    await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-                }
-            const json = await allfunctions.getSpinByPlayerId(user[0].id);
-            const jsonformatado = JSON.parse(json[0].json);
+         const gamename = "fortune-tiger";
+         const user = await allfunctions.getuserbyatk(token);
+         logger.info('[+] Usuario logado: ' + user[0].username)
+         const jsonprimay = await allfunctions.getSpinByPlayerId(user[0].id);
+         const jsoninicial = await allfunctions.getjsonprimary(gamename);
+         if (jsonprimay.length === 0) {
+            await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
+         } else if (jsonprimay[0].game_code === gamename) {
+            logger.info('[+] Json Recuperado Do Ultimo Spin.')
+         } else {
+            await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
+         }
+         const json = await allfunctions.getSpinByPlayerId(user[0].id);
+         const jsonformatado = JSON.parse(json[0].json);
          res.send({
             dt: {
                fb: null,
@@ -215,7 +217,7 @@ export default {
                err: null,
             }
 
-           await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
+            await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
             const txnid = v4()
             const dataFormatada: string = moment().toISOString()
             await apicontroller.callbackgame({
@@ -249,8 +251,8 @@ export default {
          if (resultadospin.result === "ganho") {
             const ganhojson = await linhaganhotiger.linhaganho(bet)
             const multplicador = await countrwsp(ganhojson.rwsp)
-            await lwchange(ganhojson.rwsp, ganhojson.lw, cs, ml)
-            const valorganho = r2(cs * ml * multplicador)
+            await lwchange(ganhojson.rwsp, ganhojson.lw, cs * FATOR_RTP, ml)
+            const valorganho = r2(cs * ml * multplicador * FATOR_RTP)
 
             const newbalance = r2(saldoatual + valorganho - bet)
             await fortunefunctions.attsaldobyatk(token, newbalance)
@@ -307,7 +309,7 @@ export default {
                err: null,
             }
 
-           await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
+            await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
 
             const txnid = v4()
             const dataFormatada: string = moment().toISOString()
@@ -356,13 +358,13 @@ export default {
                await lwchange(
                   cartajson[calltwo[0].steps].rwsp,
                   cartajson[calltwo[0].steps].lw,
-                  cs,
+                  cs * FATOR_RTP,
                   ml,
                )
-               let valorganho = r2(cs * ml * multplicador)
+               let valorganho = r2(cs * ml * multplicador * FATOR_RTP)
 
                if (cartajson[calltwo[0].steps].completed === true) {
-                  valorganho = r2(cs * ml * multplicador * 10)
+                  valorganho = r2(cs * ml * multplicador * 10 * FATOR_RTP)
                }
 
                const newbalance = r2(saldoatual + valorganho - bet)
@@ -419,7 +421,7 @@ export default {
                   },
                   err: null,
                }
-              await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
+               await allfunctions.savejsonspin(user[0].id, JSON.stringify(json), gamename);
                await allfunctions.completecall(calltwo[0].id)
 
                const txnid = v4()

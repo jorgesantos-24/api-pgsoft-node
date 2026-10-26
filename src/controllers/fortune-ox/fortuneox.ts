@@ -16,6 +16,7 @@ import notcashox from "../../jsons/fortune-ox/notcashox"
 
 // Arredonda dinheiro para 2 casas (evita 123.19999999999999)
 const r2 = (v: number) => Math.round((Number(v) + Number.EPSILON) * 100) / 100
+const FATOR_RTP = 0.49
 
 
 export default {
@@ -24,16 +25,16 @@ export default {
          const token = req.body.atk;
          const gamename = "fortune-ox";
          const user = await allfunctions.getuserbyatk(token);
-         logger.info('[+] Usuario logado: '+ user[0].username)
+         logger.info('[+] Usuario logado: ' + user[0].username)
          const jsonprimay = await allfunctions.getSpinByPlayerId(user[0].id);
          const jsoninicial = await allfunctions.getjsonprimary(gamename);
-             if (jsonprimay.length === 0) {
-                 await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-             } else if (jsonprimay[0].game_code === gamename){
-                 logger.info('[+] Json Recuperado Do Ultimo Spin.')
-             } else {
-                 await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-             }
+         if (jsonprimay.length === 0) {
+            await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
+         } else if (jsonprimay[0].game_code === gamename) {
+            logger.info('[+] Json Recuperado Do Ultimo Spin.')
+         } else {
+            await allfunctions.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
+         }
          const json = await allfunctions.getSpinByPlayerId(user[0].id);
          const jsonformatado = JSON.parse(json[0].json);
 
@@ -245,10 +246,9 @@ export default {
             const multplicador = await countrwsp(ganhojson.rwsp)
 
             logger.info(`Multiplicador: ${multplicador}`);
-            
-            await lwchange(ganhojson.rwsp, ganhojson.lw, cs, ml)
-            const valorganho = r2(cs * ml * multplicador)
 
+            await lwchange(ganhojson.rwsp, ganhojson.lw, cs * FATOR_RTP, ml)
+            const valorganho = r2(cs * ml * multplicador * FATOR_RTP)
             logger.info(`Valor ganho: ${valorganho}`);
 
             const newbalance = r2(saldoatual + valorganho - bet)
@@ -365,13 +365,13 @@ export default {
 
                logger.info(`Multiplicador: ${multplicador}`);
 
-               await lwchange(bonusjson[calltwo[0].steps].rwsp, bonusjson[calltwo[0].steps].lw, cs, ml)
-               let valorganho = r2(cs * ml * multplicador)
+               await lwchange(bonusjson[calltwo[0].steps].rwsp, bonusjson[calltwo[0].steps].lw, cs * FATOR_RTP, ml)
+               let valorganho = r2(cs * ml * multplicador * FATOR_RTP)
 
                logger.info(`Valor ganho antes do ult. spin: ${valorganho}`);
 
                if (bonusjson[calltwo[0].steps].completed === true) {
-                  valorganho = r2(cs * ml * multplicador * 10)
+                  valorganho = r2(cs * ml * multplicador * 10 * FATOR_RTP)
                }
 
                const newbalance = r2(saldoatual + valorganho - bet)
