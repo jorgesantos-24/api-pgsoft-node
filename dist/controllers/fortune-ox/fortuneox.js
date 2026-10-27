@@ -114,7 +114,7 @@ exports.default = {
                             for (let chave2 in json2) {
                                 if (json2.hasOwnProperty(chave2)) {
                                     // Altera o valor correspondente no segundo JSON
-                                    json2[chave] = ganho;
+                                    json2[chave] = r2(ganho);
                                 }
                             }
                         }
@@ -198,7 +198,7 @@ exports.default = {
                                 wp: null,
                                 lw: null,
                                 rf: perdajson.rf,
-                                rtf: perdajson.rf,
+                                rtf: perdajson.rtf,
                                 fs: perdajson.fs,
                                 rc: 0,
                                 im: false,
@@ -285,11 +285,10 @@ exports.default = {
                     yield fortuneoxfunctions_1.default.atualizarapostado(token, bet);
                     yield fortuneoxfunctions_1.default.atualizarganho(token, valorganho);
                     function gerarBooleanoAleatorio() {
-                        // Gera um número aleatório entre 0 e 1
-                        const boolean = Math.floor(Math.random() * 10) + 1;
-                        console.log("NUMERO DO BOOLEANO " + boolean);
-                        // Se o número for maior ou igual a 0.5, retorna true, caso contrário, retorna false
-                        return boolean >= 5;
+                        // A tabela de ganhos nao traz rtf, por isso a ameaca e sorteada.
+                        // >= 9 da ~20% (o tigrinho ameaca em ~8% das perdas)
+                        const n = Math.floor(Math.random() * 10) + 1;
+                        return n >= 9;
                     }
                     let json = {
                         dt: {
@@ -297,7 +296,7 @@ exports.default = {
                                 wp: ganhojson.wp,
                                 lw: ganhojson.lw,
                                 rf: ganhojson.rf,
-                                rtf: gerarBooleanoAleatorio,
+                                rtf: gerarBooleanoAleatorio(),
                                 fs: ganhojson.fs,
                                 rc: 0,
                                 im: false,
