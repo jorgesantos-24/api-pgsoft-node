@@ -10,8 +10,8 @@
     "2": { "name": "pote",      "pay3": 100 },
     "4": { "name": "envelope",  "pay3": 45 },
     "5": { "name": "bombinha",  "pay3": 18 },
-    "6": { "name": "tangerina", "pay3": 5 },
-    "7": { "name": "laranja",   "pay3": 5 },
+    "6": { "name": "tangerina", "pay3": 10 },
+    "7": { "name": "laranja",   "pay3": 8 },
     "8": { "name": "scatter",   "pay3": 0, "scatter": true }
   }
 }

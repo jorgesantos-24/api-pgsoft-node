@@ -28,34 +28,52 @@ exports.default = {
     },
     attsaldobyatk(atk, novosaldo) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield database_1.default.query(`UPDATE users SET saldo = '${novosaldo}' WHERE atk= '${atk}'`);
+            const res = yield database_1.default.query(`UPDATE users SET saldo = ? WHERE atk= ?`, [
+                novosaldo,
+                atk,
+            ]);
+            return res[0];
+        });
+    },
+    // Uma query em vez de seis: incrementa os acumulados sem ler antes.
+    registrarSpin(atk, novoSaldo, bet, ganho) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield database_1.default.query(`UPDATE users
+             SET saldo = ?,
+                 valorapostado = valorapostado + ?,
+                 valordebitado = valordebitado + ?,
+                 valorganho = valorganho + ?
+           WHERE atk = ?`, [novoSaldo, bet, bet, ganho, atk]);
             return res[0];
         });
     },
     atualizarapostado(atk, bet) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getuserbyatk(atk);
-            const apostado = user[0].valorapostado;
-            const novoapostado = apostado + bet;
-            const res = yield database_1.default.query(`UPDATE users SET valorapostado = '${novoapostado}' WHERE atk='${atk}'`);
+            const novo = user[0].valorapostado + bet;
+            const res = yield database_1.default.query(`UPDATE users SET valorapostado = ? WHERE atk=?`, [
+                novo,
+                atk,
+            ]);
             return res[0];
         });
     },
     atualizardebitado(atk, bet) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getuserbyatk(atk);
-            const valordebitado = user[0].valordebitado;
-            const novordebitado = valordebitado + bet;
-            const res = yield database_1.default.query(`UPDATE users SET valordebitado = '${novordebitado}' WHERE atk='${atk}'`);
+            const novo = user[0].valordebitado + bet;
+            const res = yield database_1.default.query(`UPDATE users SET valordebitado = ? WHERE atk=?`, [
+                novo,
+                atk,
+            ]);
             return res[0];
         });
     },
     atualizarganho(atk, ganho) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getuserbyatk(atk);
-            const valorganho = user[0].valorganho;
-            const novodeganho = valorganho + ganho;
-            const res = yield database_1.default.query(`UPDATE users SET valorganho = '${novodeganho}' WHERE atk='${atk}'`);
+            const novo = user[0].valorganho + ganho;
+            const res = yield database_1.default.query(`UPDATE users SET valorganho = ? WHERE atk=?`, [novo, atk]);
             return res[0];
         });
     },
@@ -67,14 +85,19 @@ exports.default = {
     },
     completarcallid(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newstatus = "completed";
-            const res = yield database_1.default.query("UPDATE calls SET status = ? WHERE id = ?", [newstatus, id]);
+            const res = yield database_1.default.query("UPDATE calls SET status = ? WHERE id = ?", [
+                "completed",
+                id,
+            ]);
             return res[0];
         });
     },
     savejsonspin(id, json) {
         return __awaiter(this, void 0, void 0, function* () {
-            const res = yield database_1.default.query("UPDATE fortunetigerplayerjson SET JSON = ? WHERE id = ?", [json, id]);
+            const res = yield database_1.default.query("UPDATE fortunetigerplayerjson SET JSON = ? WHERE id = ?", [
+                json,
+                id,
+            ]);
             return res[0];
         });
     },

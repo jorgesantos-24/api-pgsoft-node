@@ -74,11 +74,11 @@ export default {
       },
       "6": {
          "name": "tangerina",
-         "pay3": 5
+         "pay3": 10
       },
       "7": {
          "name": "laranja",
-         "pay3": 5
+         "pay3": 8
       },
       "8": {
          "name": "scatter",
@@ -86,7 +86,7 @@ export default {
          "scatter": true
       }
    },
-   "payScale": 0.11908025299383161,
+   "payScale": 0.11776224611380827,
    "scatterTrigger": 0.00848,
    "featureSpins": 10
 } as const

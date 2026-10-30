@@ -16,9 +16,10 @@ import paytable from "../../jsons/fortune-tiger/paytable"
 
 import "dotenv/config"
 
-const FATOR_NORMAL = 0.9417
-const FATOR_VITRINE = 1.2795
+const FATOR_NORMAL = 0.9878
+const FATOR_VITRINE = 1.3422
 const CAP_MULT = 2500
+const TIMEOUT_OPERADOR = 8000
 
 const SCATTER = "8"
 const WILD = "0"
@@ -29,6 +30,13 @@ const SIMBOLOS = paytable.symbols as Record<string, { pay3: number }>
 
 const r2 = (v: number) => Math.round((Number(v) + Number.EPSILON) * 100) / 100
 const pick = <T>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)]
+
+function compensacao(bet: number): number {
+   if (bet <= 0.15) return 1.13
+   if (bet <= 0.3) return 1.06
+   if (bet <= 0.6) return 1.02
+   return 1.0
+}
 
 function sortearGrade(): string[] {
    const vis: string[] = []
@@ -69,6 +77,10 @@ export default {
       try {
          const token = req.body.atk
          const user = await allfunctions.getuserbyatk(token)
+         if (!user[0]) {
+            res.status(400).send({ dt: null, err: { cd: "401", msg: "Token invalido", tid: "FTIGER" } })
+            return false
+         }
          logger.info("[+] Usuario logado: " + user[0].username)
 
          res.send({
@@ -89,10 +101,7 @@ export default {
          })
       } catch (error) {
          logger.error(error)
-         res.status(500).send({
-            dt: null,
-            err: { cd: "500", msg: "Internal error", tid: "FTIGER" },
-         })
+         res.status(500).send({ dt: null, err: { cd: "500", msg: "Internal error", tid: "FTIGER" } })
       }
    },
 
@@ -104,10 +113,15 @@ export default {
 
       try {
          const user = await fortunefunctions.getuserbyatk(token)
+         if (!user[0]) {
+            res.status(400).send({ dt: null, err: { cd: "401", msg: "Token invalido", tid: "FTIGER" } })
+            return false
+         }
+
          const bet: number = r2(cs * ml * 5)
          let saldoatual: number = Number(user[0].saldo)
-
-         const fator = user[0].isinfluencer === 1 ? FATOR_VITRINE : FATOR_NORMAL
+         const base = user[0].isinfluencer === 1 ? FATOR_VITRINE : FATOR_NORMAL
+         const fator = base * compensacao(bet)
 
          emitirEventoInterno("att", {
             token,
@@ -121,24 +135,32 @@ export default {
 
          const agent = await allfunctions.getagentbyid(user[0].agentid)
 
-         const checkuserbalance = await axios({
-            maxBodyLength: Infinity,
-            method: "POST",
-            url: `${agent[0].callbackurl}gold_api/user_balance`,
-            headers: { "Content-Type": "application/json" },
-            data: { user_code: user[0].username },
-         })
+         // Operador é a fonte de verdade, mas um timeout não pode matar o giro:
+         // tenta duas vezes e, se falhar, segue com o saldo do banco.
+         let saldoOperador: number | null = null
+         for (let tentativa = 1; tentativa <= 2; tentativa++) {
+            try {
+               const r = await axios({
+                  maxBodyLength: Infinity,
+                  method: "POST",
+                  timeout: TIMEOUT_OPERADOR,
+                  url: `${agent[0].callbackurl}gold_api/user_balance`,
+                  headers: { "Content-Type": "application/json" },
+                  data: { user_code: user[0].username },
+               })
 
-         if (checkuserbalance.data.user_balance != null) {
-            saldoatual = Number(checkuserbalance.data.user_balance)
+               if (r.data.msg === "INVALID_USER" || r.data.msg === "INSUFFICIENT_USER_FUNDS") {
+                  res.send(await notcashtiger.notcash(saldoatual, cs, ml))
+                  return false
+               }
+               if (r.data.user_balance != null) saldoOperador = Number(r.data.user_balance)
+               break
+            } catch (e: any) {
+               logger.warn(`[spin] user_balance falhou (tentativa ${tentativa}): ${e.message}`)
+               if (tentativa === 2) logger.warn("[spin] seguindo com o saldo do banco")
+            }
          }
-         if (
-            checkuserbalance.data.msg === "INVALID_USER" ||
-            checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS"
-         ) {
-            res.send(await notcashtiger.notcash(saldoatual, cs, ml))
-            return false
-         }
+         if (saldoOperador !== null) saldoatual = saldoOperador
 
          if (saldoatual < bet) {
             res.send(await notcashtiger.notcash(saldoatual, cs, ml))
@@ -147,41 +169,39 @@ export default {
 
          // ---------------- resultado ----------------
          const grade = sortearGrade()
-         const base = avaliarLinhas(grade)
+         const linha = avaliarLinhas(grade)
          const gatilhou = grade.filter((s) => s === SCATTER).length >= 3
 
-         let multiplicador = base.pay
+         let multiplicador = linha.pay
          let valorFeature = 0
          const rwsp: Record<string, number> = {}
          const lw: Record<string, number> = {}
 
-         for (const [sym, posicoes] of Object.entries(base.wp)) {
+         for (const [sym, posicoes] of Object.entries(linha.wp)) {
             const mult = SIMBOLOS[sym].pay3
             rwsp[sym] = r2(mult * fator)
-            lw[sym] = r2(cs * ml * mult * fator)
-            base.wp[sym] = [...new Set(posicoes)]
+            lw[sym] = r2(bet * ((mult * PAY_SCALE) / N_LINHAS) * fator)
+            linha.wp[sym] = [...new Set(posicoes)]
          }
 
          if (gatilhou) {
             valorFeature = pick(feature)
             multiplicador += valorFeature
             rwsp[SCATTER] = r2(valorFeature * fator)
-            lw[SCATTER] = r2(cs * ml * valorFeature * fator)
-            base.wp[SCATTER] = grade
+            lw[SCATTER] = r2(bet * valorFeature * fator)
+            linha.wp[SCATTER] = grade
                .map((s, i) => (s === SCATTER ? i : -1))
                .filter((i) => i >= 0)
          }
 
-         let valorganho = r2(cs * ml * multiplicador * fator)
+         let valorganho = r2(bet * multiplicador * fator)
          const teto = r2(bet * CAP_MULT)
          if (valorganho > teto) valorganho = teto
+         if (valorganho === 0 && multiplicador > 0) valorganho = 0.01
 
          const newbalance = r2(saldoatual + valorganho - bet)
 
-         await fortunefunctions.attsaldobyatk(token, newbalance)
-         await fortunefunctions.atualizardebitado(token, bet)
-         await fortunefunctions.atualizarapostado(token, bet)
-         await fortunefunctions.atualizarganho(token, valorganho)
+         await fortunefunctions.registrarSpin(token, newbalance, bet, valorganho)
 
          const json: any = {
             dt: {
@@ -190,7 +210,7 @@ export default {
                   ist: false,
                   itw: false,
                   fws: gatilhou ? 10 : 0,
-                  wp: base.wp,
+                  wp: linha.wp,
                   orl: grade,
                   lw,
                   irs: false,
@@ -265,10 +285,7 @@ export default {
       } catch (error) {
          logger.error(error)
          if (!res.headersSent) {
-            res.status(500).send({
-               dt: null,
-               err: { cd: "500", msg: "Internal error", tid: "FTIGER" },
-            })
+            res.status(500).send({ dt: null, err: { cd: "500", msg: "Internal error", tid: "FTIGER" } })
          }
       }
    },

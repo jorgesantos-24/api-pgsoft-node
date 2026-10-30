@@ -49,9 +49,10 @@ const strips_1 = __importDefault(require("../../jsons/fortune-tiger/strips"));
 const feature_1 = __importDefault(require("../../jsons/fortune-tiger/feature"));
 const paytable_1 = __importDefault(require("../../jsons/fortune-tiger/paytable"));
 require("dotenv/config");
-const FATOR_NORMAL = 0.9417;
-const FATOR_VITRINE = 1.2795;
+const FATOR_NORMAL = 0.9878;
+const FATOR_VITRINE = 1.3422;
 const CAP_MULT = 2500;
+const TIMEOUT_OPERADOR = 8000;
 const SCATTER = "8";
 const WILD = "0";
 const LINHAS = paytable_1.default.lines;
@@ -60,6 +61,15 @@ const PAY_SCALE = paytable_1.default.payScale;
 const SIMBOLOS = paytable_1.default.symbols;
 const r2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function compensacao(bet) {
+    if (bet <= 0.15)
+        return 1.13;
+    if (bet <= 0.3)
+        return 1.06;
+    if (bet <= 0.6)
+        return 1.02;
+    return 1.0;
+}
 function sortearGrade() {
     const vis = [];
     for (let r = 0; r < 3; r++) {
@@ -101,6 +111,10 @@ exports.default = {
             try {
                 const token = req.body.atk;
                 const user = yield allfunctions_1.default.getuserbyatk(token);
+                if (!user[0]) {
+                    res.status(400).send({ dt: null, err: { cd: "401", msg: "Token invalido", tid: "FTIGER" } });
+                    return false;
+                }
                 logger_1.default.info("[+] Usuario logado: " + user[0].username);
                 res.send({
                     dt: {
@@ -121,10 +135,7 @@ exports.default = {
             }
             catch (error) {
                 logger_1.default.error(error);
-                res.status(500).send({
-                    dt: null,
-                    err: { cd: "500", msg: "Internal error", tid: "FTIGER" },
-                });
+                res.status(500).send({ dt: null, err: { cd: "500", msg: "Internal error", tid: "FTIGER" } });
             }
         });
     },
@@ -136,9 +147,14 @@ exports.default = {
             const gamename = "fortune-tiger";
             try {
                 const user = yield fortunetigerfunctions_1.default.getuserbyatk(token);
+                if (!user[0]) {
+                    res.status(400).send({ dt: null, err: { cd: "401", msg: "Token invalido", tid: "FTIGER" } });
+                    return false;
+                }
                 const bet = r2(cs * ml * 5);
                 let saldoatual = Number(user[0].saldo);
-                const fator = user[0].isinfluencer === 1 ? FATOR_VITRINE : FATOR_NORMAL;
+                const base = user[0].isinfluencer === 1 ? FATOR_VITRINE : FATOR_NORMAL;
+                const fator = base * compensacao(bet);
                 (0, serverEvents_1.emitirEventoInterno)("att", {
                     token,
                     username: user[0].username,
@@ -149,57 +165,70 @@ exports.default = {
                     gamecode: gamename,
                 });
                 const agent = yield allfunctions_1.default.getagentbyid(user[0].agentid);
-                const checkuserbalance = yield (0, axios_1.default)({
-                    maxBodyLength: Infinity,
-                    method: "POST",
-                    url: `${agent[0].callbackurl}gold_api/user_balance`,
-                    headers: { "Content-Type": "application/json" },
-                    data: { user_code: user[0].username },
-                });
-                if (checkuserbalance.data.user_balance != null) {
-                    saldoatual = Number(checkuserbalance.data.user_balance);
+                // Operador é a fonte de verdade, mas um timeout não pode matar o giro:
+                // tenta duas vezes e, se falhar, segue com o saldo do banco.
+                let saldoOperador = null;
+                for (let tentativa = 1; tentativa <= 2; tentativa++) {
+                    try {
+                        const r = yield (0, axios_1.default)({
+                            maxBodyLength: Infinity,
+                            method: "POST",
+                            timeout: TIMEOUT_OPERADOR,
+                            url: `${agent[0].callbackurl}gold_api/user_balance`,
+                            headers: { "Content-Type": "application/json" },
+                            data: { user_code: user[0].username },
+                        });
+                        if (r.data.msg === "INVALID_USER" || r.data.msg === "INSUFFICIENT_USER_FUNDS") {
+                            res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
+                            return false;
+                        }
+                        if (r.data.user_balance != null)
+                            saldoOperador = Number(r.data.user_balance);
+                        break;
+                    }
+                    catch (e) {
+                        logger_1.default.warn(`[spin] user_balance falhou (tentativa ${tentativa}): ${e.message}`);
+                        if (tentativa === 2)
+                            logger_1.default.warn("[spin] seguindo com o saldo do banco");
+                    }
                 }
-                if (checkuserbalance.data.msg === "INVALID_USER" ||
-                    checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
-                    res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
-                    return false;
-                }
+                if (saldoOperador !== null)
+                    saldoatual = saldoOperador;
                 if (saldoatual < bet) {
                     res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
                     return false;
                 }
                 // ---------------- resultado ----------------
                 const grade = sortearGrade();
-                const base = avaliarLinhas(grade);
+                const linha = avaliarLinhas(grade);
                 const gatilhou = grade.filter((s) => s === SCATTER).length >= 3;
-                let multiplicador = base.pay;
+                let multiplicador = linha.pay;
                 let valorFeature = 0;
                 const rwsp = {};
                 const lw = {};
-                for (const [sym, posicoes] of Object.entries(base.wp)) {
+                for (const [sym, posicoes] of Object.entries(linha.wp)) {
                     const mult = SIMBOLOS[sym].pay3;
                     rwsp[sym] = r2(mult * fator);
-                    lw[sym] = r2(cs * ml * mult * fator);
-                    base.wp[sym] = [...new Set(posicoes)];
+                    lw[sym] = r2(bet * ((mult * PAY_SCALE) / N_LINHAS) * fator);
+                    linha.wp[sym] = [...new Set(posicoes)];
                 }
                 if (gatilhou) {
                     valorFeature = pick(feature_1.default);
                     multiplicador += valorFeature;
                     rwsp[SCATTER] = r2(valorFeature * fator);
-                    lw[SCATTER] = r2(cs * ml * valorFeature * fator);
-                    base.wp[SCATTER] = grade
+                    lw[SCATTER] = r2(bet * valorFeature * fator);
+                    linha.wp[SCATTER] = grade
                         .map((s, i) => (s === SCATTER ? i : -1))
                         .filter((i) => i >= 0);
                 }
-                let valorganho = r2(cs * ml * multiplicador * fator);
+                let valorganho = r2(bet * multiplicador * fator);
                 const teto = r2(bet * CAP_MULT);
                 if (valorganho > teto)
                     valorganho = teto;
+                if (valorganho === 0 && multiplicador > 0)
+                    valorganho = 0.01;
                 const newbalance = r2(saldoatual + valorganho - bet);
-                yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
-                yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
-                yield fortunetigerfunctions_1.default.atualizarapostado(token, bet);
-                yield fortunetigerfunctions_1.default.atualizarganho(token, valorganho);
+                yield fortunetigerfunctions_1.default.registrarSpin(token, newbalance, bet, valorganho);
                 const json = {
                     dt: {
                         si: {
@@ -207,7 +236,7 @@ exports.default = {
                             ist: false,
                             itw: false,
                             fws: gatilhou ? 10 : 0,
-                            wp: base.wp,
+                            wp: linha.wp,
                             orl: grade,
                             lw,
                             irs: false,
@@ -280,10 +309,7 @@ exports.default = {
             catch (error) {
                 logger_1.default.error(error);
                 if (!res.headersSent) {
-                    res.status(500).send({
-                        dt: null,
-                        err: { cd: "500", msg: "Internal error", tid: "FTIGER" },
-                    });
+                    res.status(500).send({ dt: null, err: { cd: "500", msg: "Internal error", tid: "FTIGER" } });
                 }
             }
         });

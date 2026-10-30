@@ -16,10 +16,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mysql2_1 = __importDefault(require("mysql2"));
 const logger_1 = __importDefault(require("../logger"));
 require("dotenv/config");
-const host = ((_a = process.env.DB_HOST) !== null && _a !== void 0 ? _a : '').trim();
+const host = ((_a = process.env.DB_HOST) !== null && _a !== void 0 ? _a : "").trim();
 // Cloud SQL liga por socket Unix em /cloudsql/PROJETO:REGIAO:INSTANCIA.
-// Railway e local usam TCP normal.
-const useSocket = host.startsWith('/');
+const useSocket = host.startsWith("/");
 const access = useSocket
     ? {
         socketPath: host,
@@ -36,15 +35,14 @@ const access = useSocket
         database: process.env.DB_NAME,
         decimalNumbers: true,
     };
-const pool = mysql2_1.default.createPool(access);
+const pool = mysql2_1.default.createPool(Object.assign(Object.assign({}, access), { waitForConnections: true, connectionLimit: 20, queueLimit: 0 }));
 const promisePool = pool.promise();
-// Testa a conexão ao iniciar
 function testConnection() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const connection = yield pool.promise().getConnection();
             connection.release();
-            logger_1.default.info('CONEXÃO REALIZADA COM SUCESSO!');
+            logger_1.default.info("CONEXÃO REALIZADA COM SUCESSO!");
         }
         catch (err) {
             logger_1.default.error(`MySQL error: ${err}`);
