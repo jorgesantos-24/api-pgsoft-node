@@ -44,45 +44,76 @@ const fortunetigerfunctions_1 = __importDefault(require("../../functions/fortune
 const allfunctions_1 = __importDefault(require("../../functions/allfunctions"));
 const apicontroller_1 = __importDefault(require("../apicontroller"));
 const serverEvents_1 = require("../../serverEvents");
-const linhaganhotiger_1 = __importDefault(require("../../jsons/fortune-tiger/linhaganhotiger"));
-const linhaperdatiger_1 = __importDefault(require("../../jsons/fortune-tiger/linhaperdatiger"));
-const linhabonustiger_1 = __importDefault(require("../../jsons/fortune-tiger/linhabonustiger"));
 const notcashtiger_1 = __importDefault(require("../../jsons/fortune-tiger/notcashtiger"));
+const strips_1 = __importDefault(require("../../jsons/fortune-tiger/strips"));
+const feature_1 = __importDefault(require("../../jsons/fortune-tiger/feature"));
+const paytable_1 = __importDefault(require("../../jsons/fortune-tiger/paytable"));
 require("dotenv/config");
-const FATOR_RTP = 0.687;
+const FATOR_NORMAL = 0.9417;
+const FATOR_VITRINE = 1.2795;
+const CAP_MULT = 2500;
+const SCATTER = "8";
+const WILD = "0";
+const LINHAS = paytable_1.default.lines;
+const N_LINHAS = LINHAS.length;
+const PAY_SCALE = paytable_1.default.payScale;
+const SIMBOLOS = paytable_1.default.symbols;
+const r2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function sortearGrade() {
+    const vis = [];
+    for (let r = 0; r < 3; r++) {
+        const rolo = strips_1.default[r];
+        const inicio = Math.floor(Math.random() * rolo.length);
+        for (let linha = 0; linha < 3; linha++)
+            vis.push(rolo[(inicio + linha) % rolo.length]);
+    }
+    return vis;
+}
+function avaliarLinhas(vis) {
+    var _a;
+    let pay = 0;
+    const wp = {};
+    for (const linha of LINHAS) {
+        const [a, b, c] = linha.map((i) => vis[i]);
+        if (a === SCATTER || b === SCATTER || c === SCATTER)
+            continue;
+        let sym = null;
+        if (a !== WILD)
+            sym = a;
+        else if (b !== WILD)
+            sym = b;
+        else if (c !== WILD)
+            sym = c;
+        else
+            sym = WILD;
+        const bate = [a, b, c].every((s) => s === sym || s === WILD);
+        if (bate) {
+            pay += SIMBOLOS[sym].pay3;
+            wp[sym] = [...((_a = wp[sym]) !== null && _a !== void 0 ? _a : []), ...linha];
+        }
+    }
+    return { pay: (pay * PAY_SCALE) / N_LINHAS, wp };
+}
 exports.default = {
     getiger(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const token = req.body.atk;
-                const gamename = "fortune-tiger";
                 const user = yield allfunctions_1.default.getuserbyatk(token);
-                logger_1.default.info('[+] Usuario logado: ' + user[0].username);
-                const jsonprimay = yield allfunctions_1.default.getSpinByPlayerId(user[0].id);
-                const jsoninicial = yield allfunctions_1.default.getjsonprimary(gamename);
-                if (jsonprimay.length === 0) {
-                    yield allfunctions_1.default.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-                }
-                else if (jsonprimay[0].game_code === gamename) {
-                    logger_1.default.info('[+] Json Recuperado Do Ultimo Spin.');
-                }
-                else {
-                    yield allfunctions_1.default.createOrUpdateSpin(user[0].id, gamename, jsoninicial[0].json);
-                }
-                const json = yield allfunctions_1.default.getSpinByPlayerId(user[0].id);
-                const jsonformatado = JSON.parse(json[0].json);
+                logger_1.default.info("[+] Usuario logado: " + user[0].username);
                 res.send({
                     dt: {
                         fb: null,
                         wt: { mw: 5.0, bw: 20.0, mgw: 35.0, smgw: 50.0 },
-                        maxwm: null,
-                        cs: [0.08, 0.8, 3.0, 10.0],
+                        maxwm: CAP_MULT,
+                        cs: [0.02, 0.2, 1.0, 5.0],
                         ml: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                        mxl: 5,
+                        mxl: 9,
                         bl: user[0].saldo,
                         inwe: false,
                         iuwe: false,
-                        ls: jsonformatado.dt,
+                        ls: null,
                         cc: "BRL",
                     },
                     err: null,
@@ -99,57 +130,19 @@ exports.default = {
     },
     spin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Round money to 2 decimals (avoids 123.19999999999999)
-            const r2 = (v) => Math.round((Number(v) + Number.EPSILON) * 100) / 100;
-            let cs = Number(req.body.cs);
-            let ml = Number(req.body.ml);
+            const cs = Number(req.body.cs);
+            const ml = Number(req.body.ml);
             const token = req.body.atk;
-            function lwchange(json1, json2, cs, ml) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    for (let chave in json1) {
-                        if (json1.hasOwnProperty(chave)) {
-                            const valor = json1[chave];
-                            const ganho = cs * ml * parseFloat(valor);
-                            // Verifica se a chave existe no segundo JSON
-                            for (let chave2 in json2) {
-                                if (json2.hasOwnProperty(chave2)) {
-                                    // Altera o valor correspondente no segundo JSON
-                                    json2[chave] = r2(ganho);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            function countrwsp(json) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    let multplicador = 0;
-                    for (let i = 1; i <= 9; i++) {
-                        const chave = i.toString();
-                        if (json.hasOwnProperty(chave)) {
-                            multplicador = multplicador + parseFloat(json[chave]);
-                        }
-                    }
-                    return multplicador;
-                });
-            }
-            function gerarNumeroUnico() {
-                return __awaiter(this, void 0, void 0, function* () {
-                    return crypto.randomBytes(8).toString("hex");
-                });
-            }
+            const gamename = "fortune-tiger";
             try {
                 const user = yield fortunetigerfunctions_1.default.getuserbyatk(token);
-                let bet = r2(cs * ml * 5);
-                console.log(bet);
-                // MySQL DECIMAL comes back as a string; without Number() a win does
-                // "98.80" + 0.4 = "98.800.4" and the balance becomes NaN.
+                const bet = r2(cs * ml * 5);
                 let saldoatual = Number(user[0].saldo);
-                const gamename = "fortune-tiger";
+                const fator = user[0].isinfluencer === 1 ? FATOR_VITRINE : FATOR_NORMAL;
                 (0, serverEvents_1.emitirEventoInterno)("att", {
-                    token: token,
+                    token,
                     username: user[0].username,
-                    bet: bet,
+                    bet,
                     saldo: saldoatual,
                     rtp: user[0].rtp,
                     agentid: user[0].agentid,
@@ -160,365 +153,132 @@ exports.default = {
                     maxBodyLength: Infinity,
                     method: "POST",
                     url: `${agent[0].callbackurl}gold_api/user_balance`,
-                    headers: {
-                        "Content-Type": "application/json",
+                    headers: { "Content-Type": "application/json" },
+                    data: { user_code: user[0].username },
+                });
+                if (checkuserbalance.data.user_balance != null) {
+                    saldoatual = Number(checkuserbalance.data.user_balance);
+                }
+                if (checkuserbalance.data.msg === "INVALID_USER" ||
+                    checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
+                    res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
+                    return false;
+                }
+                if (saldoatual < bet) {
+                    res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
+                    return false;
+                }
+                // ---------------- resultado ----------------
+                const grade = sortearGrade();
+                const base = avaliarLinhas(grade);
+                const gatilhou = grade.filter((s) => s === SCATTER).length >= 3;
+                let multiplicador = base.pay;
+                let valorFeature = 0;
+                const rwsp = {};
+                const lw = {};
+                for (const [sym, posicoes] of Object.entries(base.wp)) {
+                    const mult = SIMBOLOS[sym].pay3;
+                    rwsp[sym] = r2(mult * fator);
+                    lw[sym] = r2(cs * ml * mult * fator);
+                    base.wp[sym] = [...new Set(posicoes)];
+                }
+                if (gatilhou) {
+                    valorFeature = pick(feature_1.default);
+                    multiplicador += valorFeature;
+                    rwsp[SCATTER] = r2(valorFeature * fator);
+                    lw[SCATTER] = r2(cs * ml * valorFeature * fator);
+                    base.wp[SCATTER] = grade
+                        .map((s, i) => (s === SCATTER ? i : -1))
+                        .filter((i) => i >= 0);
+                }
+                let valorganho = r2(cs * ml * multiplicador * fator);
+                const teto = r2(bet * CAP_MULT);
+                if (valorganho > teto)
+                    valorganho = teto;
+                const newbalance = r2(saldoatual + valorganho - bet);
+                yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
+                yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
+                yield fortunetigerfunctions_1.default.atualizarapostado(token, bet);
+                yield fortunetigerfunctions_1.default.atualizarganho(token, valorganho);
+                const json = {
+                    dt: {
+                        si: {
+                            wc: valorganho > 0 ? 17 : 31,
+                            ist: false,
+                            itw: false,
+                            fws: gatilhou ? 10 : 0,
+                            wp: base.wp,
+                            orl: grade,
+                            lw,
+                            irs: false,
+                            gwt: bet,
+                            fb: null,
+                            ctw: valorganho,
+                            pmt: null,
+                            cwc: gatilhou ? 1 : 0,
+                            fstc: gatilhou ? { "8": 3 } : null,
+                            pcwc: 0,
+                            rwsp,
+                            hashr: null,
+                            ml,
+                            cs,
+                            rl: grade,
+                            sid: Date.now().toString(),
+                            psid: Date.now().toString(),
+                            st: gatilhou ? 4 : 1,
+                            nst: 1,
+                            pf: 1,
+                            aw: valorganho,
+                            wid: 0,
+                            wt: "C",
+                            wk: "0_C",
+                            wbn: null,
+                            wfg: null,
+                            blb: saldoatual,
+                            blab: newbalance,
+                            bl: newbalance,
+                            tb: bet,
+                            tbb: bet,
+                            tw: valorganho,
+                            np: r2(valorganho - bet),
+                            ocr: null,
+                            mr: null,
+                            ge: [1, 11],
+                        },
                     },
-                    data: {
-                        user_code: user[0].username,
+                    err: null,
+                };
+                yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
+                yield apicontroller_1.default.callbackgame({
+                    agent_code: agent[0].agentcode,
+                    agent_secret: agent[0].secretKey,
+                    user_code: user[0].username,
+                    user_balance: newbalance,
+                    user_total_credit: Number(user[0].valorganho) + valorganho,
+                    user_total_debit: Number(user[0].valorapostado) + bet,
+                    game_type: "slot",
+                    slot: {
+                        provider_code: "PGSOFT",
+                        game_code: gamename,
+                        round_id: crypto.randomBytes(8).toString("hex"),
+                        type: gatilhou ? "FREE" : "BASE",
+                        bet,
+                        win: valorganho,
+                        txn_id: (0, uuid_1.v4)(),
+                        txn_type: "debit_credit",
+                        is_buy: false,
+                        is_call: gatilhou,
+                        user_before_balance: saldoatual,
+                        user_after_balance: newbalance,
+                        agent_before_balance: 100,
+                        agent_after_balance: 100,
+                        created_at: (0, moment_1.default)().toISOString(),
                     },
                 });
-                // saldo do operador (TUGAS) e a unica fonte de verdade
-                if (checkuserbalance.data.user_balance != null)
-                    saldoatual = Number(checkuserbalance.data.user_balance);
-                if (checkuserbalance.data.msg === "INVALID_USER") {
-                    res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
-                    return false;
-                }
-                else if (checkuserbalance.data.msg === "INSUFFICIENT_USER_FUNDS") {
-                    res.send(yield notcashtiger_1.default.notcash(saldoatual, cs, ml));
-                    return false;
-                }
-                const retornado = user[0].valorganho;
-                const valorapostado = user[0].valorapostado;
-                const rtp = (retornado / valorapostado) * 100;
-                console.log("RTP ATUAL " + rtp);
-                console.log("BET ATUAL " + bet);
-                if (saldoatual < bet) {
-                    const semsaldo = yield notcashtiger_1.default.notcash(saldoatual, cs, ml);
-                    res.send(semsaldo);
-                    return false;
-                }
-                const resultadospin = yield allfunctions_1.default.calcularganho(bet, saldoatual, token, gamename);
-                if (resultadospin.result === "perda") {
-                    let newbalance = r2(saldoatual - bet);
-                    yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
-                    yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
-                    yield fortunetigerfunctions_1.default.atualizarapostado(token, bet);
-                    const perdajson = yield linhaperdatiger_1.default.linhaperda();
-                    let json = {
-                        dt: {
-                            si: {
-                                wc: 31,
-                                ist: perdajson.ist,
-                                itw: true,
-                                fws: 0,
-                                wp: null,
-                                orl: perdajson.orl,
-                                lw: null,
-                                irs: false,
-                                gwt: -1,
-                                fb: null,
-                                ctw: 0.0,
-                                pmt: null,
-                                cwc: 0,
-                                fstc: null,
-                                pcwc: 0,
-                                rwsp: null,
-                                hashr: "0:2;5;4#3;3;6#7;3;6#MV#3.0#MT#1#MG#0#",
-                                ml: ml,
-                                cs: cs,
-                                rl: perdajson.orl,
-                                sid: "1758600495495052800",
-                                psid: "1758600495495052800",
-                                st: 1,
-                                nst: 1,
-                                pf: 1,
-                                aw: 0.0,
-                                wid: 0,
-                                wt: "C",
-                                wk: "0_C",
-                                wbn: null,
-                                wfg: null,
-                                blb: saldoatual,
-                                blab: newbalance,
-                                bl: newbalance,
-                                tb: bet,
-                                tbb: bet,
-                                tw: 0.0,
-                                np: -bet,
-                                ocr: null,
-                                mr: null,
-                                ge: [1, 11],
-                            },
-                        },
-                        err: null,
-                    };
-                    yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
-                    const txnid = (0, uuid_1.v4)();
-                    const dataFormatada = (0, moment_1.default)().toISOString();
-                    yield apicontroller_1.default.callbackgame({
-                        agent_code: agent[0].agentcode,
-                        agent_secret: agent[0].secretKey,
-                        user_code: user[0].username,
-                        user_balance: user[0].saldo,
-                        user_total_credit: user[0].valorganho,
-                        user_total_debit: user[0].valorapostado,
-                        game_type: "slot",
-                        slot: {
-                            provider_code: "PGSOFT",
-                            game_code: gamename,
-                            round_id: yield gerarNumeroUnico(),
-                            type: "BASE",
-                            bet: bet,
-                            win: 0,
-                            txn_id: `${txnid}`,
-                            txn_type: "debit_credit",
-                            is_buy: false,
-                            is_call: false,
-                            user_before_balance: user[0].saldo,
-                            user_after_balance: newbalance,
-                            agent_before_balance: 100,
-                            agent_after_balance: 100,
-                            created_at: dataFormatada,
-                        },
-                    });
-                    res.send(json);
-                }
-                if (resultadospin.result === "ganho") {
-                    const ganhojson = yield linhaganhotiger_1.default.linhaganho(bet);
-                    const multplicador = yield countrwsp(ganhojson.rwsp);
-                    yield lwchange(ganhojson.rwsp, ganhojson.lw, cs * FATOR_RTP, ml);
-                    const valorganho = r2(cs * ml * multplicador * FATOR_RTP);
-                    const newbalance = r2(saldoatual + valorganho - bet);
-                    yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
-                    yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
-                    yield fortunetigerfunctions_1.default.atualizarapostado(token, bet);
-                    yield fortunetigerfunctions_1.default.atualizarganho(token, valorganho);
-                    let json = {
-                        dt: {
-                            si: {
-                                wc: 17,
-                                ist: ganhojson.ist,
-                                itw: false,
-                                fws: 0,
-                                wp: ganhojson.wp,
-                                orl: ganhojson.orl,
-                                lw: ganhojson.lw,
-                                irs: false,
-                                gwt: bet,
-                                fb: null,
-                                ctw: valorganho,
-                                pmt: null,
-                                cwc: bet,
-                                fstc: null,
-                                pcwc: bet,
-                                rwsp: ganhojson.rwsp,
-                                hashr: "0:6;4;6#6;4;6#6;4;4#MV#3.0#MT#1#MG#0#",
-                                ml: ml,
-                                cs: cs,
-                                rl: ganhojson.orl,
-                                sid: "1757973319175306752",
-                                psid: "1757973319175306752",
-                                st: 1,
-                                nst: 1,
-                                pf: 1,
-                                aw: valorganho,
-                                wid: 0,
-                                wt: "C",
-                                wk: "0_C",
-                                wbn: null,
-                                wfg: null,
-                                blb: saldoatual,
-                                blab: newbalance,
-                                bl: newbalance,
-                                tb: bet,
-                                tbb: bet,
-                                tw: valorganho,
-                                np: bet,
-                                ocr: null,
-                                mr: null,
-                                ge: [1, 11],
-                            },
-                        },
-                        err: null,
-                    };
-                    yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
-                    const txnid = (0, uuid_1.v4)();
-                    const dataFormatada = (0, moment_1.default)().toISOString();
-                    yield apicontroller_1.default.callbackgame({
-                        agent_code: agent[0].agentcode,
-                        agent_secret: agent[0].secretKey,
-                        user_code: user[0].username,
-                        user_balance: user[0].saldo,
-                        user_total_credit: user[0].valorganho,
-                        user_total_debit: user[0].valorapostado,
-                        game_type: "slot",
-                        slot: {
-                            provider_code: "PGSOFT",
-                            game_code: gamename,
-                            round_id: yield gerarNumeroUnico(),
-                            type: "BASE",
-                            bet: bet,
-                            win: Number(valorganho),
-                            txn_id: `${txnid}`,
-                            txn_type: "debit_credit",
-                            is_buy: false,
-                            is_call: false,
-                            user_before_balance: user[0].saldo,
-                            user_after_balance: newbalance,
-                            agent_before_balance: 100,
-                            agent_after_balance: 100,
-                            created_at: dataFormatada,
-                        },
-                    });
-                    res.send(json);
-                }
-                if (resultadospin.result === "bonus" && resultadospin.gamecode === "fortune-tiger") {
-                    const cartajson = yield linhabonustiger_1.default.linhacarta(resultadospin.json);
-                    let call = yield allfunctions_1.default.getcallbyid(resultadospin.idcall);
-                    if (call[0].steps === null && call[0].status === "pending") {
-                        const steps = Object.keys(cartajson).length - 1;
-                        yield allfunctions_1.default.updatestepscall(resultadospin.idcall, steps);
-                    }
-                    let calltwo = yield allfunctions_1.default.getcallbyid(resultadospin.idcall);
-                    if (calltwo[0].steps === 0) {
-                        const multplicador = yield countrwsp(cartajson[calltwo[0].steps].rwsp);
-                        yield lwchange(cartajson[calltwo[0].steps].rwsp, cartajson[calltwo[0].steps].lw, cs * FATOR_RTP, ml);
-                        let valorganho = r2(cs * ml * multplicador * FATOR_RTP);
-                        if (cartajson[calltwo[0].steps].completed === true) {
-                            valorganho = r2(cs * ml * multplicador * 10 * FATOR_RTP);
-                        }
-                        const newbalance = r2(saldoatual + valorganho - bet);
-                        yield fortunetigerfunctions_1.default.attsaldobyatk(token, newbalance);
-                        yield fortunetigerfunctions_1.default.atualizardebitado(token, bet);
-                        yield fortunetigerfunctions_1.default.atualizarapostado(token, bet);
-                        yield fortunetigerfunctions_1.default.atualizarganho(token, valorganho);
-                        let json = {
-                            dt: {
-                                si: {
-                                    wc: 0,
-                                    ist: cartajson[calltwo[0].steps].ist,
-                                    itw: cartajson[calltwo[0].steps].itw,
-                                    fws: cartajson[calltwo[0].steps].fws,
-                                    wp: cartajson[calltwo[0].steps].wp,
-                                    orl: cartajson[calltwo[0].steps].orl,
-                                    lw: cartajson[calltwo[0].steps].lw,
-                                    irs: cartajson[calltwo[0].steps].irs,
-                                    gwt: 3,
-                                    fb: null,
-                                    ctw: valorganho,
-                                    pmt: null,
-                                    cwc: 1,
-                                    fstc: { "4": 2 },
-                                    pcwc: 0,
-                                    rwsp: cartajson[calltwo[0].steps].rwsp,
-                                    hashr: "2:7;7;7#7;7;7#7;7;7#R#7#011121#MV#0#MT#1#R#7#001020#MV#0#MT#1#R#7#021222#MV#0#MT#1#R#7#001122#MV#0#MT#1#R#7#021120#MV#0#MT#1#MG#90.0#",
-                                    ml: ml,
-                                    cs: cs,
-                                    rl: cartajson[calltwo[0].steps].rl,
-                                    sid: "1761174298456686080",
-                                    psid: "1761174260091387392",
-                                    st: 4,
-                                    nst: 1,
-                                    pf: 1,
-                                    aw: valorganho,
-                                    wid: 0,
-                                    wt: "C",
-                                    wk: "0_C",
-                                    wbn: null,
-                                    wfg: null,
-                                    blb: saldoatual,
-                                    blab: newbalance,
-                                    bl: newbalance,
-                                    tb: 0.0,
-                                    tbb: bet,
-                                    tw: valorganho,
-                                    np: valorganho,
-                                    ocr: null,
-                                    mr: null,
-                                    ge: [1, 11],
-                                },
-                            },
-                            err: null,
-                        };
-                        yield allfunctions_1.default.savejsonspin(user[0].id, JSON.stringify(json), gamename);
-                        yield allfunctions_1.default.completecall(calltwo[0].id);
-                        const txnid = (0, uuid_1.v4)();
-                        const dataFormatada = (0, moment_1.default)().toISOString();
-                        yield apicontroller_1.default.callbackgame({
-                            agent_code: agent[0].agentcode,
-                            agent_secret: agent[0].secretKey,
-                            user_code: user[0].username,
-                            user_balance: user[0].saldo,
-                            user_total_credit: user[0].valorganho,
-                            user_total_debit: user[0].valorapostado,
-                            game_type: "slot",
-                            slot: {
-                                provider_code: "PGSOFT",
-                                game_code: gamename,
-                                round_id: yield gerarNumeroUnico(),
-                                type: "BASE",
-                                bet: bet,
-                                win: valorganho,
-                                txn_id: `${txnid}`,
-                                txn_type: "debit_credit",
-                                is_buy: false,
-                                is_call: true,
-                                user_before_balance: user[0].saldo,
-                                user_after_balance: newbalance,
-                                agent_before_balance: 100,
-                                agent_after_balance: 100,
-                                created_at: dataFormatada,
-                            },
-                        });
-                        res.send(json);
-                        return false;
-                    }
-                    yield allfunctions_1.default.subtrairstepscall(resultadospin.idcall);
-                    let json = {
-                        dt: {
-                            si: {
-                                wc: 103,
-                                ist: cartajson[calltwo[0].steps].ist,
-                                itw: cartajson[calltwo[0].steps].itw,
-                                fws: cartajson[calltwo[0].steps].fws,
-                                wp: cartajson[calltwo[0].steps].wp,
-                                orl: cartajson[calltwo[0].steps].orl,
-                                lw: cartajson[calltwo[0].steps].lw,
-                                irs: cartajson[calltwo[0].steps].irs,
-                                gwt: -1,
-                                fb: null,
-                                ctw: 0.0,
-                                pmt: null,
-                                cwc: 0,
-                                fstc: null,
-                                pcwc: 0,
-                                rwsp: cartajson[calltwo[0].steps].rwsp,
-                                hashr: "0:6;3;7#4;7;7#7;4;7#R#7#021120#MV#3.0#MT#1#MG#0#",
-                                ml: ml,
-                                cs: cs,
-                                rl: cartajson[calltwo[0].steps].rl,
-                                sid: "1761174260091387392",
-                                psid: "1761174260091387392",
-                                st: 1,
-                                nst: 4,
-                                pf: 1,
-                                aw: 0.0,
-                                wid: 0,
-                                wt: "C",
-                                wk: "0_C",
-                                wbn: null,
-                                wfg: null,
-                                blb: saldoatual,
-                                blab: saldoatual,
-                                bl: saldoatual,
-                                tb: bet,
-                                tbb: bet,
-                                tw: 0.0,
-                                np: -bet,
-                                ocr: null,
-                                mr: null,
-                                ge: [4, 11],
-                            },
-                        },
-                        err: null,
-                    };
-                    res.send(json);
-                }
+                res.send(json);
             }
             catch (error) {
                 logger_1.default.error(error);
-                // Always answer, otherwise the game keeps spinning forever
                 if (!res.headersSent) {
                     res.status(500).send({
                         dt: null,
